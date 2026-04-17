@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JSN Client Messaging | MA Compliance Suite</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f8f8f7;
+  --surface:#ffffff;
+  --border:#e5e4e0;
+  --border-mid:#d0ceca;
+  --text:#1a1a18;
+  --text-2:#6b6b68;
+  --text-3:#a0a09c;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:14px;
+  --green-bg:#eaf3de;--green-text:#3b6d11;--green-dot:#639922;
+  --amber-bg:#faeeda;--amber-text:#854f0b;--amber-dot:#ba7517;
+  --red-bg:#fcebeb;--red-text:#a32d2d;--red-dot:#a32d2d;
+  --blue-bg:#e6f1fb;--blue-text:#185fa5;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── LOGIN SCREEN ─────────────────────────────────────── */
+#login-screen{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+}
+.login-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:36px 40px;width:100%;max-width:420px;
+}
+.login-logo{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.04em;margin-bottom:4px;}
+.login-sub{font-size:11px;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:28px;}
+.login-label{font-size:11px;font-weight:600;color:var(--text-2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+.login-input{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px 12px;font-size:13px;
+  font-family:inherit;color:var(--text);outline:none;margin-bottom:14px;
+  transition:border-color .1s;
+}
+.login-input:focus{border-color:var(--border-mid);}
+.login-btn{
+  width:100%;background:var(--text);color:var(--surface);border:none;
+  border-radius:var(--radius-sm);padding:11px;font-size:13px;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:opacity .12s;margin-top:4px;
+}
+.login-btn:hover{opacity:.82;}
+.login-note{font-size:11px;color:var(--text-3);margin-top:14px;line-height:1.5;}
+
+/* ── APP SHELL ────────────────────────────────────────── */
+#app{display:none;}
+.app{display:flex;height:100vh;overflow:hidden;}
+
+/* Sidebar */
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sb-head{padding:16px 16px 12px;border-bottom:1px solid var(--border);}
+.brand{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.02em;}
+.brand-sub{font-size:10px;color:var(--text-3);margin-top:2px;letter-spacing:.04em;text-transform:uppercase;}
+.agent-pill{display:flex;align-items:center;gap:6px;margin-top:10px;padding:6px 8px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.agent-avatar{width:22px;height:22px;border-radius:50%;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--blue-text);flex-shrink:0;}
+.agent-name{font-size:11px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.agent-switch{font-size:10px;color:var(--text-3);cursor:pointer;white-space:nowrap;}
+.agent-switch:hover{color:var(--text-2);}
+
+.sb-sec{padding:10px 8px 4px;}
+.sb-lbl{font-size:10px;font-weight:700;color:var(--text-3);letter-spacing:.08em;text-transform:uppercase;padding:0 8px 6px;}
+.nav{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--radius-sm);font-size:12px;color:var(--text-2);cursor:pointer;transition:background .1s;user-select:none;}
+.nav:hover{background:var(--bg);color:var(--text);}
+.nav.active{background:var(--bg);color:var(--text);font-weight:600;}
+.nd{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.nd-g{background:var(--green-dot);}
+.nd-a{background:var(--amber-dot);}
+.nd-r{background:var(--red-dot);}
+
+.sb-divider{height:1px;background:var(--border);margin:6px 12px;}
+.sb-foot{margin-top:auto;padding:10px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--text-3);}
+
+/* History items */
+.hist-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--radius-sm);margin:2px 4px;cursor:pointer;transition:background .1s;}
+.hist-item:hover{background:var(--bg);}
+.hist-uc{font-size:11px;font-weight:500;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hist-ts{font-size:10px;color:var(--text-3);}
+.hist-empty{font-size:11px;color:var(--text-3);padding:4px 10px;}
+
+/* Queue badge on nav */
+.queue-count{background:var(--amber-bg);color:var(--amber-text);font-size:9px;font-weight:700;padding:2px 5px;border-radius:20px;margin-left:auto;}
+
+/* ── MAIN ─────────────────────────────────────────────── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{padding:11px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.tb-title{font-size:13px;font-weight:700;color:var(--text);flex:1;}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.02em;}
+.bg{background:var(--green-bg);color:var(--green-text);}
+.ba{background:var(--amber-bg);color:var(--amber-text);}
+.br{background:var(--red-bg);color:var(--red-text);}
+.bn{background:var(--bg);color:var(--text-2);border:1px solid var(--border);}
+.bb{background:var(--blue-bg);color:var(--blue-text);}
+
+.scroll{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;}
+
+/* ── VIEW TOGGLE ─────────────────────────────────────── */
+.view-toggle{display:flex;gap:6px;margin-bottom:2px;}
+.vt-btn{padding:6px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;font-weight:600;font-family:inherit;color:var(--text-2);background:transparent;cursor:pointer;transition:all .1s;}
+.vt-btn:hover{background:var(--bg);color:var(--text);}
+.vt-btn.active{background:var(--text);color:var(--surface);border-color:var(--text);}
+
+/* ── CONFIG CARD ─────────────────────────────────────── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);}
+.card-pad{padding:14px 16px;}
+.col3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.cfg-lbl{font-size:10px;font-weight:700;color:var(--text-3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;}
+.cfg-sel{width:100%;background:transparent;border:none;font-size:12px;color:var(--text);font-family:inherit;cursor:pointer;outline:none;}
+
+.ctx-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;color:var(--text-2);padding:10px 0 4px;user-select:none;border-top:1px solid var(--border);margin-top:12px;}
+.ctx-arrow{font-size:10px;transition:transform .15s;color:var(--text-3);}
+.ctx-hint{font-size:10px;color:var(--text-3);margin-left:4px;}
+.ctx-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.ctx-field{display:flex;flex-direction:column;gap:4px;}
+.ctx-input{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;font-size:12px;font-family:inherit;color:var(--text);outline:none;width:100%;transition:border-color .1s;}
+.ctx-input:focus{border-color:var(--border-mid);}
+
+.ch-row{display:flex;gap:6px;margin-top:10px;}
+.ch-btn{flex:1;padding:6px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;font-family:inherit;color:var(--text-2);background:transparent;cursor:pointer;transition:all .1s;text-align:center;}
+.ch-btn:hover{background:var(--bg);color:var(--text);}
+.ch-btn.sel{background:var(--text);color:var(--surface);border-color:var(--text);}
+
+.draft-area{width:100%;min-height:90px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;font-family:inherit;color:var(--text);resize:vertical;outline:none;line-height:1.6;margin-top:10px;transition:border-color .1s;}
+.draft-area:focus{border-color:var(--border-mid);}
+.row-between{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.char-c{font-size:11px;color:var(--text-3);}
+.btn-primary{background:var(--text);color:var(--surface);border:none;border-radius:var(--radius-sm);padding:8px 18px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .12s;letter-spacing:.02em;}
+.btn-primary:hover{opacity:.82;}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── OUTPUT ──────────────────────────────────────────── */
+.risk-bar{height:3px;width:100%;}
+.rb-g{background:var(--green-dot);}
+.rb-a{background:var(--amber-dot);}
+.rb-r{background:var(--red-dot);}
+.out-head{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--border);}
+.out-lbl{font-size:12px;font-weight:700;color:var(--text-2);flex:1;}
+
+.tab-row{display:flex;gap:2px;padding:0 16px;border-bottom:1px solid var(--border);background:var(--surface);}
+.tab{padding:8px 12px;font-size:11px;font-weight:600;color:var(--text-2);cursor:pointer;border-bottom:2px solid transparent;transition:color .1s;font-family:inherit;background:none;border-top:none;border-left:none;border-right:none;}
+.tab.active{color:var(--text);border-bottom-color:var(--text);}
+.tab:hover{color:var(--text);}
+.panel{display:none;}
+.panel.active{display:block;}
+
+.out-body{padding:14px 16px;}
+.msg-text{font-size:13px;line-height:1.75;color:var(--text);white-space:pre-wrap;}
+.subj-lbl{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;}
+.subj-val{font-size:13px;font-weight:700;color:var(--text);margin-top:3px;}
+.prev-text{font-size:11px;color:var(--text-2);margin-top:3px;margin-bottom:12px;}
+
+.rewrite-box{margin-top:12px;padding:12px 14px;background:var(--green-bg);border-radius:var(--radius-md);border-left:3px solid var(--green-dot);}
+.rw-lbl{font-size:9px;font-weight:700;letter-spacing:.09em;color:var(--green-text);text-transform:uppercase;margin-bottom:5px;}
+.broker-box{margin-top:10px;padding:10px 12px;background:var(--amber-bg);border-radius:var(--radius-md);}
+.broker-lbl{font-size:9px;font-weight:700;color:var(--amber-text);letter-spacing:.09em;text-transform:uppercase;margin-bottom:4px;}
+.broker-txt{font-size:12px;color:var(--amber-text);line-height:1.55;}
+.task-row{margin-top:10px;font-size:11px;color:var(--text-2);padding:8px 12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.task-lbl{font-size:9px;font-weight:700;letter-spacing:.09em;color:var(--text-3);text-transform:uppercase;margin-bottom:3px;}
+
+.blocked-box{padding:14px;background:var(--red-bg);border-radius:var(--radius-md);}
+.blocked-title{font-size:12px;font-weight:700;color:var(--red-text);margin-bottom:4px;}
+.blocked-txt{font-size:12px;color:#791f1f;line-height:1.55;}
+.safe-box{margin-top:10px;padding:10px 12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.safe-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
+.safe-txt{font-size:12px;color:var(--text-2);line-height:1.5;}
+
+.flag-list{padding:8px 16px 12px;border-top:1px solid var(--border);}
+.flag-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;}
+.fdot{width:5px;height:5px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.ftxt{font-size:11px;color:var(--text-2);line-height:1.5;}
+
+.crm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,200px);gap:16px;padding:14px 16px;}
+.crm-field{margin-bottom:10px;}
+.crm-lbl{font-size:9px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:4px;}
+.crm-val{font-size:12px;color:var(--text);line-height:1.55;}
+.crm-tag{display:inline-block;padding:2px 8px;background:var(--bg);border:1px solid var(--border);border-radius:20px;font-size:10px;color:var(--text-2);margin:2px 2px;}
+
+.sms-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;font-size:13px;line-height:1.65;color:var(--text);}
+.sms-count{margin-top:6px;font-size:10px;color:var(--text-3);}
+
+.copy-row{padding:0 16px 14px;display:flex;gap:8px;flex-wrap:wrap;}
+.btn-ghost{background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:600;color:var(--text-2);cursor:pointer;font-family:inherit;transition:all .1s;}
+.btn-ghost:hover{background:var(--bg);border-color:var(--border-mid);color:var(--text);}
+
+.loading-row{display:flex;align-items:center;gap:10px;padding:20px 16px;}
+.spin{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--text-2);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-txt{font-size:12px;color:var(--text-2);}
+
+.from-hist{padding:5px 16px;font-size:10px;color:var(--text-3);border-bottom:1px solid var(--border);background:var(--bg);}
+.error-box{padding:14px 16px;font-size:12px;color:var(--red-text);background:var(--red-bg);border-radius:var(--radius-md);}
+
+/* ── BROKER QUEUE VIEW ───────────────────────────────── */
+#queue-view{display:none;flex:1;overflow-y:auto;padding:18px 20px;}
+.queue-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.queue-title{font-size:15px;font-weight:700;color:var(--text);}
+.queue-empty{text-align:center;padding:48px 20px;color:var(--text-3);font-size:13px;}
+.queue-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden;}
+.qi-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.qi-agent{font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.qi-meta{font-size:11px;color:var(--text-3);}
+.qi-body{padding:12px 16px;}
+.qi-usecase{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.qi-reason{font-size:12px;color:var(--text-2);line-height:1.55;margin-bottom:8px;}
+.qi-draft{font-size:12px;color:var(--text);line-height:1.65;padding:10px 12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);white-space:pre-wrap;max-height:120px;overflow-y:auto;}
+.qi-broker-note{margin-top:8px;padding:8px 10px;background:var(--amber-bg);border-radius:var(--radius-sm);font-size:11px;color:var(--amber-text);line-height:1.5;}
+.qi-actions{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);background:var(--bg);}
+.btn-approve{background:var(--green-bg);color:var(--green-text);border:1px solid var(--green-dot);border-radius:var(--radius-sm);padding:6px 14px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .1s;}
+.btn-approve:hover{opacity:.8;}
+.btn-reject{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-dot);border-radius:var(--radius-sm);padding:6px 14px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .1s;}
+.btn-reject:hover{opacity:.8;}
+.btn-hold{background:var(--bg);color:var(--text-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;}
+.qi-status{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.qs-pending{background:var(--amber-bg);color:var(--amber-text);}
+.qs-approved{background:var(--green-bg);color:var(--green-text);}
+.qs-rejected{background:var(--red-bg);color:var(--red-text);}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">JSN Client Messaging</div>
+    <div class="login-sub">MA Compliance Suite</div>
+    <div class="login-label">Your name</div>
+    <input class="login-input" id="login-name" placeholder="e.g. Marcus Rivera" />
+    <div class="login-label">Office / brokerage</div>
+    <input class="login-input" id="login-office" placeholder="e.g. North Shore Realty Group" />
+    <div class="login-label">Role</div>
+    <select class="login-input" id="login-role" style="appearance:auto;">
+      <option value="Agent">Agent</option>
+      <option value="Leasing Agent">Leasing Agent</option>
+      <option value="Broker">Broker</option>
+      <option value="Admin">Admin</option>
+      <option value="Owner Relations">Owner Relations</option>
+    </select>
+    <button class="login-btn" onclick="loginSubmit()">Enter Compliance Suite</button>
+    <div class="login-note">Your name and office tag every submission in the audit log. No password required. Session saved locally.</div>
+  </div>
+</div>
+
+<!-- ── APP ────────────────────────────────────────────── -->
+<div id="app">
+<div class="app">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <div class="brand">JSN Client Messaging</div>
+      <div class="brand-sub">MA Compliance Suite</div>
+      <div class="agent-pill">
+        <div class="agent-avatar" id="agent-avatar">JD</div>
+        <div class="agent-name" id="agent-name-display">Agent</div>
+        <div class="agent-switch" onclick="switchAgent()">switch</div>
+      </div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Use Cases</div>
+      <div class="nav active" onclick="setUC('buyer_followup',this)"><div class="nd nd-g"></div>Buyer follow-up</div>
+      <div class="nav" onclick="setUC('seller_followup',this)"><div class="nd nd-g"></div>Seller follow-up</div>
+      <div class="nav" onclick="setUC('rental_inquiry',this)"><div class="nd nd-g"></div>Rental inquiry</div>
+      <div class="nav" onclick="setUC('showing_followup',this)"><div class="nd nd-g"></div>Post-showing follow-up</div>
+      <div class="nav" onclick="setUC('open_house',this)"><div class="nd nd-g"></div>Open house follow-up</div>
+      <div class="nav" onclick="setUC('reactivation',this)"><div class="nd nd-g"></div>Lead reactivation</div>
+      <div class="nav" onclick="setUC('appointment',this)"><div class="nd nd-g"></div>Appointment confirm</div>
+      <div class="nav" onclick="setUC('application_reminder',this)"><div class="nd nd-a"></div>Application reminder</div>
+      <div class="nav" onclick="setUC('owner_update',this)"><div class="nd nd-a"></div>Owner / landlord update</div>
+      <div class="nav" onclick="setUC('complaint',this)"><div class="nd nd-r"></div>Complaint handling</div>
+      <div class="nav" onclick="setUC('commission',this)"><div class="nd nd-r"></div>Commission explanation</div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Draft History</div>
+      <div id="history-list"><div class="hist-empty">No drafts yet</div></div>
+    </div>
+
+    <div class="sb-foot">JSN Real Estate Performance System<br>jsnmade.com</div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-title" id="tb-title">Buyer Follow-Up</div>
+      <div class="view-toggle">
+        <button class="vt-btn active" id="btn-draft-view" onclick="showView('draft')">Draft</button>
+        <button class="vt-btn" id="btn-queue-view" onclick="showView('queue')">
+          Broker Queue <span class="queue-count" id="queue-count" style="display:none;">0</span>
+        </button>
+      </div>
+      <div id="risk-badge" class="badge bn">Ready</div>
+    </div>
+
+    <!-- Draft view -->
+    <div id="draft-view" class="scroll">
+      <div class="card">
+        <div class="card-pad">
+          <div class="col3">
+            <div>
+              <div class="cfg-lbl">Role mode</div>
+              <select class="cfg-sel" id="role-mode">
+                <option>Agent</option><option>Leasing</option>
+                <option>Admin</option><option>Broker</option>
+                <option>Owner Relations</option>
+              </select>
+            </div>
+            <div>
+              <div class="cfg-lbl">Voice pack</div>
+              <select class="cfg-sel" id="voice-pack">
+                <option>Modern</option><option>Luxury</option>
+                <option>Team</option><option>Investor</option>
+                <option>Rental</option>
+              </select>
+            </div>
+            <div>
+              <div class="cfg-lbl">Output mode</div>
+              <select class="cfg-sel" id="output-mode">
+                <option>Ready-to-send</option>
+                <option>CRM Structured</option>
+                <option>Approval Review</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ctx-toggle" onclick="toggleCtx()">
+            <span class="ctx-arrow" id="ctx-arrow">&#9656;</span>
+            <span>Client &amp; property context</span>
+            <span class="ctx-hint">(improves output quality)</span>
+          </div>
+          <div id="ctx-panel" style="display:none;">
+            <div class="ctx-fields">
+              <div class="ctx-field">
+                <div class="cfg-lbl">Client name</div>
+                <input class="ctx-input" id="ctx-name" placeholder="e.g. Sarah Chen" />
+              </div>
+              <div class="ctx-field">
+                <div class="cfg-lbl">Property address</div>
+                <input class="ctx-input" id="ctx-addr" placeholder="e.g. 14 Maple St, Salem MA" />
+              </div>
+              <div class="ctx-field">
+                <div class="cfg-lbl">Price / rent range</div>
+                <input class="ctx-input" id="ctx-price" placeholder="e.g. $425,000" />
+              </div>
+              <div class="ctx-field">
+                <div class="cfg-lbl">Agent name (override)</div>
+                <input class="ctx-input" id="ctx-agent" placeholder="Defaults to your login name" />
+              </div>
+            </div>
+            <div class="cfg-lbl" style="margin-top:12px;">Channel</div>
+            <div class="ch-row">
+              <button class="ch-btn sel" onclick="setChannel('Email',this)">Email</button>
+              <button class="ch-btn" onclick="setChannel('Text/SMS',this)">Text / SMS</button>
+              <button class="ch-btn" onclick="setChannel('CRM Note',this)">CRM note</button>
+              <button class="ch-btn" onclick="setChannel('Voicemail script',this)">Voicemail</button>
+            </div>
+          </div>
+
+          <div class="cfg-lbl" style="margin-top:14px;">Draft or situation notes</div>
+          <textarea class="draft-area" id="draft-input"
+            placeholder="Paste a draft to review, or describe the situation. Adding client context above reduces placeholder text significantly."
+            oninput="updateCount()"></textarea>
+          <div class="row-between">
+            <div class="char-c" id="char-count">0 characters</div>
+            <button class="btn-primary" id="submit-btn" onclick="submitDraft()">Review &amp; Draft</button>
+          </div>
+        </div>
+      </div>
+      <div id="output-area"></div>
+    </div>
+
+    <!-- Broker queue view -->
+    <div id="queue-view">
+      <div class="queue-header">
+        <div class="queue-title">Broker Review Queue</div>
+        <button class="btn-ghost" onclick="renderQueue()">Refresh</button>
+      </div>
+      <div id="queue-items"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+// Replace with your deployed Cloudflare Worker URL after setup
+const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let currentUC      = 'buyer_followup';
+let currentChannel = 'Email';
+let draftHistory   = [];
+let agentProfile   = null;
+let brokerQueue    = [];   // Yellow submissions awaiting broker review
+
+const ucLabels = {
+  buyer_followup:       'Buyer Follow-Up',
+  seller_followup:      'Seller Follow-Up',
+  rental_inquiry:       'Rental Inquiry',
+  showing_followup:     'Post-Showing Follow-Up',
+  open_house:           'Open House Follow-Up',
+  reactivation:         'Lead Reactivation',
+  appointment:          'Appointment Confirmation',
+  application_reminder: 'Application Reminder',
+  owner_update:         'Owner / Landlord Update',
+  complaint:            'Complaint Handling',
+  commission:           'Commission Explanation'
+};
+
+// ── SYSTEM PROMPT ────────────────────────────────────────────────────────────
+const SYSTEM = `You are JSN MA RE Client Messaging for Massachusetts real estate teams. Draft clear, warm, professional client messages for sales and rentals.
+
+Use Massachusetts compliance standards: Fair Housing Act, MGL Ch.151B, MGL Ch.93A, and the rental broker fee law (MGL Ch.112 §87DDD½, effective Aug 1, 2025).
+
+Key MA rules:
+- Source of income (Section 8/vouchers) is a protected class. Never write refusal language.
+- All denials need objective written reasons. Gut-feel denials are illegal.
+- Fabricated urgency violates MGL Ch.93A and NAR ethics.
+- All commissions are negotiable by law. Never say otherwise.
+- Rental broker fee (Aug 1, 2025): if landlord hired the broker, tenant cannot be charged. No workaround labels. No structuring rent to reimburse. Penalty: 3x fee plus attorney fees.
+- Buyer comp disclosure required in writing before touring (post-NAR settlement).
+- All emails, texts, CRM notes, and voicemails are discoverable.
+- Never relay discriminatory seller/landlord preferences.
+- Never steer by neighborhood demographics.
+- Complaint handling: never threaten, dismiss, or label a complaint as invalid. Never state something is not a fair housing issue in writing.
+
+General rules:
+- Natural, polished, concise writing. No pressure tactics, exaggerated urgency, or manipulative phrasing.
+- Use provided context (client name, property, price, agent name, channel) to minimize placeholder use.
+- Do not invent pricing, availability, concessions, application outcomes, or legal conclusions.
+- Tailor to channel: Email = complete with subject; Text/SMS = under 160 chars ideally; CRM Note = internal factual third-person; Voicemail = spoken-word script.
+- Protect privacy. Minimize sensitive applicant data in client-facing messages.
+
+Approval flow:
+- Green (APPROVE): routine follow-up, scheduling, check-ins, thank-you notes, open house, simple nurture, appointment confirmations, basic owner updates.
+- Yellow (BROKER_REVIEW): pricing claims, concessions, property condition, commission discussions, application reminders, owner updates with applicant detail, cancellations, complaints, reputational sensitivity.
+- Red (BLOCK): discriminatory, retaliatory, threatening, harassing, privacy-invasive, misleading, denial reasoning, rental fee violations, high-risk MA policy language.
+
+RESPOND ONLY IN THIS EXACT JSON FORMAT — NO OTHER TEXT:
+{
+  "risk_level": "Green",
+  "risk_reason": "one sentence",
+  "action": "APPROVE",
+  "message_type": "string",
+  "channel": "string",
+  "subject_line": "string or null",
+  "preview_text": "string or null",
+  "body": "string or null",
+  "sms_version": "string or null",
+  "rewrite": "string or null",
+  "broker_note": "string or null",
+  "follow_up_task": "string or null",
+  "tags": ["tag1"],
+  "flags": ["flag1"],
+  "safe_alternative": "string or null",
+  "approver": "string or null"
+}`;
+
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+function loginSubmit() {
+  const name   = document.getElementById('login-name').value.trim();
+  const office = document.getElementById('login-office').value.trim();
+  const role   = document.getElementById('login-role').value;
+  if (!name) { document.getElementById('login-name').focus(); return; }
+
+  agentProfile = { name, office, role, loginTime: new Date().toISOString() };
+  localStorage.setItem('jsn_agent_profile', JSON.stringify(agentProfile));
+  applyProfile();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadPersistedData();
+}
+
+function applyProfile() {
+  if (!agentProfile) return;
+  const initials = agentProfile.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('agent-avatar').textContent = initials;
+  document.getElementById('agent-name-display').textContent = agentProfile.name;
+  // Pre-fill role mode to match login role where possible
+  const rm = document.getElementById('role-mode');
+  if (rm) {
+    for (let i = 0; i < rm.options.length; i++) {
+      if (rm.options[i].value === agentProfile.role) { rm.selectedIndex = i; break; }
+    }
+  }
+}
+
+function switchAgent() {
+  if (!confirm('Switch agent? This will clear your session.')) return;
+  localStorage.removeItem('jsn_agent_profile');
+  localStorage.removeItem('jsn_draft_history');
+  localStorage.removeItem('jsn_broker_queue');
+  location.reload();
+}
+
+// ── PERSISTENCE (localStorage — swaps to Supabase later) ─────────────────────
+function saveLocal() {
+  localStorage.setItem('jsn_draft_history', JSON.stringify(draftHistory.slice(0,20)));
+  localStorage.setItem('jsn_broker_queue',  JSON.stringify(brokerQueue));
+}
+
+function loadPersistedData() {
+  try {
+    const h = localStorage.getItem('jsn_draft_history');
+    if (h) draftHistory = JSON.parse(h);
+    const q = localStorage.getItem('jsn_broker_queue');
+    if (q) brokerQueue = JSON.parse(q);
+  } catch(e) {}
+  renderHistory();
+  updateQueueBadge();
+}
+
+// ── STORAGE ADAPTER ──────────────────────────────────────────────────────────
+// Phase 1: localStorage (active now)
+// Phase 2: Supabase (uncomment the supabase blocks below and add your creds)
+//
+// To activate Supabase:
+// 1. Add <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> in <head>
+// 2. Set SUPABASE_URL and SUPABASE_ANON_KEY below
+// 3. Uncomment the supabase blocks in storageWrite() and storageReadQueue()
+// 4. Create tables: compliance_events, broker_queue (schema in worker.js comments)
+
+const SUPABASE_URL      = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+// const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function storageWrite(table, record) {
+  // Phase 1: localStorage
+  if (table === 'compliance_events') {
+    draftHistory.unshift(record);
+    if (draftHistory.length > 50) draftHistory = draftHistory.slice(0, 50);
+  } else if (table === 'broker_queue') {
+    brokerQueue.unshift(record);
+  }
+  saveLocal();
+
+  // Phase 2: Supabase (uncomment when ready)
+  // if (supabase) {
+  //   await supabase.from(table).insert(record);
+  // }
+}
+
+async function storageUpdateQueue(id, updates) {
+  // Phase 1: localStorage
+  const item = brokerQueue.find(q => q.id === id);
+  if (item) Object.assign(item, updates);
+  saveLocal();
+
+  // Phase 2: Supabase (uncomment when ready)
+  // if (supabase) {
+  //   await supabase.from('broker_queue').update(updates).eq('id', id);
+  // }
+}
+
+// ── UI HELPERS ───────────────────────────────────────────────────────────────
+function setUC(uc, el) {
+  currentUC = uc;
+  document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tb-title').textContent = ucLabels[uc];
+  document.getElementById('output-area').innerHTML = '';
+  document.getElementById('risk-badge').className = 'badge bn';
+  document.getElementById('risk-badge').textContent = 'Ready';
+}
+
+function setChannel(ch, el) {
+  currentChannel = ch;
+  document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function toggleCtx() {
+  const p = document.getElementById('ctx-panel');
+  const a = document.getElementById('ctx-arrow');
+  const open = p.style.display !== 'none';
+  p.style.display = open ? 'none' : 'block';
+  a.innerHTML = open ? '&#9656;' : '&#9662;';
+}
+
+function updateCount() {
+  const v = document.getElementById('draft-input').value;
+  document.getElementById('char-count').textContent = v.length + ' characters';
+}
+
+function showView(view) {
+  document.getElementById('draft-view').style.display  = view === 'draft' ? 'flex' : 'none';
+  document.getElementById('queue-view').style.display  = view === 'queue' ? 'block' : 'none';
+  document.getElementById('btn-draft-view').classList.toggle('active', view === 'draft');
+  document.getElementById('btn-queue-view').classList.toggle('active', view === 'queue');
+  document.getElementById('tb-title').textContent = view === 'queue' ? 'Broker Review Queue' : ucLabels[currentUC];
+  document.getElementById('risk-badge').style.display = view === 'queue' ? 'none' : '';
+  if (view === 'queue') renderQueue();
+}
+
+function updateQueueBadge() {
+  const pending = brokerQueue.filter(q => q.status === 'pending').length;
+  const el = document.getElementById('queue-count');
+  el.textContent = pending;
+  el.style.display = pending > 0 ? 'inline-flex' : 'none';
+}
+
+function ts() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+function copyTxt(btn, txt) {
+  navigator.clipboard.writeText(txt).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const p = document.getElementById('panel-' + id);
+  if (p) p.classList.add('active');
+}
+
+// ── HISTORY ──────────────────────────────────────────────────────────────────
+function renderHistory() {
+  const hl = document.getElementById('history-list');
+  if (!draftHistory.length) {
+    hl.innerHTML = '<div class="hist-empty">No drafts yet</div>';
+    return;
+  }
+  hl.innerHTML = draftHistory.slice(0, 8).map((h, i) => {
+    const bc = h.risk_level === 'Green' ? 'bg' : h.risk_level === 'Yellow' ? 'ba' : 'br';
+    return `<div class="hist-item" onclick="showHistory(${i})">
+      <div style="flex:1;min-width:0;">
+        <div class="hist-uc">${ucLabels[h.use_case] || h.use_case}</div>
+        <div class="hist-ts">${h.time}</div>
+      </div>
+      <span class="badge ${bc}" style="font-size:9px;padding:2px 6px;">${h.risk_level}</span>
+    </div>`;
+  }).join('');
+}
+
+function showHistory(i) {
+  const h = draftHistory[i];
+  if (h) renderOutput(h.result, document.getElementById('output-mode').value, true);
+}
+
+// ── BROKER QUEUE ─────────────────────────────────────────────────────────────
+function renderQueue() {
+  const el = document.getElementById('queue-items');
+  if (!brokerQueue.length) {
+    el.innerHTML = '<div class="queue-empty">No submissions in the review queue.</div>';
+    return;
+  }
+  el.innerHTML = brokerQueue.map(item => {
+    const statusClass = item.status === 'approved' ? 'qs-approved' : item.status === 'rejected' ? 'qs-rejected' : 'qs-pending';
+    const statusLabel = item.status === 'approved' ? 'Approved' : item.status === 'rejected' ? 'Rejected' : 'Pending review';
+    const isPending   = item.status === 'pending';
+    return `<div class="queue-item" id="qi-${item.id}">
+      <div class="qi-head">
+        <div class="qi-agent">${esc(item.agentName)} &mdash; ${esc(item.agentOffice || 'No office')}</div>
+        <span class="qi-status ${statusClass}">${statusLabel}</span>
+        <div class="qi-meta">${item.time}</div>
+      </div>
+      <div class="qi-body">
+        <div class="qi-usecase">${esc(ucLabels[item.use_case] || item.use_case)} &bull; ${esc(item.channel)}</div>
+        <div class="qi-reason">${esc(item.risk_reason)}</div>
+        ${item.body ? `<div class="qi-draft">${esc(item.body)}</div>` : ''}
+        ${item.broker_note ? `<div class="qi-broker-note">${esc(item.broker_note)}</div>` : ''}
+      </div>
+      ${isPending ? `<div class="qi-actions">
+        <button class="btn-approve" onclick="reviewItem('${item.id}','approved')">Approve &amp; Send</button>
+        <button class="btn-reject"  onclick="reviewItem('${item.id}','rejected')">Reject</button>
+        <button class="btn-hold"    onclick="reviewItem('${item.id}','pending')">Hold</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function reviewItem(id, status) {
+  await storageUpdateQueue(id, {
+    status,
+    reviewedAt: new Date().toISOString(),
+    reviewedBy: agentProfile ? agentProfile.name : 'Unknown'
+  });
+  updateQueueBadge();
+  renderQueue();
+}
+
+// ── API CALL ──────────────────────────────────────────────────────────────────
+async function submitDraft() {
+  const draft = document.getElementById('draft-input').value.trim();
+  if (!draft) return;
+
+  const role  = document.getElementById('role-mode').value;
+  const voice = document.getElementById('voice-pack').value;
+  const mode  = document.getElementById('output-mode').value;
+  const name  = document.getElementById('ctx-name').value;
+  const addr  = document.getElementById('ctx-addr').value;
+  const price = document.getElementById('ctx-price').value;
+  const agentOverride = document.getElementById('ctx-agent').value;
+  const agentName     = agentOverride || (agentProfile ? agentProfile.name : 'Agent');
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Reviewing...';
+
+  document.getElementById('output-area').innerHTML = `
+    <div class="card">
+      <div class="loading-row">
+        <div class="spin"></div>
+        <div class="loading-txt">Classifying and drafting...</div>
+      </div>
+    </div>`;
+
+  const ctxLines = [
+    name  && `Client name: ${name}`,
+    addr  && `Property: ${addr}`,
+    price && `Price/rent: ${price}`,
+    `Agent: ${agentName}`,
+    `Channel: ${currentChannel}`
+  ].filter(Boolean).join('\n');
+
+  const userMsg = `Use case: ${ucLabels[currentUC]}
+Role mode: ${role}
+Voice pack: ${voice}
+Output mode: ${mode}
+${ctxLines}
+
+Draft or situation:
+${draft}`;
+
+  try {
+    const resp = await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app:      'messaging',
+        system:   SYSTEM,
+        messages: [{ role: 'user', content: userMsg }],
+        agentName:    agentProfile ? agentProfile.name : 'Unknown',
+        agentOffice:  agentProfile ? agentProfile.office : '',
+        agentRole:    agentProfile ? agentProfile.role : '',
+        useCase:      currentUC,
+        channel:      currentChannel
+      })
+    });
+
+    if (!resp.ok) throw new Error(`Worker ${resp.status}`);
+
+    const data  = await resp.json();
+    const raw   = (data.content || []).map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    // Write to storage adapter
+    const eventRecord = {
+      id:          uid(),
+      use_case:    currentUC,
+      risk_level:  result.risk_level,
+      action:      result.action,
+      agentName:   agentProfile ? agentProfile.name : 'Unknown',
+      agentOffice: agentProfile ? agentProfile.office : '',
+      channel:     currentChannel,
+      time:        ts(),
+      timestamp:   new Date().toISOString(),
+      result
+    };
+    await storageWrite('compliance_events', eventRecord);
+
+    // If Yellow, add to broker queue
+    if (result.action === 'BROKER_REVIEW') {
+      const queueRecord = {
+        id:          uid(),
+        use_case:    currentUC,
+        channel:     currentChannel,
+        agentName:   agentProfile ? agentProfile.name : 'Unknown',
+        agentOffice: agentProfile ? agentProfile.office : '',
+        risk_level:  result.risk_level,
+        risk_reason: result.risk_reason,
+        body:        result.body,
+        broker_note: result.broker_note,
+        status:      'pending',
+        time:        ts(),
+        timestamp:   new Date().toISOString()
+      };
+      await storageWrite('broker_queue', queueRecord);
+      updateQueueBadge();
+    }
+
+    renderHistory();
+    renderOutput(result, mode, false);
+  } catch (e) {
+    document.getElementById('output-area').innerHTML = `
+      <div class="card">
+        <div class="out-body">
+          <div class="error-box">Error connecting to the compliance engine. Check your Worker URL or try again.<br><small style="opacity:.7;margin-top:4px;display:block;">${e.message}</small></div>
+        </div>
+      </div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Review & Draft';
+}
+
+// ── RENDER OUTPUT ─────────────────────────────────────────────────────────────
+function renderOutput(r, mode, fromHistory) {
+  const rc  = r.risk_level === 'Green' ? 'g' : r.risk_level === 'Yellow' ? 'a' : 'r';
+  const bc  = rc === 'g' ? 'bg' : rc === 'a' ? 'ba' : 'br';
+  const fdot = rc === 'r' ? 'var(--red-dot)' : 'var(--amber-dot)';
+  const bdg = r.risk_level + ' — ' + (
+    r.action === 'APPROVE'       ? 'Ready to send' :
+    r.action === 'BROKER_REVIEW' ? 'Broker review needed' : 'Blocked'
+  );
+
+  document.getElementById('risk-badge').className = 'badge ' + bc;
+  document.getElementById('risk-badge').textContent = bdg;
+
+  const showSMS = r.sms_version && currentChannel !== 'CRM Note';
+  const showCRM = mode === 'CRM Structured';
+
+  let tabs = '', panels = '', flagsHtml = '', copyRow = '', blockedHtml = '';
+
+  if (r.action !== 'BLOCK') {
+    tabs = `<div class="tab-row">
+      <button class="tab active" onclick="switchTab('draft',this)">Draft</button>
+      ${showSMS ? `<button class="tab" onclick="switchTab('sms',this)">SMS version</button>` : ''}
+      ${showCRM ? `<button class="tab" onclick="switchTab('crm',this)">CRM fields</button>` : ''}
+    </div>`;
+
+    let dp = `<div class="panel active" id="panel-draft"><div class="out-body">`;
+    if (r.subject_line) {
+      dp += `<div style="margin-bottom:12px;">
+        <div class="subj-lbl">Subject</div>
+        <div class="subj-val">${esc(r.subject_line)}</div>
+        ${r.preview_text ? `<div class="prev-text">Preview: ${esc(r.preview_text)}</div>` : ''}
+      </div>`;
+    }
+    if (r.body) dp += `<div class="msg-text">${esc(r.body)}</div>`;
+    if (r.rewrite && r.rewrite !== r.body) {
+      dp += `<div class="rewrite-box"><div class="rw-lbl">Suggested rewrite</div><div class="msg-text" style="font-size:12px;">${esc(r.rewrite)}</div></div>`;
+    }
+    if (r.broker_note) {
+      dp += `<div class="broker-box"><div class="broker-lbl">Broker note</div><div class="broker-txt">${esc(r.broker_note)}</div></div>`;
+    }
+    if (r.follow_up_task) {
+      dp += `<div class="task-row"><div class="task-lbl">Follow-up task</div>${esc(r.follow_up_task)}</div>`;
+    }
+    dp += `</div></div>`;
+    panels += dp;
+
+    if (showSMS) {
+      panels += `<div class="panel" id="panel-sms"><div class="out-body">
+        <div class="sms-box">${esc(r.sms_version)}</div>
+        <div class="sms-count">${(r.sms_version||'').length} characters</div>
+      </div></div>`;
+    }
+
+    if (showCRM) {
+      panels += `<div class="panel" id="panel-crm"><div class="crm-grid">
+        <div>
+          <div class="crm-field"><div class="crm-lbl">Message type</div><div class="crm-val">${esc(r.message_type||'')}</div></div>
+          <div class="crm-field"><div class="crm-lbl">Channel</div><div class="crm-val">${esc(r.channel||currentChannel)}</div></div>
+          ${r.subject_line?`<div class="crm-field"><div class="crm-lbl">Subject line</div><div class="crm-val">${esc(r.subject_line)}</div></div>`:''}
+          ${r.preview_text?`<div class="crm-field"><div class="crm-lbl">Preview text</div><div class="crm-val">${esc(r.preview_text)}</div></div>`:''}
+          <div class="crm-field"><div class="crm-lbl">Body</div><div class="msg-text" style="font-size:12px;">${esc(r.body||'')}</div></div>
+          ${r.sms_version?`<div class="crm-field"><div class="crm-lbl">SMS version</div><div class="crm-val" style="font-size:11px;">${esc(r.sms_version)}</div></div>`:''}
+        </div>
+        <div>
+          <div class="crm-field"><div class="crm-lbl">Submitted by</div><div class="crm-val">${esc(agentProfile?agentProfile.name:'Unknown')}</div></div>
+          <div class="crm-field"><div class="crm-lbl">Office</div><div class="crm-val">${esc(agentProfile?agentProfile.office:'')}</div></div>
+          <div class="crm-field"><div class="crm-lbl">Risk level</div><span class="badge ${bc}">${r.risk_level}</span></div>
+          <div class="crm-field" style="margin-top:8px;"><div class="crm-lbl">Action</div><div class="crm-val">${r.action}</div></div>
+          ${r.approver?`<div class="crm-field"><div class="crm-lbl">Approver</div><div class="crm-val">${esc(r.approver)}</div></div>`:''}
+          ${r.follow_up_task?`<div class="crm-field"><div class="crm-lbl">Follow-up task</div><div class="crm-val">${esc(r.follow_up_task)}</div></div>`:''}
+          <div class="crm-field"><div class="crm-lbl">Tags</div><div>${(r.tags||[]).map(t=>`<span class="crm-tag">${esc(t)}</span>`).join('')}</div></div>
+        </div>
+      </div></div>`;
+    }
+
+    copyRow = `<div class="copy-row">
+      ${r.body?`<button class="btn-ghost" onclick="copyTxt(this,${JSON.stringify(r.body)})">Copy message</button>`:''}
+      ${r.subject_line?`<button class="btn-ghost" onclick="copyTxt(this,${JSON.stringify(r.subject_line)})">Copy subject</button>`:''}
+      ${r.sms_version?`<button class="btn-ghost" onclick="copyTxt(this,${JSON.stringify(r.sms_version)})">Copy SMS</button>`:''}
+    </div>`;
+  } else {
+    blockedHtml = `<div class="out-body">
+      <div class="blocked-box">
+        <div class="blocked-title">Request blocked</div>
+        <div class="blocked-txt">${esc(r.risk_reason)}</div>
+        ${r.safe_alternative?`<div class="safe-box"><div class="safe-lbl">Safe alternative</div><div class="safe-txt">${esc(r.safe_alternative)}</div></div>`:''}
+      </div>
+    </div>`;
+  }
+
+  if (r.flags && r.flags.length) {
+    flagsHtml = `<div class="flag-list">
+      ${r.flags.map(f=>`<div class="flag-item">
+        <div class="fdot" style="background:${fdot}"></div>
+        <div class="ftxt">${esc(f)}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  document.getElementById('output-area').innerHTML = `
+    <div class="card">
+      <div class="risk-bar rb-${rc}"></div>
+      <div class="out-head">
+        <div class="out-lbl">${esc(r.message_type||ucLabels[currentUC])}</div>
+        <span class="badge ${bc}">${r.risk_level}</span>
+      </div>
+      ${fromHistory?`<div class="from-hist">Viewing from history</div>`:''}
+      ${r.action!=='BLOCK'?tabs:''}
+      ${r.action!=='BLOCK'?panels:blockedHtml}
+      ${flagsHtml}
+      ${copyRow}
+    </div>`;
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+(function init() {
+  const saved = localStorage.getItem('jsn_agent_profile');
+  if (saved) {
+    try {
+      agentProfile = JSON.parse(saved);
+      applyProfile();
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadPersistedData();
+    } catch(e) {
+      localStorage.removeItem('jsn_agent_profile');
+    }
+  }
+})();
+</script>
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#8899aa; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(8,15,30,0.97);">
+  Output is AI-generated and for informational use only. Not financial, legal, or compliance advice. Always consult your broker and qualified legal counsel before sending communications.
+</div>
+</body>
+</html>

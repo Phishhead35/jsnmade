@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Deal Pipeline Analyzer v10.1</title>
+<meta name="description" content="JSN Real Estate – Pipeline analysis, lead coaching, and agent performance tool">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* skip link */
+  .skip-link {
+    position: absolute; top: -100%; left: 8px;
+    background: var(--accent); color: #000;
+    padding: 8px 16px; border-radius: 0 0 6px 6px;
+    font-size: 13px; font-weight: 600; z-index: 9999;
+    text-decoration: none; transition: top 0.2s;
+  }
+  .skip-link:focus { top: 0; }
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111418;
+    --surface2: #181d23;
+    --border: #1f2730;
+    --accent: #f0a500;
+    --accent2: #e05c2a;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --blue: #3498db;
+    --text: #ffffff;
+    --muted: #5a6a7e;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+  .logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--text); }
+  .badge-wrap { display: flex; gap: 8px; align-items: center; }
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+  .badge.new { border-color: var(--accent2); color: var(--accent2); }
+
+  .mode-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0 28px;
+  }
+  .mode-tab {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .mode-tab:hover { color: var(--text); }
+  .mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 98px);
+  }
+
+  .left-panel {
+    width: 360px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+  }
+
+  .panel-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .input-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 12px;
+    overflow-y: auto;
+  }
+
+  textarea {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 14px;
+    resize: none;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.15s;
+    min-height: 180px;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+
+  .section-head {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .scenarios { display: flex; flex-direction: column; gap: 6px; }
+  .scenario-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    padding: 8px 12px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .scenario-btn:hover { border-color: var(--accent); color: var(--text); }
+  .scenario-btn strong {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+
+  /* SCORING REFERENCE PANEL */
+  .ref-toggle {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 7px 12px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    width: 100%;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ref-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .ref-panel {
+    display: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px;
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .ref-panel.open { display: block; }
+  .ref-panel strong { color: var(--accent); font-size: 10px; font-family: var(--font-mono); font-weight: 500; display: block; margin-top: 8px; margin-bottom: 2px; }
+  .ref-panel strong:first-child { margin-top: 0; }
+
+  .run-btn {
+    background: var(--accent);
+    color: #000;
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .run-btn:hover { background: #ffb820; }
+  .run-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .output-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+  }
+  .output-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .output-right { display: flex; align-items: center; gap: 14px; }
+  .mode-indicator {
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+  }
+  .routed-badge {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 2px 7px;
+    border-radius: 2px;
+    display: none;
+  }
+
+  .output-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 16px;
+    opacity: 0.45;
+  }
+  .welcome-icon { font-size: 52px; line-height: 1; }
+  .welcome h2 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .welcome p { font-size: 13px; color: var(--muted); max-width: 360px; line-height: 1.7; }
+  .welcome-pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+  .welcome-pill {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 20px;
+  }
+  .pulse-ring {
+    width: 56px;
+    height: 56px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    animation: blink 1.2s ease-in-out infinite;
+  }
+  .loading-sub {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--border);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+  /* RESPONSE */
+  .response-content {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    animation: fadeIn 0.3s ease;
+    max-width: 820px;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  .response-content h1 {
+    font-family: var(--font-head);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 24px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+  .response-content h2 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 17px;
+    color: var(--text);
+    margin: 24px 0 8px;
+    line-height: 1.2;
+  }
+  .response-content h3 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+    color: var(--accent2);
+    margin: 18px 0 6px;
+    line-height: 1.2;
+  }
+  .response-content p { margin-bottom: 12px; }
+  .response-content ul, .response-content ol { padding-left: 20px; margin-bottom: 14px; }
+  .response-content li { margin-bottom: 5px; }
+  .response-content strong { color: var(--accent); font-weight: 600; }
+  .response-content em {
+    color: var(--muted);
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .response-content code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 2px;
+    color: var(--accent);
+  }
+  .response-content pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 16px;
+    border-radius: 4px;
+    margin: 14px 0;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .response-content blockquote {
+    border-left: 3px solid var(--accent2);
+    padding: 10px 16px;
+    margin: 14px 0;
+    background: var(--surface2);
+    color: var(--muted);
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+  }
+  .response-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+  .response-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+    font-family: var(--font-mono);
+  }
+  .response-content th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .response-content td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  .response-content tr:last-child td { border-bottom: none; }
+  .response-content tr:hover td { background: var(--surface2); }
+
+  .copy-bar {
+    padding: 10px 28px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    align-items: center;
+  }
+  .copy-bar-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-right: auto;
+  }
+  .copy-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .history-strip {
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    padding: 8px 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    flex-shrink: 0;
+  }
+  .hist-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+    padding: 4px 0;
+    flex-shrink: 0;
+  }
+  .hist-chip {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    white-space: nowrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .hist-chip:hover { border-color: var(--accent); color: var(--text); }
+
+  /* focus rings */
+  button:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* streaming cursor */
+  .cursor {
+    display: inline-block; width: 2px; height: 1em;
+    background: var(--accent); margin-left: 2px;
+    animation: cur-blink 0.75s step-end infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* abort button */
+  .abort-btn {
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 6px 14px; cursor: pointer;
+    border-radius: 3px; transition: all 0.15s;
+  }
+  .abort-btn:hover { background: rgba(231,76,60,0.12); }
+
+  /* validation warning */
+  .val-warn {
+    background: rgba(240,165,0,0.08);
+    border: 1px solid rgba(240,165,0,0.25);
+    border-radius: 3px; padding: 8px 12px;
+    font-size: 12px; color: var(--accent);
+    line-height: 1.5;
+  }
+
+  /* char counter */
+  .char-counter {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--muted);
+    text-align: right; letter-spacing: 0.5px;
+  }
+  .char-counter.warn { color: var(--accent); }
+  .char-counter.danger { color: var(--red); }
+
+  /* hamburger */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+    flex-shrink: 0;
+  }
+  .hamburger span {
+    display: block; width: 20px; height: 2px;
+    background: var(--muted); border-radius: 2px; transition: all 0.3s;
+  }
+
+  /* mobile overlay */
+  .panel-overlay {
+    display: none; position: fixed; inset: 0; top: 98px;
+    background: rgba(0,0,0,0.6); z-index: 89;
+  }
+  .panel-overlay.vis { display: block; }
+
+  /* mobile responsive */
+  @media (max-width: 800px) {
+    .left-panel {
+      position: fixed; left: 0; top: 98px;
+      height: calc(100vh - 98px);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 90; width: 320px !important;
+    }
+    .left-panel.open { transform: translateX(0); }
+    .right-panel { width: 100%; }
+    .hamburger { display: flex; }
+    .main { height: calc(100vh - 98px); }
+    .output-body { padding: 16px; }
+    .copy-bar { padding: 10px 16px; }
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#outputBody">Skip to output</a>
+<div class="panel-overlay" id="panelOverlay" onclick="closeSidebar()"></div>
+
+<header role="banner">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle input panel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo">JSN <span>Deal Pipeline</span> Analyzer</div>
+  </div>
+  <div class="badge-wrap">
+    <div class="badge new">v10.1 Upgraded</div>
+    <div class="badge">Enterprise Routing // Scored Output</div>
+  </div>
+</header>
+
+<div class="mode-bar">
+  <button class="mode-tab active" data-mode="pipeline" onclick="setMode(this)">Pipeline Analysis</button>
+  <button class="mode-tab" data-mode="lead" onclick="setMode(this)">Lead Coaching</button>
+  <button class="mode-tab" data-mode="agent" onclick="setMode(this)">Agent Performance</button>
+</div>
+
+<div class="main" role="main">
+  <aside class="left-panel" id="leftPanel" role="complementary" aria-label="Analysis inputs">
+    <div class="panel-label">// Input Data</div>
+    <div class="input-area">
+      <label for="userInput" class="panel-label" style="padding:0;border:none;margin-bottom:4px">Pipeline data or scenario</label>
+      <textarea id="userInput" aria-label="Paste pipeline data, agent metrics, or lead situation" placeholder="Paste pipeline data, agent metrics, lead situation, or deal details here...&#10;&#10;The system auto-routes to the correct mode. Ctrl+Enter to run." oninput="updateCounter()"></textarea>
+      <div class="char-counter" id="charCounter">0 / 6000</div>
+
+      <div class="scenarios">
+        <div class="section-head">Quick Scenarios</div>
+        <button class="scenario-btn" onclick="loadScenario('pipeline')">
+          <strong>Pipeline Snapshot</strong>
+          6 agents, 38 leads, 11 active buyers, 4 deals stale 30+ days, 2 listings expire next week
+        </button>
+        <button class="scenario-btn" onclick="loadScenario('lead')">
+          <strong>Lead Coaching</strong>
+          Hot buyer, seen 4 homes, went quiet after price convo. 2 follow-ups ignored.
+        </button>
+        <button class="scenario-btn" onclick="loadScenario('agent')">
+          <strong>Agent Dashboard</strong>
+          5-agent team, mixed performance, Q2 goal at risk, 47 days left
+        </button>
+        <button class="scenario-btn" onclick="loadScenario('messy')">
+          <strong>Incomplete / Messy Input</strong>
+          Tests fallback behavior with vague data
+        </button>
+      </div>
+
+      <div>
+        <button class="ref-toggle" onclick="toggleRef()">
+          <span>Scoring Reference Criteria</span>
+          <span id="refArrow">▼</span>
+        </button>
+        <div class="ref-panel" id="refPanel">
+          <strong>Contact Recency Risk</strong>
+          Low: within 7 days &nbsp;|&nbsp; Moderate: 8–21 days &nbsp;|&nbsp; High: 22+ days
+          <strong>Task / Follow-Up Risk</strong>
+          Low: 0 overdue &nbsp;|&nbsp; Moderate: 1–2 overdue &nbsp;|&nbsp; High: 3+ overdue
+          <strong>Agent Performance</strong>
+          Strong: at/above team avg, active pipeline, consistent cadence<br>
+          Developing: below avg closings, showing activity<br>
+          Needs Attention: 0–1 closings + 8+ leads + high risk<br>
+          At Risk: high risk in 2+ categories simultaneously
+          <strong>Pipeline Health</strong>
+          Healthy: &lt;20% stale 30+ days<br>
+          Watch: 20–35% stale<br>
+          Critical: &gt;35% stale OR revenue gap &gt;30% of goal
+        </div>
+      </div>
+
+      <button class="run-btn" id="runBtn" onclick="analyze()">▶ Run Analysis</button>
+    </div>
+
+    <div style="padding:10px 16px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.6; font-family:var(--font-mono);">
+      Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
+    </div>
+    <div class="history-strip" id="historyStrip" role="navigation" aria-label="Recent analyses">
+      <div class="hist-label">Recent:</div>
+    </div>
+  </aside>
+
+  <div class="right-panel">
+    <div class="output-header">
+      <div class="output-label">// Analysis Output</div>
+      <div class="output-right">
+        <div class="routed-badge" id="routedBadge">Auto-Routed</div>
+        <div class="mode-indicator" id="modeIndicator">Awaiting Input</div>
+      </div>
+    </div>
+
+    <div class="output-body" id="outputBody" role="region" aria-label="Analysis output" aria-live="polite">
+      <div class="welcome">
+        <div class="welcome-icon">📊</div>
+        <h2>v10.1 Ready</h2>
+        <p>Paste data or load a scenario. The system auto-routes to the correct mode using a strict priority hierarchy, applies defined scoring criteria, and delivers a fixed-scaffold response.</p>
+        <div class="welcome-pills">
+          <div class="welcome-pill">Mode Routing</div>
+          <div class="welcome-pill">Risk Scoring</div>
+          <div class="welcome-pill">Fixed Scaffolds</div>
+          <div class="welcome-pill">Fallback Logic</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
+      <div class="copy-bar-label">v10.1 // JSN Pipeline Analyzer</div>
+      <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
+      <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+      <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
+      <button class="copy-btn" onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `You are JSN Deal Pipeline Analyzer v10.1, a high-performance real estate pipeline and coaching assistant for brokerage owners, team leaders, and agents. Your role is to diagnose pipeline issues, improve execution, and drive conversions with clear, actionable coaching.
+
+---
+
+MODE ROUTING HIERARCHY — apply in strict priority order. First match wins.
+
+1. If input contains metrics or descriptions for TWO OR MORE agents, activate AGENT PERFORMANCE MODE. This overrides all other modes.
+2. If input describes a single lead, buyer, seller, or deal scenario, activate LEAD COACHING MODE.
+3. If input describes a pipeline, book of business, or deal count without agent-level breakdown, activate PIPELINE ANALYSIS MODE.
+4. If input is ambiguous or incomplete, default to PIPELINE ANALYSIS MODE. State your assumption at the top. Do not ask for clarification before delivering value. Analyze what is present, flag missing data as named placeholders, and deliver the full scaffold anyway.
+
+Always state the active mode on the FIRST LINE of your response, formatted as: MODE: [Mode Name]
+
+---
+
+RISK AND PERFORMANCE SCORING CRITERIA — apply these definitions consistently unless the user provides their own.
+
+Contact Recency Risk:
+- Low: last contact within 7 days
+- Moderate: last contact 8–21 days
+- High: last contact 22+ days
+
+Task / Follow-Up Risk:
+- Low: 0 overdue tasks
+- Moderate: 1–2 overdue tasks
+- High: 3+ overdue tasks
+
+Agent Performance Classification:
+- Strong Performer: closing rate at or above team average, active pipeline healthy, contact cadence consistent
+- Developing: below team average closings but showing activity and follow-up
+- Needs Attention: 0–1 closings with 8+ leads AND high contact recency or task risk
+- At Risk: high risk in two or more categories simultaneously
+
+Pipeline Health Score:
+- Healthy: less than 20% of deals stale 30+ days
+- Watch: 20–35% stale
+- Critical: more than 35% stale OR revenue gap greater than 30% of quarterly goal
+
+---
+
+FIXED OUTPUT SCAFFOLDS — use the correct template for the routed mode. Do not skip sections.
+
+PIPELINE ANALYSIS MODE output order:
+1. MODE declaration + data confidence note (what data was provided vs. assumed)
+2. Pipeline Health Score (Healthy / Watch / Critical) with the specific criteria that triggered it
+3. Top 3 risks ranked by deal or dollar impact
+4. Immediate actions: numbered, owner assigned, deadline attached
+5. IF/THEN execution scenario for the top risk
+6. Revenue impact model: current projection vs. goal vs. recovery path
+7. Manager's Call: one decisive sentence
+
+LEAD COACHING MODE output order:
+1. MODE declaration + lead classification (Hot / Warm / Cold / At Risk of Loss)
+2. Situation diagnosis: what is actually happening and why
+3. Next best action with rationale
+4. Follow-up script: ready to send or say, no editing required by the agent
+5. IF/THEN branches: if they respond positively / if they go cold again / if they push back on price
+6. Time pressure scenario: cost of inaction over the next 7 days
+7. Coach's Call: one decisive sentence
+
+AGENT PERFORMANCE MODE output order:
+1. MODE declaration
+2. Team Snapshot: total agents, % with overdue tasks, % high-risk, % strong performers
+3. Agent Ranking table: Name | Risk Level | Performance Class | Contact Recency Status | Key Flag
+4. Top Performers: one-line reinforcement note per agent
+5. Needs Attention: ranked by risk and revenue impact, one specific coaching action per agent
+6. Risk Flags: team-wide patterns beyond individual issues
+7. Trend Insight: one forward-looking observation about where the team is heading if current patterns hold
+8. Manager Actions: three numbered decisions to execute this week, in priority order
+
+---
+
+FALLBACK BEHAVIOR — for incomplete or messy input:
+- Do not stall. Do not ask clarifying questions before delivering value.
+- State your assumption explicitly.
+- Apply the best-fit mode based on available data.
+- Replace missing data with labeled placeholders in brackets, e.g. [contact recency not provided — assumed moderate risk].
+- Deliver the complete scaffold. Placeholders are always preferable to silence.
+
+---
+
+ADVANCED EXECUTION LAYER — include in every response where applicable:
+- IF/THEN logic for the top risk scenario
+- Follow-up scripts written and ready to use, no editing required
+- Agent scorecards in Dashboard Mode
+- Revenue impact modeling with current vs. goal vs. recovery path
+- Time pressure scenarios: what the cost of inaction is in days
+
+---
+
+MANAGER SIMPLIFICATION LAYER — when user expresses constraints (no CRM, no sandbox, limited access), pivot immediately to:
+- Live execution using real data provided
+- Roleplay simulations written as manager-to-agent dialogue
+- Shadow implementation framed as normal workflow, not a system rollout
+- Minimum viable tracking using manual lists or basic CRM filters
+Implementation always beats ideal setup.
+
+---
+
+FORMAT RULES:
+- Use markdown with clear headers (##, ###)
+- Bold key terms, risk levels, and action items
+- Use tables for agent ranking data
+- Use code blocks for scripts and dialogue
+- Be direct, decisive, and actionable
+- No filler. No hedging. Real estate professionals need real answers.`;
+
+// ── PRODUCTION SWAP ──────────────────────────────────────────────────────────
+// To deploy via Cloudflare Worker (recommended — keeps API key server-side):
+//   1. Deploy jsn-pipeline-worker.js to Cloudflare Workers
+//   2. Set USE_WORKER = true, set WORKER_URL to your workers.dev URL
+//   3. Remove API_KEY value — Worker holds it server-side
+// ─────────────────────────────────────────────────────────────────────────────
+const USE_WORKER = true;
+const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
+const API_URL    = USE_WORKER ? WORKER_URL : 'https://api.anthropic.com/v1/messages';
+const API_KEY    = '';
+const MAX_INPUT  = 6000;
+
+let currentMode  = 'pipeline';
+let lastOutput   = '';
+let abortCtrl    = null;
+let dealHistory  = [];
+let sessionStats = { analyses: 0 };
+
+// ── INDEXEDDB ─────────────────────────────────────────────────────────────
+const DB_NAME = 'jsn_pipeline_db', DB_VER = 1, STORE = 'analyses';
+let db = null;
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(DB_NAME, DB_VER);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains(STORE))
+        d.createObjectStore(STORE, { keyPath: 'id' });
+    };
+    r.onsuccess = e => { db = e.target.result; res(db); };
+    r.onerror   = ()  => rej(r.error);
+  });
+}
+async function dbSave(entry) {
+  if (!db) return;
+  return new Promise((res, rej) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).put(entry);
+    tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+  });
+}
+async function dbLoadAll() {
+  if (!db) return [];
+  return new Promise((res, rej) => {
+    const r = db.transaction(STORE, 'readonly').objectStore(STORE).getAll();
+    r.onsuccess = () => res(r.result || []);
+    r.onerror   = () => rej(r.error);
+  });
+}
+async function dbPrune(max = 20) {
+  if (!db) return;
+  return new Promise((res, rej) => {
+    const r = db.transaction(STORE, 'readwrite').objectStore(STORE).openCursor(null, 'prev');
+    let n = 0;
+    r.onsuccess = e => {
+      const c = e.target.result;
+      if (!c) { res(); return; }
+      if (++n > max) c.delete();
+      c.continue();
+    };
+    r.onerror = () => rej(r.error);
+  });
+}
+
+(async () => {
+  try {
+    await openDB();
+    const all = await dbLoadAll();
+    dealHistory = all.sort((a, b) => b.id - a.id).slice(0, 8);
+    sessionStats.analyses = all.length;
+    renderHistory();
+  } catch(e) {
+    console.warn('IndexedDB unavailable', e);
+  }
+})();
+
+// ── MODE LABELS ───────────────────────────────────────────────────────────
+const modeLabels = {
+  pipeline: 'Pipeline Analysis Mode',
+  lead:     'Lead Coaching Mode',
+  agent:    'Agent Performance Mode'
+};
+
+const scenarios = {
+  pipeline: `6 agents total. 38 leads in system. 11 active buyers currently engaged. 4 deals have gone stale (30+ days no movement). 2 listings expiring next week with no renewal decisions made. Q2 goal: $4.2M. Current projection based on pipeline: $2.8M. Common issue flagged by manager: agents not logging follow-ups consistently. 47 days left in Q2.`,
+  lead: `Buyer: pre-approved at $550K. Has toured 4 homes over 2 weeks. Showed strong interest in a $499K property — commented on the layout and school district. After the agent discussed adjusting their price ceiling to explore more options, the buyer went quiet. Agent followed up twice via text over 5 days. No response. Agent is unsure whether to call, drop the lead, or try a different angle.`,
+  agent: `Team of 5 agents. Q2 goal: $5.1M. Current closed: $1.9M. 47 days left in quarter.\n\nAgent A (Sarah): 8 leads, 2 closings this quarter, average last contact 3 days. No overdue tasks.\nAgent B (Mike): 14 leads, 0 closings, 3 overdue tasks, average last contact 22 days. Manager flagged as concern last week.\nAgent C (Tanya): 5 leads, 1 closing, consistent follow-up, last contact average 5 days. 0 overdue.\nAgent D (Ray): 12 leads, 1 closing, last contact 21 days on 6 of those leads. 2 overdue tasks.\nAgent E (Jordan): 3 leads, 1 closing, new agent (4 months in). Last contact average 4 days.`,
+  messy: `Had a meeting with two of my agents yesterday. One is doing okay I think, the other not so much. Pipeline feels off but I'm not sure why. We have a big quarter coming up and I'm nervous about hitting the number. What should I be focused on right now?`
+};
+
+// ── UI CONTROLS ───────────────────────────────────────────────────────────
+function setMode(el) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentMode = el.dataset.mode;
+  document.getElementById('modeIndicator').textContent = modeLabels[currentMode];
+}
+
+function loadScenario(type) {
+  document.getElementById('userInput').value = scenarios[type];
+  updateCounter();
+  const tabMap = { pipeline: 0, lead: 1, agent: 2, messy: 0 };
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.mode-tab')[tabMap[type]].classList.add('active');
+  currentMode = type === 'messy' ? 'pipeline' : type;
+  document.getElementById('modeIndicator').textContent = modeLabels[currentMode] || modeLabels['pipeline'];
+}
+
+function toggleRef() {
+  const panel = document.getElementById('refPanel');
+  const arrow = document.getElementById('refArrow');
+  panel.classList.toggle('open');
+  arrow.textContent = panel.classList.contains('open') ? '▲' : '▼';
+}
+
+function toggleSidebar() {
+  const panel = document.getElementById('leftPanel');
+  const open  = panel.classList.toggle('open');
+  document.getElementById('panelOverlay').classList.toggle('vis', open);
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', String(open));
+}
+function closeSidebar() {
+  document.getElementById('leftPanel').classList.remove('open');
+  document.getElementById('panelOverlay').classList.remove('vis');
+  document.getElementById('hamburgerBtn').setAttribute('aria-expanded', 'false');
+}
+
+function updateCounter() {
+  const val = document.getElementById('userInput').value.length;
+  const el  = document.getElementById('charCounter');
+  el.textContent = `${val.toLocaleString()} / ${MAX_INPUT.toLocaleString()}`;
+  el.className = 'char-counter' +
+    (val > MAX_INPUT * 0.95 ? ' danger' : val > MAX_INPUT * 0.80 ? ' warn' : '');
+}
+
+// ── VALIDATION ────────────────────────────────────────────────────────────
+function validateInput(input) {
+  const warns = [];
+  if (input.length > MAX_INPUT)
+    warns.push(`Input exceeds ${MAX_INPUT.toLocaleString()} characters — please trim before running.`);
+  if (input.length < 20)
+    warns.push('Input is very short. More data will produce a better analysis.');
+  return warns;
+}
+
+function showWarning(msg) {
+  const existing = document.getElementById('valWarn');
+  if (existing) existing.remove();
+  if (!msg) return;
+  const el = document.createElement('div');
+  el.id = 'valWarn'; el.className = 'val-warn';
+  el.innerHTML = `⚠ ${msg} <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px">×</button>`;
+  document.getElementById('runBtn').before(el);
+}
+
+// ── MAIN ANALYSIS ─────────────────────────────────────────────────────────
+async function analyze() {
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) { showWarning('Please paste some data or load a scenario first.'); return; }
+
+  const warns = validateInput(input);
+  if (warns.length) { showWarning(warns[0]); if (input.length > MAX_INPUT) return; }
+  else { const w = document.getElementById('valWarn'); if (w) w.remove(); }
+
+  if (!USE_WORKER && !API_KEY) {
+    showWarning('No API key configured. Set USE_WORKER = true and configure WORKER_URL, or add API_KEY for local testing.');
+    return;
+  }
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true; btn.textContent = 'Analyzing...';
+
+  const abortBtn = document.getElementById('abortBtn');
+  abortBtn.style.display = 'inline-block';
+  document.getElementById('copyBar').style.display = 'flex';
+  document.getElementById('routedBadge').style.display = 'none';
+
+  // Show streaming area immediately
+  document.getElementById('outputBody').innerHTML = `
+    <div class="loading">
+      <div class="pulse-ring"></div>
+      <div class="loading-text">Routing + Analyzing...</div>
+      <div class="loading-sub">Applying v10.1 scoring criteria</div>
+    </div>`;
+
+  abortCtrl = new AbortController();
+
+  const hdrs = USE_WORKER
+    ? { 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true' };
+
+  let fullText = '';
+  let streamStarted = false;
+
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST', headers: hdrs, signal: abortCtrl.signal,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3500,
+        stream: true,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: input }]
+      })
+    });
+
+    if (!resp.ok) {
+      if (resp.status === 429) throw new Error('RATE_LIMIT');
+      if (resp.status === 401) throw new Error('AUTH_ERROR');
+      if (resp.status >= 500) throw new Error('SERVER_ERROR');
+      throw new Error(`API_ERROR:${resp.status}`);
+    }
+
+    const reader  = resp.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      for (const line of decoder.decode(value).split('\n')) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6);
+        if (d === '[DONE]') continue;
+        try {
+          const p = JSON.parse(d);
+          if (p.type === 'content_block_delta' && p.delta?.text) {
+            fullText += p.delta.text;
+
+            if (!streamStarted) {
+              // Switch from spinner to live stream on first token
+              streamStarted = true;
+              document.getElementById('outputBody').innerHTML =
+                `<div class="response-content" id="streamContent"></div>`;
+            }
+
+            // Live render as markdown while streaming
+            const el = document.getElementById('streamContent');
+            if (el) el.innerHTML = renderMarkdown(fullText) + '<span class="cursor"></span>';
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Final clean render — remove cursor, detect routed mode
+    lastOutput = fullText;
+    sessionStats.analyses++;
+
+    const modeMatch = fullText.match(/MODE:\s*([^\n]+)/i);
+    if (modeMatch) {
+      document.getElementById('modeIndicator').textContent = modeMatch[1].trim();
+      document.getElementById('routedBadge').style.display = 'inline-block';
+    }
+
+    document.getElementById('outputBody').innerHTML =
+      `<div class="response-content">${renderMarkdown(fullText)}</div>`;
+
+    addToHistory(input.substring(0, 48) + (input.length > 48 ? '…' : ''), input, currentMode);
+
+  } catch(err) {
+    const errMsgs = {
+      RATE_LIMIT:   ['Rate Limit Reached',    'Too many requests. Wait a minute and try again.'],
+      AUTH_ERROR:   ['Authentication Error',  'API key is invalid. Check your Worker configuration.'],
+      SERVER_ERROR: ['Anthropic Service Error','Temporary server error. Wait 30 seconds and retry.'],
+    };
+    if (err.name === 'AbortError') {
+      if (fullText) {
+        lastOutput = fullText;
+        document.getElementById('outputBody').innerHTML =
+          `<div class="response-content">${renderMarkdown(fullText)}<hr><em style="color:var(--muted);font-size:12px">— Analysis stopped —</em></div>`;
+      } else {
+        document.getElementById('outputBody').innerHTML =
+          `<div class="response-content"><p style="color:var(--muted)">Analysis stopped.</p></div>`;
+      }
+    } else {
+      const [title, body] = errMsgs[err.message] || ['Analysis Error', 'Network or configuration error. Check your connection and API key.'];
+      document.getElementById('outputBody').innerHTML =
+        `<div class="response-content">
+          <h2 style="color:var(--red)">${title}</h2>
+          <p>${body}</p>
+        </div>`;
+    }
+  } finally {
+    btn.disabled = false; btn.textContent = '▶ Run Analysis';
+    abortBtn.style.display = 'none';
+    abortCtrl = null;
+  }
+}
+
+function abortAnalysis() { if (abortCtrl) abortCtrl.abort(); }
+
+// ── MARKDOWN RENDERER ─────────────────────────────────────────────────────
+function renderMarkdown(text) {
+  // Escape HTML first
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Code blocks (before inline code)
+  html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre>$1</pre>');
+  html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+
+  // Headers
+  html = html.replace(/^#### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^### (.+)$/gm,  '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm,   '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm,    '<h1>$1</h1>');
+
+  // Bold / italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g,     '<em>$1</em>');
+
+  // Blockquote
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // HR
+  html = html.replace(/^---$/gm, '<hr>');
+
+  // Lists
+  html = html.replace(/^[-*] (.+)$/gm,      '<li>$1</li>');
+  html = html.replace(/^(\d+)\. (.+)$/gm,   '<li>$2</li>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+  html = html.replace(/<\/ul>\n?<ul>/g, '');
+
+  // Markdown tables
+  html = html.replace(/(\|.+\|\n?)+/g, tableBlock => {
+    const rows = tableBlock.trim().split('\n').filter(r => r.trim());
+    if (rows.length < 2) return tableBlock;
+    let t = '<table>';
+    rows.forEach((row, i) => {
+      if (/^\|[-| :]+\|$/.test(row.trim())) return;
+      const cells = row.split('|').filter((c, idx, arr) => idx > 0 && idx < arr.length - 1);
+      const tag = i === 0 ? 'th' : 'td';
+      t += '<tr>' + cells.map(c => `<${tag}>${c.trim()}</${tag}>`).join('') + '</tr>';
+    });
+    return t + '</table>';
+  });
+
+  // Paragraphs
+  html = '<p>' + html.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+
+  // Clean block element p-wrapping
+  ['h1','h2','h3','ul','pre','blockquote','hr','table'].forEach(tag => {
+    html = html
+      .replace(new RegExp(`<p>(<${tag}[^>]*>)`, 'g'), '$1')
+      .replace(new RegExp(`(</${tag}>)<\/p>`, 'g'), '$1');
+  });
+  html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+  html = html.replace(/<p><\/p>/g, '').replace(/<p><br>/g, '<p>');
+
+  return html;
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────────────
+async function addToHistory(label, fullInput, mode) {
+  const entry = {
+    id: Date.now(), label, fullInput, mode,
+    output: lastOutput,
+    timestamp: new Date().toLocaleTimeString()
+  };
+  dealHistory.unshift(entry);
+  if (dealHistory.length > 8) dealHistory = dealHistory.slice(0, 8);
+  renderHistory();
+  try { await dbSave(entry); await dbPrune(20); }
+  catch(e) { try { sessionStorage.setItem('pipeline_hist', JSON.stringify(dealHistory)); } catch(e2){} }
+}
+
+function renderHistory() {
+  if (!dealHistory.length) return;
+  const strip = document.getElementById('historyStrip');
+  const chips = dealHistory.map((h, i) =>
+    `<button class="hist-chip" onclick="reloadHistory(${i})" title="${h.timestamp} · ${h.mode || ''}">${h.label}</button>`
+  ).join('');
+  strip.innerHTML = `<div class="hist-label">Recent:</div>${chips}`;
+}
+
+function reloadHistory(i) {
+  const entry = dealHistory[i];
+  if (!entry) return;
+  document.getElementById('userInput').value = entry.fullInput;
+  updateCounter();
+  if (entry.output) {
+    lastOutput = entry.output;
+    document.getElementById('outputBody').innerHTML =
+      `<div class="response-content">${renderMarkdown(entry.output)}</div>`;
+    document.getElementById('copyBar').style.display = 'flex';
+    document.getElementById('abortBtn').style.display = 'none';
+  }
+}
+
+// ── COPY / EXPORT ─────────────────────────────────────────────────────────
+function copyOutput() {
+  if (!lastOutput) return;
+  navigator.clipboard.writeText(lastOutput).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  }).catch(() => toast('Copy failed — select text manually'));
+}
+
+function exportTxt() {
+  if (!lastOutput) return;
+  const label = dealHistory[0]?.label?.replace(/[^a-z0-9]/gi, '_') || 'analysis';
+  const blob  = new Blob([lastOutput], { type: 'text/plain' });
+  const url   = URL.createObjectURL(blob);
+  const a     = document.createElement('a');
+  a.href = url;
+  a.download = `JSN_Pipeline_${label}_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAll() {
+  document.getElementById('userInput').value = '';
+  updateCounter();
+  document.getElementById('outputBody').innerHTML = `
+    <div class="welcome">
+      <div class="welcome-icon">📊</div>
+      <h2>v10.1 Ready</h2>
+      <p>Paste data or load a scenario. Auto-routing, defined scoring, and fixed scaffolds are active.</p>
+      <div class="welcome-pills">
+        <div class="welcome-pill">Mode Routing</div>
+        <div class="welcome-pill">Risk Scoring</div>
+        <div class="welcome-pill">Fixed Scaffolds</div>
+        <div class="welcome-pill">Fallback Logic</div>
+      </div>
+    </div>`;
+  document.getElementById('copyBar').style.display = 'none';
+  document.getElementById('routedBadge').style.display = 'none';
+  document.getElementById('modeIndicator').textContent = 'Awaiting Input';
+  lastOutput = '';
+  const w = document.getElementById('valWarn'); if (w) w.remove();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position: 'fixed', bottom: '22px', right: '22px',
+    background: 'var(--surface2)', border: '1px solid var(--border)',
+    color: 'var(--text)', padding: '10px 16px',
+    borderRadius: '4px', fontSize: '12px',
+    fontFamily: 'var(--font-mono)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+    zIndex: '999', transition: 'opacity 0.3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────
+document.getElementById('userInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) analyze();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && abortCtrl) abortAnalysis();
+});
+</script>
+</body>
+</html>

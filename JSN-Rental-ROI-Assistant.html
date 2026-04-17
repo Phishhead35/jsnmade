@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Rental ROI Assistant</title>
+<meta name="description" content="JSN Real Estate – Rental Property ROI Analysis Tool">
+<link rel="manifest" href="#" />
+<style>
+  /* skip link */
+  .skip-link {
+    position: absolute; top: -100%; left: 8px;
+    background: var(--orange); color: white;
+    padding: 8px 16px; border-radius: 0 0 6px 6px;
+    font-size: 13px; font-weight: 600; z-index: 9999;
+    text-decoration: none;
+    transition: top 0.2s;
+  }
+  .skip-link:focus { top: 0; }
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
+
+  :root {
+    --navy:     #0b1120;
+    --navy2:    #121c30;
+    --navy3:    #1a2640;
+    --orange:   #ff6b2b;
+    --orange2:  #ff8c55;
+    --cyan:     #00d4c8;
+    --cyan2:    #00f5e8;
+    --white:    #ffffff;
+    --gray:     #8899aa;
+    --gray2:    #b8c8d8;
+    --green:    #22d38a;
+    --red:      #ff4455;
+    --amber:    #ffb830;
+    --border:   rgba(0,212,200,0.15);
+    --card:     rgba(255,255,255,0.03);
+    --glow-o:   0 0 24px rgba(255,107,43,0.25);
+    --glow-c:   0 0 24px rgba(0,212,200,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(0,212,200,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 0% 100%, rgba(255,107,43,0.05) 0%, transparent 50%);
+  }
+
+  /* ── HEADER ─────────────────────────────────────────────── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11,17,32,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo-wrap {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .logo-mark {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--orange), var(--orange2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800; font-size: 16px; color: white;
+    box-shadow: var(--glow-o);
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 18px; letter-spacing: 0.04em;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .logo-sub {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300; font-size: 11px; color: var(--gray);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .header-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--cyan);
+    background: rgba(0,212,200,0.08);
+    border: 1px solid rgba(0,212,200,0.2);
+    border-radius: 4px;
+    padding: 3px 8px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .btn-clear {
+    background: none; border: 1px solid rgba(255,255,255,0.12);
+    color: var(--gray); cursor: pointer;
+    font-family: 'Barlow', sans-serif; font-size: 12px;
+    border-radius: 6px; padding: 5px 12px;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--orange); color: var(--orange2); }
+
+  /* hamburger */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--gray2); border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* ── SIDEBAR ─────────────────────────────────────────────── */
+  .sidebar {
+    background: var(--navy2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+    position: sticky; top: 60px; height: calc(100vh - 60px);
+  }
+
+  .sidebar-section {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gray); margin-bottom: 12px;
+  }
+
+  .form-group { margin-bottom: 12px; }
+
+  .form-label {
+    font-size: 12px; color: var(--gray2);
+    display: block; margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  .form-input, .form-select {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; padding: 8px 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-input:focus, .form-select:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px rgba(0,212,200,0.1);
+  }
+  .form-input::placeholder { color: var(--gray); opacity: 0.6; }
+
+  .form-select { cursor: pointer; }
+  .form-select option { background: var(--navy2); }
+
+  .input-prefix {
+    position: relative;
+  }
+  .input-prefix span {
+    position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray); font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .input-prefix .form-input { padding-left: 22px; }
+
+  .input-pct span {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray); font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .input-pct .form-input { padding-right: 22px; }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* section collapsible */
+  .section-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+    margin-bottom: 12px;
+  }
+  .section-toggle .toggle-icon {
+    font-size: 10px; color: var(--gray);
+    transition: transform 0.25s;
+  }
+  .section-toggle.collapsed .toggle-icon { transform: rotate(-90deg); }
+  .collapsible-content { overflow: hidden; transition: max-height 0.3s ease; }
+  .collapsible-content.hidden { max-height: 0 !important; }
+
+  /* mode toggle */
+  .mode-toggle {
+    display: flex; border-radius: 8px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 0;
+  }
+  .mode-btn {
+    flex: 1; padding: 8px 4px;
+    background: none; border: none; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--gray); text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: var(--orange);
+    color: white;
+  }
+
+  /* analyze button */
+  .btn-analyze {
+    width: 100%;
+    background: linear-gradient(135deg, var(--orange), #e05520);
+    border: none; border-radius: 8px;
+    color: white; cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 13px;
+    box-shadow: var(--glow-o);
+    transition: all 0.2s; margin-top: 4px;
+  }
+  .btn-analyze:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-analyze:active { transform: translateY(0); }
+  .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* history */
+  .history-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 10px 12px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition: border-color 0.2s;
+  }
+  .history-item:hover { border-color: rgba(0,212,200,0.3); }
+  .history-addr {
+    font-size: 12px; font-weight: 600;
+    color: var(--gray2); margin-bottom: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .history-meta {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .hist-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; padding: 2px 6px;
+    border-radius: 3px; font-weight: 500;
+  }
+  .hist-badge.positive { background: rgba(34,211,138,0.15); color: var(--green); }
+  .hist-badge.negative { background: rgba(255,68,85,0.15); color: var(--red); }
+  .hist-badge.neutral { background: rgba(255,184,48,0.15); color: var(--amber); }
+  .hist-time { font-size: 10px; color: var(--gray); }
+
+  /* ── MAIN ─────────────────────────────────────────────── */
+  .main {
+    display: flex; flex-direction: column;
+    padding: 32px;
+    gap: 24px;
+    overflow-y: auto;
+  }
+
+  /* empty state */
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 60px 20px;
+    gap: 16px;
+  }
+
+  .empty-icon {
+    width: 72px; height: 72px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,107,43,0.15), rgba(0,212,200,0.1));
+    border: 1px solid rgba(0,212,200,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    box-shadow: var(--glow-c);
+  }
+
+  .empty-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px; font-weight: 700; color: var(--white);
+  }
+
+  .empty-desc { font-size: 14px; color: var(--gray); max-width: 360px; line-height: 1.6; }
+
+  .quick-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin-top: 8px;
+  }
+  .quick-tag {
+    font-size: 12px; color: var(--cyan);
+    background: rgba(0,212,200,0.08);
+    border: 1px solid rgba(0,212,200,0.2);
+    border-radius: 20px; padding: 4px 12px;
+  }
+
+  /* ── RESULT CARDS ─────────────────────────────────────────────── */
+  .result-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  .result-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 700; color: var(--white);
+  }
+
+  .result-subtitle {
+    font-size: 13px; color: var(--gray); margin-top: 2px;
+  }
+
+  .result-actions { display: flex; gap: 8px; }
+
+  .btn-action {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px; color: var(--gray2);
+    cursor: pointer; font-size: 12px;
+    padding: 6px 12px;
+    transition: all 0.2s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .btn-action:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* metrics grid */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .metric-card:hover { border-color: rgba(0,212,200,0.3); }
+
+  .metric-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--gray); letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+
+  .metric-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px; font-weight: 700;
+    line-height: 1;
+  }
+  .metric-value.positive { color: var(--green); }
+  .metric-value.negative { color: var(--red); }
+  .metric-value.neutral { color: var(--amber); }
+  .metric-value.primary { color: var(--cyan); }
+
+  .metric-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+  /* verdict banner */
+  .verdict-banner {
+    border-radius: 10px; padding: 16px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+    border: 1px solid;
+  }
+  .verdict-banner.positive {
+    background: rgba(34,211,138,0.08);
+    border-color: rgba(34,211,138,0.25);
+  }
+  .verdict-banner.negative {
+    background: rgba(255,68,85,0.08);
+    border-color: rgba(255,68,85,0.25);
+  }
+  .verdict-banner.neutral {
+    background: rgba(255,184,48,0.08);
+    border-color: rgba(255,184,48,0.25);
+  }
+  .verdict-banner.incomplete {
+    background: rgba(136,153,170,0.08);
+    border-color: rgba(136,153,170,0.25);
+  }
+
+  .verdict-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .verdict-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 3px;
+  }
+  .verdict-text { font-size: 14px; line-height: 1.6; color: var(--gray2); }
+
+  /* analysis content */
+  .analysis-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .analysis-card-header {
+    padding: 14px 20px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .analysis-card-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: rgba(0,212,200,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .analysis-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--gray2);
+  }
+
+  .analysis-card-body {
+    padding: 20px;
+  }
+
+  /* line items */
+  .line-items { display: flex; flex-direction: column; gap: 0; }
+
+  .line-item {
+    display: flex; align-items: baseline;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+  .line-item:last-child { border-bottom: none; }
+
+  .line-item .li-label { color: var(--gray2); font-weight: 400; }
+  .line-item .li-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--gray);
+    margin-left: 8px;
+  }
+  .line-item .li-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 500; color: var(--white);
+    text-align: right;
+  }
+  .line-item.total {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 4px; padding-top: 12px;
+    font-weight: 600;
+  }
+  .line-item.total .li-label { color: var(--white); }
+  .line-item.total .li-value { color: var(--cyan); font-size: 15px; }
+
+  .missing-list { display: flex; flex-direction: column; gap: 6px; }
+  .missing-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--amber);
+    padding: 6px 10px;
+    background: rgba(255,184,48,0.06);
+    border-radius: 6px;
+    border-left: 2px solid var(--amber);
+  }
+
+  .notes-text {
+    font-size: 13px; color: var(--gray2); line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  /* streaming */
+  .streaming-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 24px;
+  }
+
+  .streaming-indicator {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stream-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cyan);
+    animation: pulse 1s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+  .stream-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--cyan); letter-spacing: 0.04em;
+  }
+
+  .stream-text {
+    font-size: 14px; color: var(--gray2); line-height: 1.75;
+    white-space: pre-wrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 2px; height: 1em;
+    background: var(--cyan);
+    margin-left: 2px;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* disclaimer */
+  .disclaimer {
+    font-size: 11px; color: var(--gray);
+    text-align: center;
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  /* ── MOBILE ─────────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; }
+
+    .sidebar {
+      position: fixed; left: 0; top: 60px;
+      width: 300px; height: calc(100vh - 60px);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 90;
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; top: 60px;
+      background: rgba(0,0,0,0.5); z-index: 89;
+    }
+    .sidebar-overlay.visible { display: block; }
+
+    .hamburger { display: flex; }
+
+    .main { padding: 16px; }
+
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .header-badge { display: none; }
+  }
+
+  /* focus ring for keyboard nav */
+  .form-input:focus-visible, .form-select:focus-visible, .btn-analyze:focus-visible,
+  .btn-action:focus-visible, .btn-clear:focus-visible, .mode-btn:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+  /* remove default focus ring since we have custom */
+  .form-input:focus, .form-select:focus { outline: none; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+  /* abort btn */
+  .btn-abort {
+    background: rgba(255,68,85,0.1);
+    border: 1px solid rgba(255,68,85,0.3);
+    border-radius: 6px; color: var(--red);
+    cursor: pointer; font-size: 12px; padding: 6px 12px;
+    font-family: 'Barlow', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-abort:hover { background: rgba(255,68,85,0.2); }
+
+  .stats-bar {
+    display: flex; gap: 16px; align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--gray);
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .stats-bar span { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<!-- SKIP TO CONTENT -->
+<a class="skip-link" href="#mainContent">Skip to results</a>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="logo-mark">JSN</div>
+    <div>
+      <div class="logo-text">Rental ROI Assistant</div>
+      <div class="logo-sub">Real Estate Performance System</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-badge">Estimate Only · Not Financial Advice</div>
+    <button class="btn-clear" onclick="clearAll()">New Analysis</button>
+  </div>
+</header>
+
+<!-- APP LAYOUT -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" role="complementary" aria-label="Analysis inputs">
+
+    <!-- ANALYSIS MODE -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Analysis Mode</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="modeStd" onclick="setMode('standard')">Standard</button>
+        <button class="mode-btn" id="modeCon" onclick="setMode('conservative')">Conservative</button>
+        <button class="mode-btn" id="modeAgg" onclick="setMode('aggressive')">Aggressive</button>
+      </div>
+      <div id="modeNote" style="margin-top:8px; font-size:11px; color:var(--gray); line-height:1.5;">
+        Enter your own assumptions for each mode. The tool will label them clearly.
+      </div>
+    </div>
+
+    <!-- PROPERTY -->
+    <div class="sidebar-section">
+      <div class="section-toggle" onclick="toggleSection(this)">
+        <span class="sidebar-label" style="margin:0">Property</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-content" style="max-height:600px">
+        <div class="form-group">
+          <label class="form-label" for="address">Address / Label</label>
+          <input class="form-input" id="address" placeholder="123 Main St or Deal A" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="propType">Property Type</label>
+          <select class="form-select" id="propType">
+            <option value="">— select —</option>
+            <option>Single Family</option>
+            <option>Multi-Family (2–4)</option>
+            <option>Small Multifamily (5+)</option>
+            <option>Short-Term Rental</option>
+            <option>Mixed-Use</option>
+            <option>BRRRR</option>
+            <option>Seller Finance</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="purchasePrice">Purchase Price</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="purchasePrice" type="number" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="downPayment">Down Payment</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="downPayment" type="number" placeholder="0" />
+            </div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="closingCosts">Closing Costs</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="closingCosts" type="number" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="rehab">Rehab Budget</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="rehab" type="number" placeholder="0" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INCOME -->
+    <div class="sidebar-section">
+      <div class="section-toggle" onclick="toggleSection(this)">
+        <span class="sidebar-label" style="margin:0">Monthly Income</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-content" style="max-height:400px">
+        <div class="form-group">
+          <label class="form-label" for="rent">Monthly Rent</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="rent" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="otherIncome">Other Monthly Income</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="otherIncome" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="vacancy">Vacancy Rate</label>
+          <div class="input-pct" style="position:relative">
+            <input class="form-input" id="vacancy" type="number" placeholder="e.g. 5" style="padding-right:28px" />
+            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--gray);font-family:'DM Mono',monospace;font-size:13px">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPENSES -->
+    <div class="sidebar-section">
+      <div class="section-toggle" onclick="toggleSection(this)">
+        <span class="sidebar-label" style="margin:0">Monthly Expenses</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-content" style="max-height:800px">
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="taxes">Taxes (annual)</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="taxes" type="number" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="insurance">Insurance (annual)</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="insurance" type="number" placeholder="0" />
+            </div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="maintenance">Maintenance /mo</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="maintenance" type="number" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="mgmtFee">Mgmt Fee /mo</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="mgmtFee" type="number" placeholder="0" />
+            </div>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label" for="hoa">HOA /mo</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="hoa" type="number" placeholder="0" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="utilities">Utilities /mo</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input class="form-input" id="utilities" type="number" placeholder="0" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reserves">Reserves / CapEx /mo</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="reserves" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="otherExpenses">Other Expenses /mo</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="otherExpenses" type="number" placeholder="0" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINANCING -->
+    <div class="sidebar-section">
+      <div class="section-toggle" onclick="toggleSection(this)">
+        <span class="sidebar-label" style="margin:0">Financing</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="collapsible-content" style="max-height:400px">
+        <div class="form-group">
+          <label class="form-label" for="loanPayment">Monthly Loan Payment (P&amp;I)</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="loanPayment" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lenderFees">Lender / Other Fees (upfront)</label>
+          <div class="input-prefix">
+            <span>$</span>
+            <input class="form-input" id="lenderFees" type="number" placeholder="0" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="financeNotes">Notes (seller finance, BRRRR, etc.)</label>
+          <input class="form-input" id="financeNotes" placeholder="Optional deal structure notes" style="width:100%" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDITIONAL CONTEXT -->
+    <div class="sidebar-section">
+      <div class="form-group">
+        <label class="form-label" for="additionalNotes">Additional Notes / Context</label>
+        <textarea class="form-input" id="additionalNotes" rows="3" placeholder="Any other inputs, corrections, or context..." style="resize:vertical; line-height:1.5"></textarea>
+      </div>
+      <button class="btn-analyze" id="analyzeBtn" onclick="runAnalysis()" aria-label="Run rental ROI analysis with provided inputs">
+        Run ROI Analysis
+      </button>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="sidebar-section" id="historySection" style="display:none">
+      <div class="sidebar-label">Recent Analyses</div>
+      <div id="historyList"></div>
+    </div>
+
+    <div class="disclaimer">
+      This tool produces estimates based only on the inputs you provide.<br>
+      Not financial, legal, or tax advice.
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="mainContent" role="main" aria-label="Analysis results" aria-live="polite">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📊</div>
+      <div class="empty-title">Rental ROI Assistant</div>
+      <div class="empty-desc">Enter your property numbers in the panel and run an analysis. Only your provided inputs are used — no invented assumptions.</div>
+      <div class="quick-tags">
+        <span class="quick-tag">Cash Flow</span>
+        <span class="quick-tag">Cap Rate</span>
+        <span class="quick-tag">Cash-on-Cash</span>
+        <span class="quick-tag">NOI</span>
+        <span class="quick-tag">Break-Even</span>
+        <span class="quick-tag">BRRRR</span>
+      </div>
+    </div>
+
+    <div id="resultsArea" style="display:none; display:flex; flex-direction:column; gap:20px"></div>
+  </main>
+
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────
+// ── PRODUCTION SWAP ──────────────────────────────────────────────────────────
+// To deploy via Cloudflare Worker (recommended — keeps API key server-side):
+//   1. Deploy jsn-roi-worker.js to Cloudflare Workers
+//   2. Change USE_WORKER to true and set WORKER_URL to your workers.dev URL
+//   3. Remove the API_KEY value — the Worker holds it server-side
+// ─────────────────────────────────────────────────────────────────────────────
+const USE_WORKER  = true;
+const WORKER_URL  = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
+const API_URL     = USE_WORKER ? WORKER_URL : 'https://api.anthropic.com/v1/messages';
+const API_KEY     = '';
+let currentMode = 'standard';
+let abortController = null;
+let analysisHistory = [];
+let sessionStats = { analyses: 0, tokens: 0 };
+
+// ── INDEXEDDB PERSISTENCE ─────────────────────────────
+const DB_NAME    = 'jsn_roi_db';
+const DB_VERSION = 1;
+const STORE_NAME = 'analyses';
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains(STORE_NAME)) {
+        const store = d.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        store.createIndex('timestamp', 'id', { unique: true });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror   = ()  => reject(req.error);
+  });
+}
+
+async function dbSave(entry) {
+  if (!db) return;
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put(entry);
+    tx.oncomplete = resolve;
+    tx.onerror    = () => reject(tx.error);
+  });
+}
+
+async function dbLoadAll() {
+  if (!db) return [];
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror   = () => reject(req.error);
+  });
+}
+
+async function dbPrune(keepMax = 20) {
+  if (!db) return;
+  return new Promise((resolve, reject) => {
+    const tx    = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const req   = store.openCursor(null, 'prev'); // newest first
+    let count   = 0;
+    req.onsuccess = e => {
+      const cursor = e.target.result;
+      if (!cursor) { resolve(); return; }
+      count++;
+      if (count > keepMax) cursor.delete();
+      cursor.continue();
+    };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// Init DB and load history
+(async () => {
+  try {
+    await openDB();
+    const all = await dbLoadAll();
+    // Sort newest first
+    analysisHistory = all.sort((a, b) => b.id - a.id).slice(0, 8);
+    // Stats from DB count
+    sessionStats.analyses = all.length;
+    renderHistory();
+  } catch(e) {
+    console.warn('IndexedDB unavailable, falling back to sessionStorage', e);
+    try {
+      const saved = sessionStorage.getItem('roi_history');
+      if (saved) analysisHistory = JSON.parse(saved);
+      const savedStats = sessionStorage.getItem('roi_stats');
+      if (savedStats) sessionStats = JSON.parse(savedStats);
+      renderHistory();
+    } catch(e2) {}
+  }
+})();
+
+// ── MODE ─────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeStd').classList.toggle('active', mode === 'standard');
+  document.getElementById('modeCon').classList.toggle('active', mode === 'conservative');
+  document.getElementById('modeAgg').classList.toggle('active', mode === 'aggressive');
+  const notes = {
+    standard: 'Enter your own assumptions for each mode. The tool will label them clearly.',
+    conservative: 'Conservative mode: your numbers will be evaluated with emphasis on downside risk.',
+    aggressive: 'Aggressive mode: your numbers will be evaluated with emphasis on upside potential.'
+  };
+  document.getElementById('modeNote').textContent = notes[mode];
+}
+
+// ── SECTION TOGGLE ───────────────────────────────────
+function toggleSection(toggle) {
+  toggle.classList.toggle('collapsed');
+  const content = toggle.nextElementSibling;
+  if (toggle.classList.contains('collapsed')) {
+    content.style.maxHeight = '0';
+    content.classList.add('hidden');
+  } else {
+    content.style.maxHeight = '800px';
+    content.classList.remove('hidden');
+  }
+}
+
+// ── MOBILE SIDEBAR ───────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('visible');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('visible');
+}
+
+// ── GATHER INPUTS ─────────────────────────────────────
+function gatherInputs() {
+  const g = id => document.getElementById(id).value.trim();
+  const gn = id => parseFloat(document.getElementById(id).value) || null;
+
+  return {
+    address:       g('address')       || 'Property',
+    propType:      g('propType'),
+    purchasePrice: gn('purchasePrice'),
+    downPayment:   gn('downPayment'),
+    closingCosts:  gn('closingCosts'),
+    rehab:         gn('rehab'),
+    rent:          gn('rent'),
+    otherIncome:   gn('otherIncome'),
+    vacancy:       gn('vacancy'),
+    taxes:         gn('taxes'),
+    insurance:     gn('insurance'),
+    maintenance:   gn('maintenance'),
+    mgmtFee:       gn('mgmtFee'),
+    hoa:           gn('hoa'),
+    utilities:     gn('utilities'),
+    reserves:      gn('reserves'),
+    otherExpenses: gn('otherExpenses'),
+    loanPayment:   gn('loanPayment'),
+    lenderFees:    gn('lenderFees'),
+    financeNotes:  g('financeNotes'),
+    additionalNotes: g('additionalNotes'),
+    mode:          currentMode
+  };
+}
+
+function buildPrompt(inputs) {
+  const lines = [];
+  lines.push(`Analysis Mode: ${inputs.mode}`);
+  if (inputs.propType) lines.push(`Property Type: ${inputs.propType}`);
+  lines.push('');
+
+  // Income
+  const hasIncome = inputs.rent || inputs.otherIncome || inputs.vacancy;
+  if (hasIncome) {
+    lines.push('INCOME PROVIDED:');
+    if (inputs.rent)        lines.push(`- Monthly Rent: $${inputs.rent}`);
+    if (inputs.otherIncome) lines.push(`- Other Monthly Income: $${inputs.otherIncome}`);
+    if (inputs.vacancy)     lines.push(`- Vacancy Rate: ${inputs.vacancy}%`);
+  }
+
+  // Expenses
+  const expFields = [
+    ['taxes', 'Taxes (annual)'], ['insurance', 'Insurance (annual)'],
+    ['maintenance', 'Maintenance/mo'], ['mgmtFee', 'Management Fee/mo'],
+    ['hoa', 'HOA/mo'], ['utilities', 'Utilities/mo'],
+    ['reserves', 'Reserves/CapEx/mo'], ['otherExpenses', 'Other Expenses/mo']
+  ];
+  const hasExpenses = expFields.some(([k]) => inputs[k]);
+  if (hasExpenses) {
+    lines.push('');
+    lines.push('EXPENSES PROVIDED:');
+    for (const [key, label] of expFields) {
+      if (inputs[key]) {
+        const suffix = label.includes('annual') ? '/year' : '/month';
+        lines.push(`- ${label}: $${inputs[key]}${suffix}`);
+      }
+    }
+  }
+
+  // Purchase
+  const purchFields = [
+    ['purchasePrice','Purchase Price'], ['downPayment','Down Payment'],
+    ['closingCosts','Closing Costs'], ['rehab','Rehab Budget'],
+    ['lenderFees','Lender Fees']
+  ];
+  const hasPurchase = purchFields.some(([k]) => inputs[k]);
+  if (hasPurchase) {
+    lines.push('');
+    lines.push('PURCHASE / UPFRONT CASH:');
+    for (const [key, label] of purchFields) {
+      if (inputs[key]) lines.push(`- ${label}: $${inputs[key]}`);
+    }
+  }
+
+  // Financing
+  if (inputs.loanPayment || inputs.financeNotes) {
+    lines.push('');
+    lines.push('FINANCING:');
+    if (inputs.loanPayment) lines.push(`- Monthly Loan Payment (P&I): $${inputs.loanPayment}`);
+    if (inputs.financeNotes) lines.push(`- Notes: ${inputs.financeNotes}`);
+  }
+
+  if (inputs.additionalNotes) {
+    lines.push('');
+    lines.push(`ADDITIONAL CONTEXT: ${inputs.additionalNotes}`);
+  }
+
+  return lines.join('\n');
+}
+
+// ── SYSTEM PROMPT ─────────────────────────────────────
+const SYSTEM_PROMPT = `You are a rental property ROI assistant. Help investors estimate rental property performance using only the numbers they provide.
+
+Generate:
+1. Monthly Income
+2. Monthly Expenses
+3. Net Operating Income (NOI)
+4. Monthly Cash Flow
+5. Cap Rate
+6. Cash-on-Cash Return
+7. Break-Even Notes
+8. Simple Verdict
+
+Core rules:
+- Use provided numbers only
+- Never assume or invent missing details
+- Label any user-provided assumptions clearly
+- Show math simply and clearly
+- Keep responses practical, organized, and easy to scan
+- This is an estimate based only on the provided information, not financial, legal, or tax advice
+
+Response format — use these EXACT section headers:
+## INPUTS PROVIDED
+## ANALYSIS MODE
+## MISSING INPUTS
+## MONTHLY INCOME
+## MONTHLY EXPENSES
+## NOI
+## MONTHLY CASH FLOW
+## CAP RATE
+## CASH-ON-CASH RETURN
+## BREAK-EVEN NOTES
+## SIMPLE VERDICT
+
+Calculation rules:
+- Monthly Income = rent plus any other monthly income the user provides
+- Monthly Expenses = operating expenses only
+- NOI = Monthly Income - Monthly Operating Expenses (do NOT include mortgage P&I in NOI)
+- Monthly Cash Flow = Monthly NOI - monthly debt service
+- Cap Rate = Annual NOI / purchase price
+- Cash-on-Cash Return = Annual pre-tax cash flow / total cash invested
+- Total cash invested = only amounts the user provides (down payment, closing costs, rehab, lender fees, other upfront cash)
+
+Expense handling:
+- If taxes or insurance are annual, convert to monthly and show the math
+- If vacancy is a percentage, convert to monthly expense impact and show the math
+- Separate operating expenses, debt service, and one-time upfront costs clearly
+- If reserves are provided, label them as reserves and include in monthly expenses
+
+Analysis mode handling:
+- Standard: analyze as provided
+- Conservative: note where numbers may be optimistic, flag thin margins
+- Aggressive: analyze as provided but note where assumptions may be stretched
+
+Edge cases:
+- For seller finance: use only the terms provided
+- For BRRRR: separate acquisition/rehab cash from refinance proceeds
+- For short-term rentals: do not assume occupancy or nightly rates unless provided
+
+Simple Verdict should be one of: POSITIVE / WEAK / RISKY / INCOMPLETE — and briefly state why.
+
+Format numbers clearly with $ and commas. Show all math steps.`;
+
+// ── INPUT VALIDATION ─────────────────────────────────
+function validateInputs(inputs) {
+  const warnings = [];
+
+  // Negative values that make no sense
+  const positiveFields = ['purchasePrice','downPayment','closingCosts','rehab','rent',
+    'taxes','insurance','maintenance','mgmtFee','hoa','utilities','reserves',
+    'otherExpenses','loanPayment','lenderFees'];
+  for (const f of positiveFields) {
+    if (inputs[f] !== null && inputs[f] < 0) {
+      warnings.push(`${fieldLabel(f)} cannot be negative.`);
+    }
+  }
+
+  // Vacancy sanity
+  if (inputs.vacancy !== null && (inputs.vacancy < 0 || inputs.vacancy > 100)) {
+    warnings.push('Vacancy rate must be between 0% and 100%.');
+  }
+
+  // Down payment > purchase price
+  if (inputs.purchasePrice && inputs.downPayment && inputs.downPayment > inputs.purchasePrice) {
+    warnings.push('Down payment exceeds purchase price — please verify.');
+  }
+
+  // Total expenses > income (warn, not block)
+  const monthlyExpenses = [
+    inputs.maintenance, inputs.mgmtFee, inputs.hoa,
+    inputs.utilities,   inputs.reserves, inputs.otherExpenses,
+    (inputs.taxes    || 0) / 12,
+    (inputs.insurance|| 0) / 12,
+  ].reduce((sum, v) => sum + (v || 0), 0);
+
+  const monthlyIncome = (inputs.rent || 0) + (inputs.otherIncome || 0);
+
+  if (monthlyIncome > 0 && monthlyExpenses > monthlyIncome * 1.5) {
+    warnings.push('Operating expenses appear much higher than income — double-check your numbers.');
+  }
+
+  // Absurdly large numbers (likely entry error)
+  if (inputs.rent && inputs.rent > 100000) {
+    warnings.push('Monthly rent over $100,000 — is this a monthly figure?');
+  }
+  if (inputs.purchasePrice && inputs.purchasePrice > 50000000) {
+    warnings.push('Purchase price over $50M — this tool is designed for residential / small multifamily.');
+  }
+
+  return warnings;
+}
+
+function fieldLabel(key) {
+  const map = {
+    purchasePrice: 'Purchase Price', downPayment: 'Down Payment',
+    closingCosts: 'Closing Costs', rehab: 'Rehab Budget',
+    rent: 'Monthly Rent', taxes: 'Taxes', insurance: 'Insurance',
+    maintenance: 'Maintenance', mgmtFee: 'Management Fee',
+    hoa: 'HOA', utilities: 'Utilities', reserves: 'Reserves',
+    otherExpenses: 'Other Expenses', loanPayment: 'Loan Payment',
+    lenderFees: 'Lender Fees'
+  };
+  return map[key] || key;
+}
+
+function showValidationWarnings(warnings) {
+  const existing = document.getElementById('validationBanner');
+  if (existing) existing.remove();
+  if (warnings.length === 0) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'validationBanner';
+  Object.assign(banner.style, {
+    margin: '0 0 0 0',
+    background: 'rgba(255,184,48,0.08)',
+    border: '1px solid rgba(255,184,48,0.3)',
+    borderRadius: '8px', padding: '12px 16px',
+  });
+  banner.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:14px">⚠️</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+        letter-spacing:0.08em;text-transform:uppercase;color:var(--amber)">Input Warnings</span>
+      <button onclick="document.getElementById('validationBanner').remove()"
+        style="margin-left:auto;background:none;border:none;color:var(--gray);cursor:pointer;font-size:16px;line-height:1">×</button>
+    </div>
+    ${warnings.map(w => `<div style="font-size:12px;color:var(--amber);margin-bottom:4px;padding-left:4px">• ${escapeHtml(w)}</div>`).join('')}
+  `;
+
+  // Insert before analyze button
+  const btn = document.getElementById('analyzeBtn');
+  btn.parentNode.insertBefore(banner, btn);
+}
+async function runAnalysis() {
+  const inputs = gatherInputs();
+
+  if (!inputs.rent && !inputs.additionalNotes) {
+    showToast('Please enter at least a monthly rent amount to begin analysis.');
+    return;
+  }
+
+  // Sanity validation — warns inline, does not block
+  const warnings = validateInputs(inputs);
+  showValidationWarnings(warnings);
+
+  if (!USE_WORKER && !API_KEY) {
+    showToast('⚠️ No API key configured. Set USE_WORKER = true and point WORKER_URL to your Cloudflare Worker, or add an API_KEY for local testing only.');
+    return;
+  }
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultsArea').style.display = 'flex';
+
+  const prompt = buildPrompt(inputs);
+  abortController = new AbortController();
+
+  const resultsArea = document.getElementById('resultsArea');
+  resultsArea.innerHTML = `
+    <div class="streaming-container" id="streamContainer">
+      <div class="streaming-indicator">
+        <div class="stream-dot"></div>
+        <span class="stream-label">Analyzing property...</span>
+        <button class="btn-abort" onclick="abortAnalysis()" style="margin-left:auto">Stop</button>
+      </div>
+      <div class="stream-text" id="streamText"><span class="cursor"></span></div>
+    </div>
+  `;
+
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.textContent = 'Analyzing...';
+
+  let fullText = '';
+
+  // Build headers — Worker vs direct
+  const headers = USE_WORKER
+    ? { 'Content-Type': 'application/json' }
+    : {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        stream: true,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: prompt }]
+      }),
+      signal: abortController.signal
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      // Differentiated error handling
+      if (response.status === 429) {
+        throw new Error('RATE_LIMIT');
+      } else if (response.status === 401) {
+        throw new Error('AUTH_ERROR');
+      } else if (response.status >= 500) {
+        throw new Error('SERVER_ERROR');
+      }
+      throw new Error(`API_ERROR:${response.status}:${errText}`);
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') continue;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
+              fullText += parsed.delta.text;
+              document.getElementById('streamText').innerHTML =
+                escapeHtml(fullText) + '<span class="cursor"></span>';
+              // Auto scroll
+              const sc = document.getElementById('streamContainer');
+              if (sc) sc.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }
+          } catch(e) {}
+        }
+      }
+    }
+
+    // Done streaming — render structured result
+    sessionStats.analyses++;
+    sessionStats.tokens += Math.round(fullText.length / 4);
+    saveStats();
+
+    renderResult(inputs, fullText);
+    await saveHistory(inputs, fullText);
+    renderHistory();
+
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      resultsArea.innerHTML = `<div class="analysis-card" style="padding:20px">
+        <div style="color:var(--gray)">Analysis stopped.</div>
+      </div>`;
+    } else {
+      const errMessages = {
+        'RATE_LIMIT':   { title: 'Rate Limit Reached', body: 'Too many requests. Wait a minute and try again. If this persists, the API usage limit has been hit.' },
+        'AUTH_ERROR':   { title: 'Authentication Error', body: 'API key is invalid or missing. Check your key configuration or confirm the Worker is deployed with the correct secret.' },
+        'SERVER_ERROR': { title: 'Anthropic Service Error', body: 'The Anthropic API returned a server error. This is temporary — wait 30 seconds and try again.' },
+      };
+      const known = errMessages[err.message];
+      const title  = known ? known.title  : 'Analysis Error';
+      const detail = known ? known.body   : (err.message.startsWith('API_ERROR')
+        ? `API returned status ${err.message.split(':')[1]}. Check network and key configuration.`
+        : 'Network error — check your internet connection and try again.');
+      resultsArea.innerHTML = `<div class="analysis-card" style="padding:20px">
+        <div style="color:var(--red); margin-bottom:8px; font-weight:600">${escapeHtml(title)}</div>
+        <div style="color:var(--gray); font-size:13px">${escapeHtml(detail)}</div>
+      </div>`;
+    }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Run ROI Analysis';
+    abortController = null;
+  }
+}
+
+function abortAnalysis() {
+  if (abortController) abortController.abort();
+}
+
+// ── RENDER RESULT ─────────────────────────────────────
+function renderResult(inputs, text) {
+  const resultsArea = document.getElementById('resultsArea');
+
+  // Parse sections
+  const sections = parseSection(text);
+  const verdict = (sections['SIMPLE VERDICT'] || '').trim().toUpperCase();
+  let verdictClass = 'incomplete';
+  let verdictIcon = '⚪';
+  if (verdict.startsWith('POSITIVE')) { verdictClass = 'positive'; verdictIcon = '✅'; }
+  else if (verdict.startsWith('WEAK'))    { verdictClass = 'neutral';  verdictIcon = '⚠️'; }
+  else if (verdict.startsWith('RISKY'))   { verdictClass = 'negative'; verdictIcon = '🚨'; }
+  else if (verdict.startsWith('INCOMPL')) { verdictClass = 'incomplete'; verdictIcon = '⚪'; }
+
+  // Extract key numbers for metric cards
+  const metrics = extractMetrics(text);
+
+  resultsArea.innerHTML = `
+    <!-- HEADER -->
+    <div class="result-header">
+      <div>
+        <div class="result-title">${escapeHtml(inputs.address)}</div>
+        <div class="result-subtitle">${inputs.propType || 'Property'} · ${inputs.mode.charAt(0).toUpperCase() + inputs.mode.slice(1)} Mode · ${new Date().toLocaleTimeString()}</div>
+      </div>
+      <div class="result-actions">
+        <div class="stats-bar">
+          Analyses: <span>${sessionStats.analyses}</span>
+        </div>
+        <button class="btn-action" onclick="copyResult()">Copy</button>
+        <button class="btn-action" onclick="exportTxt()">Export</button>
+      </div>
+    </div>
+
+    <!-- VERDICT -->
+    <div class="verdict-banner ${verdictClass}">
+      <div class="verdict-icon">${verdictIcon}</div>
+      <div>
+        <div class="verdict-label">Simple Verdict</div>
+        <div class="verdict-text">${escapeHtml(sections['SIMPLE VERDICT'] || 'Analysis complete — see breakdown below.')}</div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    ${metrics.length ? `
+    <div class="metrics-grid">
+      ${metrics.map(m => `
+        <div class="metric-card">
+          <div class="metric-label">${escapeHtml(m.label)}</div>
+          <div class="metric-value ${m.color}">${escapeHtml(m.value)}</div>
+          ${m.sub ? `<div class="metric-sub">${escapeHtml(m.sub)}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>` : ''}
+
+    <!-- MISSING INPUTS -->
+    ${sections['MISSING INPUTS'] ? `
+    <div class="analysis-card">
+      <div class="analysis-card-header">
+        <div class="analysis-card-icon">⚠️</div>
+        <div class="analysis-card-title">Missing Inputs</div>
+      </div>
+      <div class="analysis-card-body">
+        <div class="missing-list">
+          ${parseMissingItems(sections['MISSING INPUTS']).map(item =>
+            `<div class="missing-item">• ${escapeHtml(item)}</div>`
+          ).join('')}
+        </div>
+      </div>
+    </div>` : ''}
+
+    <!-- INCOME / EXPENSES / NOI / CASH FLOW -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px">
+      ${renderMiniCard('💰', 'Monthly Income', sections['MONTHLY INCOME'])}
+      ${renderMiniCard('📉', 'Monthly Expenses', sections['MONTHLY EXPENSES'])}
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px">
+      ${renderMiniCard('📈', 'Net Operating Income', sections['NOI'])}
+      ${renderMiniCard('💵', 'Monthly Cash Flow', sections['MONTHLY CASH FLOW'])}
+    </div>
+
+    <!-- RETURNS -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px">
+      ${renderMiniCard('🏢', 'Cap Rate', sections['CAP RATE'])}
+      ${renderMiniCard('💲', 'Cash-on-Cash Return', sections['CASH-ON-CASH RETURN'])}
+    </div>
+
+    <!-- BREAK-EVEN -->
+    ${sections['BREAK-EVEN NOTES'] ? `
+    <div class="analysis-card">
+      <div class="analysis-card-header">
+        <div class="analysis-card-icon">⚖️</div>
+        <div class="analysis-card-title">Break-Even Notes</div>
+      </div>
+      <div class="analysis-card-body">
+        <div class="notes-text">${escapeHtml(sections['BREAK-EVEN NOTES'])}</div>
+      </div>
+    </div>` : ''}
+
+    <!-- RAW OUTPUT (collapsible) -->
+    <div class="analysis-card">
+      <div class="analysis-card-header" style="cursor:pointer" onclick="toggleRaw()">
+        <div class="analysis-card-icon">📄</div>
+        <div class="analysis-card-title">Full Analysis Output</div>
+        <span id="rawToggleIcon" style="margin-left:auto;color:var(--gray);font-size:12px">▼ Show</span>
+      </div>
+      <div id="rawContent" style="display:none">
+        <div class="analysis-card-body">
+          <div class="stream-text" style="font-size:12px">${escapeHtml(text)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer" style="border:1px solid var(--border); border-radius:8px; text-align:left">
+      This analysis is an estimate based solely on the inputs you provided. Missing data may significantly change results. This is not financial, legal, or tax advice. Consult appropriate professionals before making investment decisions.
+    </div>
+  `;
+
+  // Store for copy/export
+  window._lastResult = text;
+  window._lastInputs = inputs;
+}
+
+function toggleRaw() {
+  const c = document.getElementById('rawContent');
+  const icon = document.getElementById('rawToggleIcon');
+  if (c.style.display === 'none') {
+    c.style.display = 'block';
+    icon.textContent = '▲ Hide';
+  } else {
+    c.style.display = 'none';
+    icon.textContent = '▼ Show';
+  }
+}
+
+function renderMiniCard(icon, title, content) {
+  if (!content) return `
+    <div class="analysis-card">
+      <div class="analysis-card-header">
+        <div class="analysis-card-icon">${icon}</div>
+        <div class="analysis-card-title">${escapeHtml(title)}</div>
+      </div>
+      <div class="analysis-card-body">
+        <div style="color:var(--gray);font-size:13px">Insufficient data to calculate.</div>
+      </div>
+    </div>`;
+
+  return `
+    <div class="analysis-card">
+      <div class="analysis-card-header">
+        <div class="analysis-card-icon">${icon}</div>
+        <div class="analysis-card-title">${escapeHtml(title)}</div>
+      </div>
+      <div class="analysis-card-body">
+        <div class="notes-text" style="font-size:13px">${escapeHtml(content.trim())}</div>
+      </div>
+    </div>`;
+}
+
+// ── PARSE HELPERS ─────────────────────────────────────
+function parseSection(text) {
+  const sections = {};
+  const headers = [
+    'INPUTS PROVIDED', 'ANALYSIS MODE', 'MISSING INPUTS',
+    'MONTHLY INCOME', 'MONTHLY EXPENSES', 'NOI', 'MONTHLY CASH FLOW',
+    'CAP RATE', 'CASH-ON-CASH RETURN', 'BREAK-EVEN NOTES', 'SIMPLE VERDICT'
+  ];
+
+  for (let i = 0; i < headers.length; i++) {
+    const h = headers[i];
+    const regex = new RegExp(`##\\s*${h}\\s*\\n([\\s\\S]*?)(?=##|$)`, 'i');
+    const match = text.match(regex);
+    if (match) sections[h] = match[1].trim();
+  }
+  return sections;
+}
+
+function parseMissingItems(text) {
+  return text.split('\n')
+    .map(l => l.replace(/^[-•*]\s*/, '').trim())
+    .filter(l => l.length > 3);
+}
+
+function extractMetrics(text) {
+  const metrics = [];
+  const patterns = [
+    { label: 'Monthly Cash Flow', re: /monthly cash flow[:\s]+([+-]?\$[\d,]+)/i,
+      color: v => v.includes('-') ? 'negative' : 'positive' },
+    { label: 'Cap Rate', re: /cap rate[:\s]+([0-9.]+%)/i,
+      color: v => parseFloat(v) >= 7 ? 'positive' : parseFloat(v) >= 4 ? 'neutral' : 'negative' },
+    { label: 'Cash-on-Cash', re: /cash-on-cash return[:\s]+([+-]?[0-9.]+%)/i,
+      color: v => parseFloat(v) >= 8 ? 'positive' : parseFloat(v) >= 4 ? 'neutral' : 'negative' },
+    { label: 'Annual NOI', re: /annual noi[:\s]+\$([0-9,]+)/i,
+      color: () => 'primary' },
+  ];
+
+  for (const p of patterns) {
+    const m = text.match(p.re);
+    if (m) {
+      const val = m[1];
+      metrics.push({ label: p.label, value: val, color: p.color(val), sub: null });
+    }
+  }
+  return metrics;
+}
+
+// ── HISTORY ───────────────────────────────────────────
+async function saveHistory(inputs, text) {
+  const verdict = extractVerdict(text);
+  const entry = {
+    id: Date.now(),
+    address: inputs.address,
+    propType: inputs.propType,
+    mode: inputs.mode,
+    verdict: verdict,
+    text: text,
+    inputs: inputs,
+    timestamp: new Date().toLocaleTimeString()
+  };
+  analysisHistory.unshift(entry);
+  if (analysisHistory.length > 8) analysisHistory = analysisHistory.slice(0, 8);
+
+  // Persist to IndexedDB (with sessionStorage fallback)
+  try {
+    await dbSave(entry);
+    await dbPrune(20);
+  } catch(e) {
+    try { sessionStorage.setItem('roi_history', JSON.stringify(analysisHistory)); } catch(e2) {}
+  }
+}
+
+function extractVerdict(text) {
+  const match = text.match(/## SIMPLE VERDICT\s*\n([^\n]+)/i);
+  if (!match) return 'incomplete';
+  const v = match[1].toUpperCase();
+  if (v.includes('POSITIVE')) return 'positive';
+  if (v.includes('WEAK'))     return 'neutral';
+  if (v.includes('RISKY'))    return 'negative';
+  return 'incomplete';
+}
+
+function renderHistory() {
+  if (analysisHistory.length === 0) return;
+  document.getElementById('historySection').style.display = 'block';
+  const list = document.getElementById('historyList');
+  list.innerHTML = analysisHistory.map(e => `
+    <div class="history-item" onclick="restoreAnalysis(${e.id})">
+      <div class="history-addr">${escapeHtml(e.address)}</div>
+      <div class="history-meta">
+        <span class="hist-badge ${e.verdict}">${e.verdict.charAt(0).toUpperCase() + e.verdict.slice(1)}</span>
+        <span class="hist-time">${e.timestamp}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function restoreAnalysis(id) {
+  const entry = analysisHistory.find(e => e.id === id);
+  if (!entry) return;
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultsArea').style.display = 'flex';
+  renderResult(entry.inputs, entry.text);
+  closeSidebar();
+}
+
+function saveStats() {
+  try { sessionStorage.setItem('roi_stats', JSON.stringify(sessionStats)); } catch(e) {}
+}
+
+// ── UTILITIES ─────────────────────────────────────────
+function clearAll() {
+  document.querySelectorAll('.form-input, .form-select').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('resultsArea').style.display = 'none';
+  document.getElementById('resultsArea').innerHTML = '';
+  setMode('standard');
+}
+
+function copyResult() {
+  if (!window._lastResult) return;
+  navigator.clipboard.writeText(window._lastResult)
+    .then(() => showToast('Analysis copied to clipboard'))
+    .catch(() => showToast('Copy failed — try selecting the text manually'));
+}
+
+function exportTxt() {
+  if (!window._lastResult) return;
+  const addr = (window._lastInputs?.address || 'analysis').replace(/[^a-z0-9]/gi, '_');
+  const blob = new Blob([window._lastResult], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `JSN_ROI_${addr}_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position: 'fixed', bottom: '24px', right: '24px',
+    background: 'var(--navy3)', border: '1px solid var(--border)',
+    color: 'var(--white)', padding: '12px 20px',
+    borderRadius: '8px', fontSize: '13px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+    zIndex: '999', transition: 'opacity 0.3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runAnalysis();
+});
+</script>
+</body>
+</html>

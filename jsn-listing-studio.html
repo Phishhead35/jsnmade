@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Listing Studio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #1a1814;
+    --cream: #f5f0e8;
+    --warm: #e8dfc8;
+    --gold: #b8924a;
+    --gold-light: #d4aa6a;
+    --muted: #6b6355;
+    --border: #d6cdb8;
+    --white: #fdfaf4;
+    --danger: #8b1a1a;
+    --danger-bg: #fff0f0;
+    --warn-bg: #fff8ed;
+    --warn-border: #e8c97a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--gold);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+  }
+
+  .logo span { color: #f5f0e8; font-weight: 400; }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tagline {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .mobile-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    height: calc(100vh - 57px);
+  }
+
+  /* PANEL */
+  .panel {
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .panel-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 11px;
+  }
+
+  /* MODE GRID */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .mode-btn {
+    padding: 8px 10px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    line-height: 1.3;
+  }
+
+  .mode-btn:hover { border-color: var(--gold); color: var(--ink); }
+  .mode-btn.active { background: var(--ink); border-color: var(--ink); color: var(--gold); font-weight: 500; }
+
+  /* FORM */
+  .row-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-group { margin-bottom: 10px; }
+  .field-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; letter-spacing: 0.3px; }
+
+  select, textarea {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6355'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+
+  select:focus, textarea:focus { border-color: var(--gold); }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.6;
+    background-image: none;
+    padding-right: 10px;
+  }
+
+  .char-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .char-warn { color: #c47a00; }
+  .char-danger { color: var(--danger); }
+
+  /* HISTORY */
+  .history-list { display: flex; flex-direction: column; gap: 5px; }
+
+  .history-item {
+    padding: 7px 10px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.12s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .history-item:hover { border-color: var(--gold); }
+
+  .history-item-label {
+    font-size: 12px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
+
+  .history-item-time { font-size: 10px; color: var(--muted); flex-shrink: 0; margin-left: 8px; }
+
+  .history-empty { font-size: 12px; color: var(--muted); padding: 4px 0; }
+
+  /* GENERATE BUTTON */
+  .btn-row {
+    padding: 16px 20px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+  }
+
+  .generate-btn {
+    flex: 1;
+    padding: 13px;
+    background: var(--gold);
+    border: none;
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .generate-btn:hover:not(:disabled) { background: var(--gold-light); }
+  .generate-btn:active:not(:disabled) { transform: scale(0.99); }
+  .generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .stop-btn {
+    padding: 13px 16px;
+    background: transparent;
+    border: 1px solid var(--danger);
+    border-radius: 4px;
+    color: var(--danger);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: none;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .stop-btn:hover { background: var(--danger-bg); }
+  .stop-btn.visible { display: block; }
+
+  /* OUTPUT */
+  .output-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--cream);
+    overflow: hidden;
+  }
+
+  .output-toolbar {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--white);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .output-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .output-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  .output-stats {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+
+  .toolbar-actions { display: flex; gap: 7px; }
+
+  .tool-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tool-btn:hover { border-color: var(--gold); color: var(--ink); }
+  .tool-btn.copied { border-color: #3a7a3a; color: #3a7a3a; }
+
+  .output-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 36px;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.35; }
+  .empty-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 7px; opacity: 0.45; }
+  .empty-sub { font-size: 13px; opacity: 0.55; max-width: 280px; line-height: 1.6; }
+
+  /* OUTPUT CONTENT */
+  .output-content { max-width: 660px; }
+
+  .copy-block { margin-bottom: 26px; }
+
+  .copy-block-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .copy-section-btn {
+    font-size: 10px;
+    color: var(--muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .copy-section-btn:hover { color: var(--ink); }
+
+  .copy-block-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+
+  /* STREAMING */
+  .streaming-text {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--ink);
+    white-space: pre-wrap;
+    max-width: 660px;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 16px;
+    background: var(--gold);
+    animation: blink 0.8s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* NOTICE */
+  .notice {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: #6b5000;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+
+  .error-box {
+    background: var(--danger-bg);
+    border: 1px solid #d97575;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--danger);
+    line-height: 1.5;
+  }
+
+  /* SCROLLBARS */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .panel {
+      display: none;
+      max-height: 70vh;
+      overflow-y: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel.open { display: flex; }
+    .mobile-toggle { display: block; }
+    .tagline { display: none; }
+    .output-body { padding: 20px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">JSN <span>Listing Studio</span></div>
+  <div class="header-right">
+    <div class="tagline">AI-Powered Real Estate Copy</div>
+    <button class="mobile-toggle" onclick="togglePanel()">Options</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- LEFT PANEL -->
+  <div class="panel" id="panel">
+
+    <div class="panel-section">
+      <div class="section-label">Mode</div>
+      <div class="mode-grid" id="modeGrid">
+        <button class="mode-btn active" data-mode="For Sale">For Sale</button>
+        <button class="mode-btn" data-mode="Rental">Rental</button>
+        <button class="mode-btn" data-mode="Luxury Listing">Luxury</button>
+        <button class="mode-btn" data-mode="From Photos">From Photos</button>
+        <button class="mode-btn" data-mode="Listing Presentation">Presentation</button>
+        <button class="mode-btn" data-mode="Rewrite">Rewrite Draft</button>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">Output Settings</div>
+      <div class="row-pair">
+        <div class="field-group">
+          <div class="field-label">Platform</div>
+          <select id="platform">
+            <option>MLS</option>
+            <option>Zillow</option>
+            <option>Instagram</option>
+            <option>Email</option>
+            <option>Listing Presentation</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Length</div>
+          <select id="length">
+            <option>Medium</option>
+            <option>Short</option>
+            <option>Long</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-pair">
+        <div class="field-group">
+          <div class="field-label">Property Type</div>
+          <select id="propType">
+            <option>Single Family</option>
+            <option>Condo</option>
+            <option>Townhouse</option>
+            <option>Multi-Family</option>
+            <option>Luxury</option>
+            <option>New Construction</option>
+            <option>Land</option>
+            <option>Commercial</option>
+            <option>Investment</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Buyer Avatar</div>
+          <select id="buyerAvatar">
+            <option value="">None</option>
+            <option>First-Time Buyer</option>
+            <option>Downsizer</option>
+            <option>Luxury Buyer</option>
+            <option>Investor</option>
+            <option>Move-Up Buyer</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Brokerage Voice</div>
+        <select id="voice">
+          <option>Modern Professional</option>
+          <option>Luxury Editorial</option>
+          <option>Warm Neighborhood</option>
+          <option>Corporate</option>
+          <option>Investor-Focused</option>
+          <option>Boutique Brand</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel-section" style="flex:1">
+      <div class="section-label">Property Details</div>
+      <div class="field-group">
+        <div class="field-label">Notes, Facts &amp; Features</div>
+        <textarea id="notes" maxlength="4000" placeholder="Paste your notes, bullet points, or rough draft. Include beds/baths, sq ft, upgrades, HOA, price, key features, etc." oninput="updateCharCount()"></textarea>
+        <div class="char-row">
+          <span id="charWarning"></span>
+          <span id="charCount">0 / 4,000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="section-label">Session History</div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">No generations yet this session.</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="generate-btn" id="generateBtn" onclick="generate()">Generate Copy</button>
+      <button class="stop-btn" id="stopBtn" onclick="stopGeneration()">Stop</button>
+    </div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+    <div class="output-toolbar">
+      <div class="output-meta">
+        <div class="output-title" id="outputTitle">Output</div>
+        <div class="output-stats" id="outputStats"></div>
+      </div>
+      <div class="toolbar-actions">
+        <button class="tool-btn" id="copyBtn" onclick="copyAll()">Copy All</button>
+        <button class="tool-btn" onclick="clearOutput()">Clear</button>
+      </div>
+    </div>
+    <div class="output-body" id="outputBody">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">&#127968;</div>
+        <div class="empty-title">Ready to Write</div>
+        <div class="empty-sub">Select a mode, fill in your property details, and hit Generate Copy.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SYSTEM_PROMPT = `You turn rough notes, drafts, property details, and photos into polished real estate copy for agents.
+
+Main standard: output should be usable immediately without editing when facts are sufficient. Give the clean draft first. Make a clear decision. Tell the user what to do next only when a next step is actually needed.
+
+Core rules:
+- Do not make up facts.
+- Use only user-provided details, pasted drafts, and clearly visible photo details.
+- Omit unsupported claims instead of filling gaps.
+- Remove repetition, contradictions, fluff, and stock real-estate filler unless the user clearly asks for a warmer or more promotional tone.
+- If facts conflict and cannot be resolved safely, leave the disputed point out of the main copy and add a brief CHECK BEFORE POSTING note.
+- If input is thin, write a tight fact-based draft with no fluff.
+- For ultra-thin MLS prompts, prefer one factual sentence only.
+- For ultra-thin MLS prompts, do not add a second sentence unless the user provided another verified feature worth naming.
+- For ultra-thin MLS prompts, do not add layout language, flexibility language, buyer language, investor language, opportunity language, occupancy language, portfolio language, or any summary phrase beyond the stated facts.
+- Do not add alternate versions, optional offers, or extra commentary unless the user asks.
+
+Writing style:
+- Default to clean, polished, fact-led copy.
+- Avoid unsupported phrases such as well-maintained, spacious, convenient location, perfect for entertaining, lifestyle appeal, functional space, solid opportunity, practical layout, flexibility, opportunity to own, make it your own, established location, income potential, owner-occupant appeal, investor appeal, rental use, occupancy language, portfolio use, or similar generic phrasing unless the user clearly asks for a more promotional tone.
+- When a cleaner factual sentence works, prefer it over descriptive language that creates verification risk.
+
+Modes:
+- For Sale: for-sale copy. Highlight layout, upgrades, livability, and ownership value only when supported.
+- Rental: rental copy. Use lease language, convenience, availability, and renter next steps. No ownership language.
+- Luxury Listing: elevated tone, but specific, restrained, and credible.
+- From Photos: describe only what is clearly visible plus any notes provided.
+- Listing Presentation: seller-facing copy explaining positioning, buyer fit, marketing plan, why the plan fits the property, and what happens next.
+- Rewrite: preserve facts, remove filler and duplication, strip unsupported claims, and improve flow.
+
+Format your output with clear section labels in ALL CAPS followed by a colon, then a newline, then the content. Example: PUBLIC REMARKS:\nContent here. Sections to use only when relevant: PUBLIC REMARKS, AGENT REMARKS, PROPERTY HIGHLIGHTS, SHOWING INSTRUCTIONS, SOCIAL MEDIA SNIPPET, OPEN HOUSE ANNOUNCEMENT, CHECK BEFORE POSTING. Never create an Open House Announcement section without open house details provided by the user.`;
+
+let currentMode = 'For Sale';
+let isGenerating = false;
+let fullOutput = '';
+let abortController = null;
+let sessionHistory = [];
+
+document.getElementById('modeGrid').addEventListener('click', (e) => {
+  const btn = e.target.closest('.mode-btn');
+  if (!btn) return;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentMode = btn.dataset.mode;
+});
+
+function updateCharCount() {
+  const val = document.getElementById('notes').value;
+  const len = val.length;
+  const countEl = document.getElementById('charCount');
+  const warnEl = document.getElementById('charWarning');
+  countEl.textContent = len.toLocaleString() + ' / 4,000';
+  if (len >= 3800) {
+    countEl.className = 'char-danger';
+    warnEl.textContent = 'Near limit';
+    warnEl.className = 'char-danger';
+  } else if (len >= 3200) {
+    countEl.className = 'char-warn';
+    warnEl.textContent = 'Approaching limit';
+    warnEl.className = 'char-warn';
+  } else {
+    countEl.className = '';
+    warnEl.textContent = '';
+  }
+}
+
+function togglePanel() {
+  const panel = document.getElementById('panel');
+  panel.classList.toggle('open');
+}
+
+function clearOutput() {
+  fullOutput = '';
+  document.getElementById('outputBody').innerHTML = `<div class="empty-state"><div class="empty-icon">&#127968;</div><div class="empty-title">Ready to Write</div><div class="empty-sub">Select a mode, fill in your property details, and hit Generate Copy.</div></div>`;
+  document.getElementById('outputTitle').textContent = 'Output';
+  document.getElementById('outputStats').textContent = '';
+}
+
+function updateStats(text) {
+  if (!text) return;
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const chars = text.length;
+  document.getElementById('outputStats').textContent = words.toLocaleString() + ' words  |  ' + chars.toLocaleString() + ' characters';
+}
+
+function copyAll() {
+  if (!fullOutput) return;
+  navigator.clipboard.writeText(fullOutput).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy All'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function copySectionText(text) {
+  navigator.clipboard.writeText(text);
+}
+
+function stopGeneration() {
+  if (abortController) abortController.abort();
+}
+
+function addToHistory(mode, platform, output) {
+  const snippet = output.replace(/\n/g, ' ').substring(0, 60) + '...';
+  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  sessionHistory.unshift({ mode, platform, snippet, output, time });
+  if (sessionHistory.length > 5) sessionHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!sessionHistory.length) {
+    el.innerHTML = '<div class="history-empty">No generations yet this session.</div>';
+    return;
+  }
+  el.innerHTML = sessionHistory.map((item, i) => `
+    <div class="history-item" onclick="recallHistory(${i})">
+      <div class="history-item-label">${escHtml(item.mode)} / ${escHtml(item.platform)}: ${escHtml(item.snippet)}</div>
+      <div class="history-item-time">${item.time}</div>
+    </div>
+  `).join('');
+}
+
+function recallHistory(index) {
+  const item = sessionHistory[index];
+  if (!item) return;
+  fullOutput = item.output;
+  document.getElementById('outputTitle').textContent = item.mode + ' — ' + item.platform;
+  updateStats(item.output);
+  renderFormattedOutput(item.output);
+}
+
+async function generate() {
+  if (isGenerating) return;
+  const notes = document.getElementById('notes').value.trim();
+  if (!notes) { alert('Please enter property details before generating.'); return; }
+
+  const platform = document.getElementById('platform').value;
+  const length = document.getElementById('length').value;
+  const propType = document.getElementById('propType').value;
+  const voice = document.getElementById('voice').value;
+  const avatar = document.getElementById('buyerAvatar').value;
+
+  const sanitized = notes.replace(/[<>{}\\]/g, '').substring(0, 4000);
+
+  const userPrompt = `Mode: ${currentMode}
+Platform: ${platform}
+Length: ${length}
+Property Type: ${propType}
+Brokerage Voice: ${voice}${avatar ? '\nBuyer Avatar: ' + avatar : ''}
+
+Property Details / Notes:
+${sanitized}`;
+
+  isGenerating = true;
+  fullOutput = '';
+  abortController = new AbortController();
+
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('stopBtn').classList.add('visible');
+  document.getElementById('outputTitle').textContent = currentMode + ' — ' + platform;
+  document.getElementById('outputStats').textContent = '';
+
+  const body = document.getElementById('outputBody');
+  body.innerHTML = `<div class="streaming-text" id="streamText"></div>`;
+  const streamEl = document.getElementById('streamText');
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  streamEl.appendChild(cursor);
+
+  try {
+    const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      signal: abortController.signal,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app: 'listing',
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        stream: true,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || 'API error ' + response.status);
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(data);
+          const delta = parsed?.delta?.text || '';
+          if (delta) {
+            fullOutput += delta;
+            streamEl.textContent = fullOutput;
+            streamEl.appendChild(cursor);
+          }
+        } catch {}
+      }
+    }
+
+    cursor.remove();
+    updateStats(fullOutput);
+    addToHistory(currentMode, platform, fullOutput);
+    renderFormattedOutput(fullOutput);
+
+  } catch (err) {
+    cursor.remove();
+    if (err.name === 'AbortError') {
+      if (fullOutput) {
+        updateStats(fullOutput);
+        renderFormattedOutput(fullOutput + '\n\n[Generation stopped]');
+      } else {
+        body.innerHTML = `<div class="empty-state"><div class="empty-icon">&#127968;</div><div class="empty-title">Stopped</div><div class="empty-sub">Generation was cancelled.</div></div>`;
+      }
+    } else {
+      body.innerHTML = `<div class="error-box"><strong>Error:</strong> ${escHtml(err.message || 'Something went wrong. Please try again.')}</div>`;
+    }
+  }
+
+  isGenerating = false;
+  abortController = null;
+  document.getElementById('generateBtn').disabled = false;
+  document.getElementById('stopBtn').classList.remove('visible');
+}
+
+function renderFormattedOutput(text) {
+  const body = document.getElementById('outputBody');
+  const lines = text.split('\n');
+  let html = '<div class="output-content">';
+  let blockLabel = '';
+  let blockText = '';
+
+  function flushBlock() {
+    if (!blockText.trim() && !blockLabel) return;
+    const isNotice = blockLabel.includes('CHECK');
+    html += `<div class="copy-block">`;
+    if (blockLabel) {
+      const escapedText = escHtml(blockText.trim());
+      html += `<div class="copy-block-label">${escHtml(blockLabel)} <button class="copy-section-btn" onclick="copySectionText(${JSON.stringify(blockText.trim())})">Copy section</button></div>`;
+      if (isNotice) {
+        html += `<div class="notice">${escapedText}</div>`;
+      } else {
+        html += `<div class="copy-block-text">${escapedText}</div>`;
+      }
+    } else {
+      html += `<div class="copy-block-text">${escHtml(blockText.trim())}</div>`;
+    }
+    html += `</div>`;
+    blockText = '';
+    blockLabel = '';
+  }
+
+  for (const line of lines) {
+    const headerMatch = line.match(/^([A-Z][A-Z\s\/\-]+[A-Z]):$/);
+    if (headerMatch) {
+      flushBlock();
+      blockLabel = headerMatch[1];
+    } else {
+      blockText += line + '\n';
+    }
+  }
+  flushBlock();
+  html += '</div>';
+  body.innerHTML = html;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#5a6a7e; line-height:1.6; border-top:1px solid #1f2730; background:#111418;">
+  Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
+</div>
+</body>
+</html>

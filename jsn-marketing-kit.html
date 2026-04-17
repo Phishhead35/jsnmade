@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Marketing Kit Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #162236;
+    --navy-light: #1E3250;
+    --gold: #C9A84C;
+    --gold-light: #E8C56A;
+    --gold-dim: #8A6E2F;
+    --cream: #F5F0E8;
+    --cream-dim: #DDD8CF;
+    --slate: #6B7E96;
+    --red: #C0392B;
+    --green: #1A7A4E;
+    --green-bright: #2ecc71;
+    --orange: #e67e22;
+    --surface: #192B40;
+    --border: rgba(201,168,76,0.2);
+    --border-dim: rgba(201,168,76,0.1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--cream); min-height: 100vh; overflow-x: hidden; }
+
+  /* HEADER */
+  header { background: var(--navy-mid); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: baseline; gap: 10px; flex-shrink: 0; }
+  .logo-jsn { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; }
+  .logo-title { font-family:'Playfair Display',serif; font-size:19px; font-weight:700; color:var(--cream); }
+  .logo-badge { font-family:'DM Mono',monospace; font-size:9px; color:var(--gold-dim); letter-spacing:2px; border:1px solid var(--border); padding:2px 7px; border-radius:2px; }
+  .suite-label { font-size:10px; color:var(--slate); letter-spacing:1px; font-family:'DM Mono',monospace; text-transform:uppercase; }
+
+  /* WORKFLOW */
+  .workflow { background: rgba(13,27,42,0.7); border-bottom: 1px solid var(--border-dim); padding: 0 32px; display: flex; align-items: stretch; overflow-x: auto; }
+  .wf-step { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--slate); padding:10px 14px; white-space:nowrap; border-bottom:2px solid transparent; display:flex; align-items:center; gap:6px; }
+  .wf-step.current { color:var(--gold); border-bottom-color:var(--gold); }
+  .wf-num { width:16px; height:16px; border-radius:50%; font-size:8px; display:flex; align-items:center; justify-content:center; background:var(--navy-light); border:1px solid var(--border); flex-shrink:0; }
+  .wf-step.current .wf-num { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+  .wf-arrow { color:var(--navy-light); font-size:10px; display:flex; align-items:center; }
+
+
+
+  /* BOUNDARY NOTICE */
+  .boundary-notice { background:rgba(201,168,76,0.06); border-bottom:1px solid var(--border-dim); padding:9px 32px; font-size:11px; color:var(--slate); display:flex; align-items:center; gap:8px; }
+  .boundary-notice strong { color:var(--gold-dim); }
+
+  /* LAYOUT */
+  .app { max-width:1160px; margin:0 auto; padding:32px; display:grid; grid-template-columns:400px 1fr; gap:28px; align-items:start; }
+
+  /* PANEL */
+  .panel { background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+  .panel-header { background:var(--navy-light); padding:12px 20px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .panel-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; }
+  .panel-sub { font-size:10px; color:var(--slate); }
+  .panel-body { padding:20px; }
+
+  /* MODE TABS */
+  .mode-tabs { display:flex; border-bottom:1px solid var(--border); margin-bottom:20px; }
+  .mode-tab { flex:1; padding:10px 8px; text-align:center; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--slate); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; user-select:none; }
+  .mode-tab:hover { color:var(--cream-dim); }
+  .mode-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+  /* FORM */
+  .field-label { display:block; font-size:10px; letter-spacing:2px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:6px; margin-top:18px; }
+  .field-label:first-child { margin-top:0; }
+  .field-hint { font-size:10px; color:var(--slate); margin-top:4px; font-style:italic; line-height:1.5; }
+  select, textarea { width:100%; background:var(--navy-mid); border:1px solid rgba(201,168,76,0.25); border-radius:3px; color:var(--cream); font-family:'DM Sans',sans-serif; font-size:13px; padding:9px 12px; outline:none; transition:border-color 0.2s; resize:vertical; }
+  select:focus, textarea:focus { border-color:var(--gold); }
+  select option { background:var(--navy); }
+  textarea { min-height:130px; line-height:1.65; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .two-col .field-label { margin-top:0; }
+
+  /* CHIPS */
+  .channels-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+  .channel-chip { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--navy-mid); border:1px solid rgba(201,168,76,0.18); border-radius:3px; cursor:pointer; transition:all 0.15s; user-select:none; font-size:11.5px; color:var(--cream-dim); line-height:1.2; }
+  .channel-chip:hover { border-color:var(--gold-dim); color:var(--cream); }
+  .channel-chip.active { background:rgba(201,168,76,0.1); border-color:var(--gold); color:var(--cream); }
+  .channel-chip input { display:none; }
+  .chip-dot { width:8px; height:8px; border-radius:50%; background:transparent; border:1.5px solid var(--slate); flex-shrink:0; transition:all 0.15s; }
+  .channel-chip.active .chip-dot { background:var(--gold); border-color:var(--gold); }
+  .chip-meta { font-size:9px; color:var(--slate); display:block; }
+
+  /* BUTTONS */
+  .btn-generate { width:100%; margin-top:22px; padding:14px; background:var(--gold); color:var(--navy); border:none; border-radius:3px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:500; cursor:pointer; transition:background 0.2s; }
+  .btn-generate:hover { background:var(--gold-light); }
+  .btn-generate:disabled { background:var(--gold-dim); cursor:not-allowed; opacity:0.6; }
+  .btn-secondary { width:100%; margin-top:10px; padding:10px; background:transparent; color:var(--slate); border:1px solid var(--border); border-radius:3px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.15s; }
+  .btn-secondary:hover { border-color:var(--gold-dim); color:var(--cream-dim); }
+
+  /* OUTPUT */
+  .output-panel { position:sticky; top:24px; }
+  .output-tabs { display:flex; overflow-x:auto; border-bottom:1px solid var(--border); padding:0 16px; gap:2px; background:var(--navy-light); }
+  .output-tab { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; padding:10px 11px; color:var(--slate); border-bottom:2px solid transparent; cursor:pointer; white-space:nowrap; transition:all 0.15s; user-select:none; display:flex; align-items:center; gap:5px; }
+  .output-tab:hover { color:var(--cream-dim); }
+  .output-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+  .tab-dot { width:5px; height:5px; border-radius:50%; background:var(--slate); flex-shrink:0; }
+  .output-tab.has-placeholder .tab-dot { background:var(--orange); }
+  .output-tab.is-internal .tab-dot { background:var(--red); }
+  .output-tab.has-fh .tab-dot { background:#e57373; }
+  .output-body { padding:24px; max-height:76vh; overflow-y:auto; }
+  .output-body::-webkit-scrollbar { width:4px; }
+  .output-body::-webkit-scrollbar-thumb { background:var(--gold-dim); border-radius:2px; }
+
+  /* EMPTY */
+  .empty-state { padding:64px 24px; text-align:center; color:var(--slate); }
+  .empty-icon { font-size:36px; margin-bottom:14px; opacity:0.45; }
+  .empty-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--cream-dim); margin-bottom:8px; }
+  .empty-sub { font-size:12px; line-height:1.7; max-width:300px; margin:0 auto; }
+
+  /* ASSET */
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .asset-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .asset-label-line { flex:1; height:1px; background:var(--border); }
+  .char-count { font-family:'DM Mono',monospace; font-size:9px; color:var(--slate); flex-shrink:0; }
+  .char-over { color:#e57373; }
+  .asset-content { background:var(--navy-mid); border:1px solid rgba(201,168,76,0.15); border-radius:3px; padding:14px 44px 14px 16px; font-size:13px; line-height:1.75; color:var(--cream); white-space:pre-wrap; word-wrap:break-word; position:relative; }
+  .copy-btn { position:absolute; top:8px; right:8px; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1.5px; padding:4px 8px; background:transparent; border:1px solid var(--border); color:var(--slate); border-radius:2px; cursor:pointer; text-transform:uppercase; transition:all 0.15s; }
+  .copy-btn:hover { border-color:var(--gold-dim); color:var(--gold); }
+
+  /* FLAGS & CALLOUTS */
+  .fh-block { margin-top:12px; padding:12px 14px; background:rgba(192,57,43,0.09); border-left:3px solid #e57373; border-radius:0 3px 3px 0; font-size:12px; line-height:1.65; }
+  .fh-block-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:#e57373; text-transform:uppercase; margin-bottom:6px; }
+  .fh-item { margin-bottom:6px; }
+  .fh-item:last-child { margin-bottom:0; }
+  .fh-risk { display:inline-block; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; padding:1px 5px; border-radius:2px; text-transform:uppercase; margin-right:4px; }
+  .risk-legal { background:rgba(192,57,43,0.3); color:#e57373; }
+  .risk-mcad { background:rgba(230,126,34,0.25); color:#f0a070; }
+  .risk-conduct { background:rgba(107,126,150,0.25); color:var(--cream-dim); }
+
+  .confirm-block { margin-top:10px; padding:10px 14px; background:rgba(230,126,34,0.08); border-left:2px solid var(--orange); border-radius:0 3px 3px 0; font-size:12px; color:var(--cream-dim); line-height:1.65; }
+  .confirm-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--orange); text-transform:uppercase; margin-bottom:4px; }
+  .next-block { margin-top:10px; padding:10px 14px; background:rgba(26,122,78,0.1); border-left:2px solid var(--green); border-radius:0 3px 3px 0; font-size:12px; color:var(--cream-dim); line-height:1.65; }
+  .next-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--green-bright); text-transform:uppercase; margin-bottom:4px; }
+  .internal-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:#e57373; border:1px solid rgba(192,57,43,0.4); padding:5px 10px; border-radius:2px; margin-bottom:12px; display:inline-block; text-transform:uppercase; background:rgba(192,57,43,0.08); }
+
+  .placeholder-warning { background:rgba(230,126,34,0.1); border:1px solid rgba(230,126,34,0.3); border-radius:3px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#f0b37e; line-height:1.6; }
+  .scope-note { background:rgba(201,168,76,0.06); border:1px solid var(--border); border-radius:3px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:var(--cream-dim); line-height:1.6; }
+
+  .overall-next { margin-top:24px; padding:16px; background:rgba(201,168,76,0.07); border:1px solid var(--border); border-radius:3px; }
+  .overall-next-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:8px; }
+  .overall-next-text { font-size:13px; color:var(--cream); line-height:1.65; }
+  .copy-all-btn { display:block; width:100%; margin-top:20px; padding:11px; background:transparent; border:1px solid var(--border); color:var(--gold-dim); font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; border-radius:3px; transition:all 0.15s; }
+  .copy-all-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* LOADING */
+  .loading-wrap { padding:56px 20px; text-align:center; color:var(--slate); }
+  .spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.75s linear infinite; margin:0 auto 16px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-text { font-size:12px; font-style:italic; }
+  .loading-sub { font-size:11px; color:var(--gold-dim); margin-top:6px; font-family:'DM Mono',monospace; letter-spacing:1px; }
+
+  /* HISTORY */
+  .history-wrap { margin-top:20px; border-top:1px solid var(--border-dim); padding-top:16px; display:none; }
+  .history-chip { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; background:var(--navy-mid); border:1px solid var(--border-dim); border-radius:3px; font-size:11px; color:var(--cream-dim); cursor:pointer; transition:border-color 0.15s; margin-top:6px; }
+  .history-chip:hover { border-color:var(--gold-dim); color:var(--cream); }
+  .history-chip-label { font-family:'DM Mono',monospace; font-size:9px; color:var(--slate); letter-spacing:1px; }
+  .history-restore { font-size:9px; color:var(--gold-dim); font-family:'DM Mono',monospace; flex-shrink:0; }
+
+  /* AUDIT */
+  .audit-area { display:none; }
+  .audit-area.visible { display:block; }
+  .generate-area.hidden { display:none; }
+  .verdict-block { padding:14px 16px; border-radius:3px; margin-bottom:16px; font-size:14px; font-weight:600; }
+  .verdict-ready { background:rgba(26,122,78,0.15); border:1px solid rgba(26,122,78,0.4); color:#2ecc71; }
+  .verdict-light  { background:rgba(230,126,34,0.12); border:1px solid rgba(230,126,34,0.35); color:var(--orange); }
+  .verdict-hold   { background:rgba(192,57,43,0.12); border:1px solid rgba(192,57,43,0.35); color:#e57373; }
+  .audit-section { margin-bottom:18px; }
+  .audit-section-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--gold-dim); text-transform:uppercase; margin-bottom:8px; }
+  .audit-section-body { font-size:13px; color:var(--cream); line-height:1.7; }
+
+  @media (max-width:800px) {
+    .app { grid-template-columns:1fr; padding:16px; }
+    .output-panel { position:static; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-jsn">JSN</span>
+    <span class="logo-title">Marketing Kit Generator</span>
+    <span class="logo-badge">MA</span>
+  </div>
+  <span class="suite-label">JSN Real Estate Performance System</span>
+</header>
+
+<div class="workflow">
+  <div class="wf-step"><span class="wf-num">1</span> Listing Copy Studio</div>
+  <div class="wf-arrow">›</div>
+  <div class="wf-step current"><span class="wf-num">2</span> Marketing Kit Generator</div>
+  <div class="wf-arrow">›</div>
+  <div class="wf-step"><span class="wf-num">3</span> Client Follow-Up</div>
+  <div class="wf-arrow">›</div>
+  <div class="wf-step"><span class="wf-num">4</span> Scripts &amp; Confidence Coach</div>
+</div>
+
+<div class="boundary-notice">
+  <span>📌</span>
+  <span>This tool handles <strong>channel-ready assets</strong> — social, email, flyers, open house, video scripts. For MLS remarks or listing narrative, use <strong>JSN Listing Copy Studio</strong>.</span>
+</div>
+
+<div class="app">
+
+  <!-- INPUT PANEL -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Input</span>
+      <span class="panel-sub" id="modeLabel">Generate Mode</span>
+    </div>
+    <div class="panel-body">
+
+      <div class="mode-tabs">
+        <div class="mode-tab active" id="modeGenTab" onclick="switchMode('generate')">Generate Assets</div>
+        <div class="mode-tab" id="modeAuditTab" onclick="switchMode('audit')">Audit Existing Copy</div>
+      </div>
+
+      <!-- GENERATE -->
+      <div class="generate-area" id="generateArea">
+        <div class="two-col">
+          <div>
+            <span class="field-label">Asset Type</span>
+            <select id="assetType">
+              <option value="sale">For Sale</option>
+              <option value="rental">Rental</option>
+              <option value="open_house">Open House</option>
+              <option value="just_listed">Just Listed</option>
+              <option value="price_reduction">Price Reduction</option>
+            </select>
+          </div>
+          <div>
+            <span class="field-label">Property Type</span>
+            <select id="propertyType">
+              <option value="single_family">Single Family</option>
+              <option value="condo">Condo / Townhouse</option>
+              <option value="multi_family">Multi-Family</option>
+              <option value="land">Land / Lot</option>
+              <option value="commercial">Commercial</option>
+            </select>
+          </div>
+        </div>
+
+        <span class="field-label" style="margin-top:18px;">Approved Listing Facts</span>
+        <textarea id="listingFacts" placeholder="Paste only confirmed facts: town/neighborhood, beds, baths, sq ft, price, key features. Unverified details will be flagged."></textarea>
+        <div class="field-hint">Only verified, fair-housing-compliant facts. Do not include neighborhood descriptions, safety claims, or demographic characterizations — these will be flagged and blocked.</div>
+
+        <span class="field-label">Voice</span>
+        <select id="tone">
+          <option value="professional_warm">Professional + Warm (default)</option>
+          <option value="concise_direct">Concise + Direct</option>
+          <option value="investment_analytical">Investment / Analytical</option>
+        </select>
+
+        <span class="field-label">Channels to Generate</span>
+        <div class="channels-grid">
+          <label class="channel-chip active" onclick="toggleChip(this)">
+            <input type="checkbox" value="instagram" checked>
+            <span class="chip-dot"></span>
+            <span>Instagram<span class="chip-meta">≤ 2,200 chars</span></span>
+          </label>
+          <label class="channel-chip active" onclick="toggleChip(this)">
+            <input type="checkbox" value="facebook" checked>
+            <span class="chip-dot"></span>
+            <span>Facebook<span class="chip-meta">Conversational</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="linkedin">
+            <span class="chip-dot"></span>
+            <span>LinkedIn<span class="chip-meta">≤ 3,000 chars</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="email">
+            <span class="chip-dot"></span>
+            <span>Email<span class="chip-meta">Subject + body</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="flyer">
+            <span class="chip-dot"></span>
+            <span>Flyer Copy<span class="chip-meta">Print-ready</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="highlights">
+            <span class="chip-dot"></span>
+            <span>Feature Bullets<span class="chip-meta">5–7 highlights</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="open_house">
+            <span class="chip-dot"></span>
+            <span>Open House<span class="chip-meta">Handout copy</span></span>
+          </label>
+          <label class="channel-chip" onclick="toggleChip(this)">
+            <input type="checkbox" value="video">
+            <span class="chip-dot"></span>
+            <span>Video Script<span class="chip-meta">30–60 sec</span></span>
+          </label>
+          <label class="channel-chip" style="grid-column:1/-1;" onclick="toggleChip(this)">
+            <input type="checkbox" value="agent_notes">
+            <span class="chip-dot"></span>
+            <span>Agent Notes<span class="chip-meta">Internal only — strategy and show notes, not published</span></span>
+          </label>
+        </div>
+
+        <button class="btn-generate" id="generateBtn" onclick="runGenerate()">Generate Marketing Kit</button>
+        <button class="btn-secondary" onclick="clearForm()">Clear Form</button>
+
+        <div class="history-wrap" id="historyWrap">
+          <span class="field-label" style="margin-top:0;">Recent Drafts</span>
+          <div id="historyList"></div>
+        </div>
+      </div>
+
+      <!-- AUDIT -->
+      <div class="audit-area" id="auditArea">
+        <span class="field-label" style="margin-top:0;">Copy to Audit</span>
+        <textarea id="auditCopy" placeholder="Paste any existing listing copy, social post, email, or marketing material you want reviewed for compliance and quality..." style="min-height:160px;"></textarea>
+        <span class="field-label">Channel</span>
+        <select id="auditChannel">
+          <option value="instagram">Instagram Caption</option>
+          <option value="facebook">Facebook Post</option>
+          <option value="linkedin">LinkedIn Post</option>
+          <option value="email">Email Announcement</option>
+          <option value="flyer">Flyer Copy</option>
+          <option value="open_house">Open House Handout</option>
+          <option value="social_general">Social (General)</option>
+          <option value="general">General / Unknown</option>
+        </select>
+        <span class="field-label">Listing Type</span>
+        <select id="auditListingType">
+          <option value="sale">For Sale</option>
+          <option value="rental">Rental</option>
+          <option value="general">General</option>
+        </select>
+        <button class="btn-generate" id="auditBtn" onclick="runAudit()">Audit This Copy</button>
+        <div class="field-hint" style="margin-top:10px;">Checks against MGL Ch.151B, Ch.93A, Fair Housing Act, NAR ethics, and MGL Ch.112 §87DDD½ (rental fee law, eff. Aug 1 2025).</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="panel output-panel">
+    <div class="panel-header">
+      <span class="panel-title" id="outputTitle">Generated Assets</span>
+      <span id="genStatus" style="font-size:10px;color:var(--slate);font-family:'DM Mono',monospace;letter-spacing:1px;"></span>
+    </div>
+    <div id="outputTabsBar" class="output-tabs" style="display:none;"></div>
+    <div class="output-body" id="outputBody">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">Ready when you are</div>
+        <div class="empty-sub">Enter approved listing facts, choose your channels, and click Generate. Use Audit mode to check existing copy for compliance and quality issues before publishing.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── COMPLIANCE KNOWLEDGE BASE (from MA office policy + agent training doc)
+// This is embedded into every system prompt so the AI always checks against real MA law.
+const MA_COMPLIANCE = `
+MASSACHUSETTS COMMUNICATIONS COMPLIANCE POLICY (effective April 11, 2026)
+Source: Office Communications Compliance Policy — applies to all agents, brokers, and staff.
+
+LEGAL FRAMEWORK:
+- Federal Fair Housing Act (42 U.S.C. §3604): Race, color, national origin, religion, sex, familial status, disability.
+- MGL Ch.151B: Extends to marital status, age, ancestry, sexual orientation, gender identity, SOURCE OF INCOME, genetic information.
+- MGL Ch.93A: Prohibits unfair/deceptive trade practices — misrepresentation, artificial urgency, coercive communication.
+- NAR Code of Ethics Articles 1, 2, 11: Honest representation, fiduciary duty, no discriminatory practices.
+- Post-NAR Settlement (2024): Written buyer agency agreement with disclosed agent compensation required BEFORE any property tour.
+- MGL Ch.112 §87AAA: Mandatory material defect disclosure.
+- MGL Ch.112 §87DDD½ (eff. August 1, 2025): RENTAL BROKER FEE LAW — fee must be paid by whoever contracted the broker. Tenants CANNOT be charged a broker fee when the landlord hired the broker. Penalty: up to 3x amount plus attorney fees. No workaround labels (admin fee, finder's fee, etc.) permitted. Structuring rent increases to reimburse a broker fee is also illegal. MLS deactivated tenant-paid-fee field effective Aug 1, 2025.
+
+RISK LEVELS:
+- LEGAL/CH.151B: Direct HUD complaint, MCAD enforcement, or civil litigation exposure. ZERO TOLERANCE.
+- MCAD/BOARD: Risk of formal complaint to MCAD or Board of Registration. License discipline risk.
+- CONDUCT: Professional standards violation. Adversarial use in complaint or litigation.
+
+PROHIBITED PHRASES BY CATEGORY (illustrative, not exhaustive — similar language equally prohibited):
+
+SALES / DEMOGRAPHIC STEERING [LEGAL/CH.151B]:
+- "This neighborhood is really changing" — demographic shift implication, steering trigger
+- "You'd fit right in here" — implies matching buyer to neighborhood demographics
+- "Lots of young families moving in" — familial status steering even if framed positively
+- "This is a safe area" — coded language implying racial composition; cite only public municipal records if relevant
+- "I have another buyer very interested" — fabricated urgency violates Ch.93A and NAR Ethics
+- "The seller is very motivated" — only permissible if true and authorized in writing
+
+RENTAL INQUIRY [LEGAL/CH.151B]:
+- "We don't accept Section 8" — source of income is protected; blanket refusal illegal
+- "We prefer working professionals" — employment status discrimination
+- "No kids" — familial status discrimination
+- "Are you married?" — marital status inquiry prohibited
+- "Where are you originally from?" — national origin inquiry prohibited
+- "Do you have any health conditions?" — disability inquiry; reasonable accommodation is tenant-initiated only
+
+APPLICATION FOLLOW-UP:
+- "We have stronger applicants ahead of you" [MCAD/BOARD] — if untrue, deceptive; if true, creates coercive pressure
+- "We're not sure you're a fit" [LEGAL/CH.151B] — vague denial with protected class inference
+- "A decision is coming soon, so act fast" [MCAD/BOARD] — manufactured urgency is coercive
+- "Your application looks thin" [MCAD/BOARD] — subjective; use only objective criteria
+
+LANDLORD UPDATES [LEGAL/CH.151B]:
+- "I think you'd prefer a different type of tenant" — steering toward discriminatory selection
+- "Between us, this applicant feels off" — subjective; all internal comms are discoverable
+- "They have a lot of kids" — relaying familial status as screening factor
+- "I think they're on some kind of assistance" — source of income as screening factor
+- "Just reject them and we'll find someone better" — directing discriminatory rejection
+
+REJECTION LANGUAGE [LEGAL/CH.151B]:
+- "You're just not what we're looking for" — subjective; all denials need objective criteria
+- "The owner wants someone more established" — 'established' implies age or protected financial profile
+- "We felt another applicant was a better cultural fit" — 'cultural fit' = national origin/race discrimination in housing
+- "The owner just had a bad feeling" — highest-risk phrase; never document or relay
+- Permissible denial bases ONLY: credit score below threshold, income-to-rent ratio below threshold, negative verified reference, incomplete application, criminal background (subject to fair chance requirements)
+
+COMPLAINT HANDLING [LEGAL/CH.151B]:
+- "If you keep pushing, we'll have to involve legal" — retaliation under Ch.151B
+- "This is not a fair housing issue" — only MCAD/HUD can determine this; never state in writing
+- "We've never had a complaint before" [CONDUCT] — legally meaningless, must not appear in complaint responses
+- "We'll look into it when we have time" [MCAD/BOARD] — timeliness failure is itself a compliance violation
+
+CANCELLATION [LEGAL/CH.151B]:
+- "We're canceling because of the neighborhood" — reverse steering
+- "The seller changed their mind about the buyer" — discriminatory seller preference relayed by agent = equal agent liability
+- "Let's just back out before it gets complicated" — suggests avoiding disclosure/legal process
+- "Between us, the deal just wasn't right" — 'off the record' does not exist in writing
+
+PRICE DROP / URGENCY [MCAD/BOARD]:
+- "The seller is desperate" — fiduciary breach
+- "You'll never see a deal like this again" — deceptive under Ch.93A
+- "This price only works if you decide today" — artificial urgency; only permissible if true deadline is documented
+- "Other buyers passed on it but you can get a deal" — implies undisclosed defect; may trigger disclosure liability under MGL Ch.112 §87AAA
+
+COMMISSION [LEGAL/CH.151B]:
+- "Commission is always split 50/50" — false post-NAR settlement
+- "The seller pays, so it costs you nothing" — misleading; written buyer comp disclosure required before touring
+- "Every agent charges the same" — antitrust exposure
+- "My fee is non-negotiable" — misrepresentation of law; all commissions negotiable
+- "You don't need to worry about how I get paid" — avoidance of required disclosure
+- "I get a bonus if we close above asking" — conflict of interest must be disclosed in writing
+
+RENTAL BROKER FEE (MGL Ch.112 §87DDD½, eff. Aug 1 2025) [LEGAL/CH.151B]:
+- "The tenant pays the broker fee" — illegal when landlord hired broker
+- "We handle both sides of this deal" — dual representation prohibited in single rental transaction
+- "We just call it an admin fee / finder's fee" — renaming prohibited; no workaround labels permitted
+- "We'll build the fee into first month's rent" — structuring workaround is explicitly illegal
+- "The tenant has to pay because it's in the lease" — leases executed on/after Aug 1, 2025 cannot require tenant to pay landlord's broker fee
+- "It's listed as tenant-pays on MLS" — MLS deactivated this field effective Aug 1, 2025; advertising tenant-paid fee is prohibited
+
+POST-SHOWING FOLLOW-UP:
+- "What did you think of the people on the street?" [LEGAL/CH.151B] — soliciting demographic reaction = steering facilitation
+- "The other couple who saw it this morning was very excited" [LEGAL/CH.151B] — must be factual; if fabricated, violates Ch.93A
+- "This neighborhood won't stay this price" [LEGAL/CH.151B] — demographic/gentrification implication
+- "I could tell it wasn't right for you" [LEGAL/CH.151B] — presuming buyer preference; steering liability
+- "The sellers are already fielding offers" [MCAD/BOARD] — must be factual; routine use as pressure language = deceptive practice
+- "I know you loved it, so you should move fast" [MCAD/BOARD] — presuming buyer sentiment to manufacture urgency
+
+INTERNAL COMMUNICATIONS STANDARDS:
+- All internal comms (email, CRM notes, texts, Slack, voicemail) are potentially discoverable.
+- No subjective characterizations of applicants, tenants, buyers, sellers, or neighborhoods.
+- No speculation about applicant financial status, family composition, or personal characteristics.
+- 'Off the record,' 'between us' — does not exempt from discovery.
+
+COMPLAINT RESPONSE PROTOCOL:
+- Immediately notify principal broker in writing.
+- Do not respond to complainant without broker review.
+- Do not characterize complaint as invalid, minor, or resolved until formal review is complete.
+- Preserve all relevant communications. Do not delete.
+- Engage legal counsel before any response to MCAD, HUD, or Board of Registration.
+`;
+
+// ── STATE
+let currentMode = 'generate';
+let currentResults = null;
+let draftHistory = [];
+
+const CHANNEL_META = {
+  instagram:    { label:'Instagram Caption',    limit:2200,  spec:'≤2,200 chars. Include 5–10 relevant hashtags. Strong opening line.' },
+  facebook:     { label:'Facebook Post',        limit:null,  spec:'Conversational. Clear CTA. Moderate length. No hashtag spam.' },
+  linkedin:     { label:'LinkedIn Post',        limit:3000,  spec:'≤3,000 chars. Professional tone. 1–3 hashtags max.' },
+  email:        { label:'Email Announcement',  limit:null,  spec:'Include: subject line, greeting, body paragraph, feature highlights, CTA with contact info.' },
+  flyer:        { label:'Flyer Copy',          limit:null,  spec:'Headline, 4–6 feature bullets, brief description, contact block. Print-ready.' },
+  highlights:   { label:'Feature Bullets',     limit:null,  spec:'Exactly 5–7 punchy feature bullets. No full sentences, no filler.' },
+  open_house:   { label:'Open House Handout',  limit:null,  spec:'Welcome note, key features, open house date/time (placeholder if unknown), agent contact.' },
+  video:        { label:'Video Script',        limit:null,  spec:'30–60 second voiceover. Natural cadence. Hook → features → CTA.' },
+  agent_notes:  { label:'Agent Notes',         limit:null,  spec:'INTERNAL ONLY. Showing tips, key objections to expect, pricing context, competitive notes. Do not publish.' },
+};
+
+function getLbl(ch) { return CHANNEL_META[ch]?.label || ch; }
+
+// ── CHIP TOGGLE
+function toggleChip(el) {
+  el.classList.toggle('active');
+  el.querySelector('input').checked = el.classList.contains('active');
+}
+
+function getSelectedChannels() {
+  return Array.from(document.querySelectorAll('#generateArea .channel-chip.active input')).map(i => i.value);
+}
+
+// ── MODE SWITCH
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeGenTab').classList.toggle('active', mode === 'generate');
+  document.getElementById('modeAuditTab').classList.toggle('active', mode === 'audit');
+  document.getElementById('generateArea').classList.toggle('hidden', mode !== 'generate');
+  document.getElementById('auditArea').classList.toggle('visible', mode === 'audit');
+  document.getElementById('modeLabel').textContent = mode === 'generate' ? 'Generate Mode' : 'Audit Mode';
+  document.getElementById('outputTitle').textContent = mode === 'generate' ? 'Generated Assets' : 'Audit Results';
+  resetOutput();
+}
+
+function resetOutput() {
+  document.getElementById('outputTabsBar').style.display = 'none';
+  document.getElementById('outputBody').innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Ready when you are</div><div class="empty-sub">Enter approved listing facts, choose your channels, and click Generate. Use Audit mode to check existing copy for compliance and quality issues.</div></div>`;
+}
+
+function clearForm() {
+  document.getElementById('listingFacts').value = '';
+  resetOutput();
+}
+
+// ── GENERATE
+async function runGenerate() {
+  const facts = document.getElementById('listingFacts').value.trim();
+  if (!facts) { alert('Please enter listing facts before generating.'); return; }
+  const channels = getSelectedChannels();
+  if (!channels.length) { alert('Please select at least one channel.'); return; }
+
+  const assetType    = document.getElementById('assetType').value;
+  const propertyType = document.getElementById('propertyType').value;
+  const tone         = document.getElementById('tone').value;
+  const isRental     = assetType === 'rental';
+
+  draftHistory.unshift({ facts, assetType, propertyType, tone, channels, ts: Date.now() });
+  if (draftHistory.length > 3) draftHistory.pop();
+  renderHistory();
+
+  setLoading(true, 'Building kit...');
+
+  const channelSpecs = channels.map(c =>
+    `- ${CHANNEL_META[c]?.label || c}: ${CHANNEL_META[c]?.spec || ''}`
+  ).join('\n');
+
+  const systemPrompt = `You are JSN Marketing Kit Generator — part of the JSN Real Estate Performance System for Massachusetts real estate agents.
+
+ROLE BOUNDARY: You produce channel-ready marketing assets (social captions, email copy, flyer text, open house materials, video scripts, feature bullets, agent notes). You do NOT rewrite MLS listing remarks or develop property narrative — that is JSN Listing Copy Studio's role. Flag in listing_copy_note if the user appears to need that tool instead.
+
+${MA_COMPLIANCE}
+
+ACCURACY (NON-NEGOTIABLE):
+- Never invent, assume, embellish, or imply any detail not explicitly stated in the listing facts.
+- Label any missing but necessary fact as: [PLACEHOLDER — CONFIRM BEFORE POSTING]
+- Do not infer: room count, finishes, views, renovation quality, condition, appliance brands, lot size, school assignments, neighborhood benefits, proximity claims.
+- If a provided fact appears to be a prohibited phrase or compliance risk, do NOT include it in output. Flag it in fh_flags with the specific risk level and legal citation from the policy above.
+
+FAIR HOUSING — APPLY THE FULL POLICY ABOVE:
+- When reviewing listing facts provided by the user, actively scan for any prohibited phrase patterns, similar language, or coded language from the policy above.
+- Neighborhood quality, safety, demographic, school, or "vibe" claims from user input must be excluded from copy and flagged.
+- Each flag must cite: the flagged phrase or pattern, the risk level (LEGAL/CH.151B, MCAD/BOARD, or CONDUCT), and the specific legal basis.
+
+${isRental ? `RENTAL COMPLIANCE — FULL ENFORCEMENT:
+- MGL Ch.112 §87DDD½ (eff. Aug 1, 2025): Do NOT include any language about tenants paying a broker fee. Do NOT use admin fee, finder's fee, or any workaround language.
+- Do NOT state deposit amounts, fees, notice periods, screening criteria, occupancy rules, or tenant rights unless explicitly provided and verified.
+- Do NOT include employment status preferences, marital status, national origin, familial status, or source of income references.
+- Separate marketing copy from compliance guidance entirely.` : ''}
+
+VOICE: Sharp, polished, confident, warm. Sounds like a high-performing listing agent who values their client's time. No filler phrases ("nestled," "boasting," "don't miss out," "this gem"). No generic AI copy patterns.
+
+CHANNEL DISCIPLINE: Each asset must meet its channel spec. Respect character limits. Match platform tone exactly.
+
+INTERNAL vs. PUBLIC: Agent Notes are internal only. Never blend private strategy into public-facing copy.
+
+OUTPUT: Return ONE valid JSON object. No markdown fences, no preamble, no trailing text.
+
+{
+  "assets": [
+    {
+      "channel": "instagram",
+      "content": "Full ready-to-post copy",
+      "char_count": 284,
+      "confirm_needed": "Specific items to confirm before posting, or null",
+      "next_step": "Specific action for this asset"
+    }
+  ],
+  "has_placeholders": false,
+  "fh_flags": [
+    {
+      "flagged_input": "exact phrase or pattern from user input",
+      "risk_level": "LEGAL/CH.151B",
+      "legal_basis": "MGL Ch.151B — demographic steering",
+      "action": "Excluded from all assets. Do not use."
+    }
+  ],
+  "listing_copy_note": null,
+  "overall_next_step": "Single most important action the agent should take right now"
+}`;
+
+  const userMsg = `Generate a complete marketing kit.
+
+Asset type: ${assetType.replace(/_/g,' ')}
+Property type: ${propertyType.replace(/_/g,' ')}
+Voice: ${tone.replace(/_/g,' ')}
+
+Channel specifications (follow strictly):
+${channelSpecs}
+
+VERIFIED LISTING FACTS — use ONLY these, and scan for compliance issues:
+${facts}`;
+
+  try {
+    const resp = await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app: 'marketing',
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+    const raw = (data.content || []).map(b => b.text || '').join('');
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { throw new Error('Response could not be parsed. Try again.'); }
+    currentResults = { mode:'generate', data: parsed };
+    renderGenerate(parsed);
+  } catch(err) { showError(err.message); }
+  finally { setLoading(false); }
+}
+
+// ── AUDIT
+async function runAudit() {
+  const copy = document.getElementById('auditCopy').value.trim();
+  if (!copy) { alert('Please paste the copy you want audited.'); return; }
+
+  const channel     = document.getElementById('auditChannel').value;
+  const listingType = document.getElementById('auditListingType').value;
+
+  setLoading(true, 'Auditing...');
+
+  const systemPrompt = `You are JSN Marketing Kit Generator in Audit Mode — Massachusetts real estate marketing compliance specialist.
+
+${MA_COMPLIANCE}
+
+AUDIT TASK:
+Review the submitted copy against ALL of the following:
+1. Massachusetts office Communications Compliance Policy (full policy above)
+2. MGL Ch.151B fair housing protections (full protected class list)
+3. MGL Ch.93A unfair/deceptive practices (fabricated urgency, misrepresentation, coercive language)
+4. Fair Housing Act federal requirements
+5. NAR Code of Ethics (Articles 1, 2, 11)
+6. Post-NAR Settlement buyer compensation disclosure requirements
+7. MGL Ch.112 §87DDD½ rental broker fee law (eff. Aug 1 2025) — if rental context
+8. Channel fit (length, tone, format for the specified platform)
+9. Voice quality (generic filler, hype language, unsubstantiated claims)
+10. Accuracy risk (unverified or invented claims)
+
+For each fair housing flag: cite the exact phrase, the risk level (LEGAL/CH.151B, MCAD/BOARD, or CONDUCT), and the specific legal citation from the policy.
+
+Verdict must be EXACTLY one of: "Ready to Post" / "Needs Light Edits" / "Do Not Publish Yet"
+
+Return ONE valid JSON object. No markdown, no preamble.
+{
+  "verdict": "Needs Light Edits",
+  "verdict_reason": "One clear sentence.",
+  "fh_flags": [
+    {
+      "flagged_phrase": "exact phrase from submitted copy",
+      "risk_level": "LEGAL/CH.151B",
+      "legal_basis": "MGL Ch.151B — demographic steering",
+      "action_required": "Remove and replace with objective listing fact."
+    }
+  ],
+  "key_issues": ["Issue 1 (non-FH)", "Issue 2"],
+  "revised_version": "Complete revised copy, fully compliant and ready to post",
+  "next_step": "Specific action the agent should take"
+}`;
+
+  const userMsg = `Audit this ${getLbl(channel)} copy for a ${listingType.replace(/_/g,' ')} listing. Apply full MA compliance policy.\n\n${copy}`;
+
+  try {
+    const resp = await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        app: 'marketing',
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+    const raw = (data.content || []).map(b => b.text || '').join('');
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { throw new Error('Response could not be parsed. Try again.'); }
+    currentResults = { mode:'audit', data: parsed };
+    renderAudit(parsed);
+  } catch(err) { showError(err.message); }
+  finally { setLoading(false); }
+}
+
+// ── RENDER GENERATE
+function renderGenerate(data) {
+  const assets = data.assets || [];
+  const fhFlags = data.fh_flags || [];
+
+  const tabBar = document.getElementById('outputTabsBar');
+  tabBar.style.display = 'flex';
+  tabBar.innerHTML = assets.map(a => {
+    const isInternal = a.channel === 'agent_notes';
+    const hasPH = !!a.confirm_needed;
+    const hasFH = fhFlags.length > 0;
+    return `<div class="output-tab${isInternal?' is-internal':''}${hasPH?' has-placeholder':''}${hasFH?' has-fh':''}"
+      data-ch="${a.channel}" onclick="showTab('${a.channel}')">
+      <span class="tab-dot"></span>${getLbl(a.channel)}
+    </div>`;
+  }).join('');
+
+  let html = '';
+
+  // Global compliance flags (shown on every tab)
+  if (fhFlags.length) {
+    html += `<div id="globalFhFlags"><div class="fh-block" style="margin-bottom:16px;">
+      <div class="fh-block-title">⚑ Compliance Flags — Input Reviewed Against MA Office Policy</div>`;
+    fhFlags.forEach(f => {
+      const riskCls = f.risk_level?.includes('LEGAL') ? 'risk-legal' : f.risk_level?.includes('MCAD') ? 'risk-mcad' : 'risk-conduct';
+      html += `<div class="fh-item">
+        <span class="fh-risk ${riskCls}">${esc(f.risk_level||'')}</span>
+        <strong style="color:var(--cream);">${esc(f.flagged_input||f.flagged_phrase||'')}</strong>
+        <div style="margin-top:3px;color:var(--cream-dim);">${esc(f.legal_basis||'')} — ${esc(f.action||f.action_required||'')}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (data.has_placeholders) {
+    html += `<div class="placeholder-warning"><strong>⚠ Placeholders present</strong> — Confirm all [PLACEHOLDER] items before publishing.</div>`;
+  }
+  if (data.listing_copy_note) {
+    html += `<div class="scope-note">📌 ${esc(data.listing_copy_note)}</div>`;
+  }
+
+  assets.forEach(a => {
+    const meta = CHANNEL_META[a.channel] || {};
+    const cc = a.char_count || (a.content ? a.content.length : 0);
+    const over = meta.limit && cc > meta.limit;
+    const isInternal = a.channel === 'agent_notes';
+
+    html += `<div class="tab-content" data-ch="${a.channel}">`;
+    if (isInternal) html += `<div class="internal-badge">⛔ Internal Only — Do Not Publish</div>`;
+
+    html += `<div class="asset-label">${getLbl(a.channel)}
+      <span class="asset-label-line"></span>
+      <span class="char-count${over?' char-over':''}">${cc.toLocaleString()} chars${meta.limit?' / '+meta.limit.toLocaleString()+' max':''}${over?' ⚠':''}</span>
+    </div>`;
+    html += `<div class="asset-content" data-raw="${esc(a.content||'')}">
+      <button class="copy-btn" onclick="copyBlock(this)">Copy</button>${esc(a.content||'')}
+    </div>`;
+    if (a.confirm_needed) html += `<div class="confirm-block"><div class="confirm-label">Confirm Before Posting</div>${esc(a.confirm_needed)}</div>`;
+    if (a.next_step)      html += `<div class="next-block"><div class="next-label">Next Step</div>${esc(a.next_step)}</div>`;
+    html += `</div>`;
+  });
+
+  if (data.overall_next_step) {
+    html += `<div class="overall-next"><div class="overall-next-label">Overall Next Step</div><div class="overall-next-text">${esc(data.overall_next_step)}</div></div>`;
+  }
+  html += `<button class="copy-all-btn" onclick="copyAll()">Copy All Assets to Clipboard</button>`;
+
+  document.getElementById('outputBody').innerHTML = html;
+  if (assets.length) showTab(assets[0].channel);
+}
+
+// ── RENDER AUDIT
+function renderAudit(data) {
+  document.getElementById('outputTabsBar').style.display = 'none';
+  const vmap = { 'Ready to Post':'verdict-ready', 'Needs Light Edits':'verdict-light', 'Do Not Publish Yet':'verdict-hold' };
+  const vcls = vmap[data.verdict] || 'verdict-light';
+
+  let html = `<div class="verdict-block ${vcls}">Verdict: ${esc(data.verdict)}</div>`;
+  if (data.verdict_reason) {
+    html += `<div class="audit-section"><div class="audit-section-body" style="font-style:italic;color:var(--cream-dim);">${esc(data.verdict_reason)}</div></div>`;
+  }
+
+  if (data.fh_flags && data.fh_flags.length) {
+    html += `<div class="audit-section"><div class="audit-section-title">Compliance Flags</div>
+      <div class="fh-block">`;
+    data.fh_flags.forEach(f => {
+      const riskCls = f.risk_level?.includes('LEGAL') ? 'risk-legal' : f.risk_level?.includes('MCAD') ? 'risk-mcad' : 'risk-conduct';
+      html += `<div class="fh-item">
+        <span class="fh-risk ${riskCls}">${esc(f.risk_level||'')}</span>
+        <strong style="color:var(--cream);">"${esc(f.flagged_phrase||f.flagged_input||'')}"</strong>
+        <div style="margin-top:3px;color:var(--cream-dim);">${esc(f.legal_basis||'')} — ${esc(f.action_required||f.action||'')}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  if (data.key_issues && data.key_issues.length) {
+    html += `<div class="audit-section"><div class="audit-section-title">Other Issues</div>
+      <div class="audit-section-body">${data.key_issues.map(i => `• ${esc(i)}`).join('<br>')}</div></div>`;
+  }
+
+  if (data.revised_version) {
+    html += `<div class="audit-section"><div class="audit-section-title">Revised Version</div>
+      <div class="asset-content" data-raw="${esc(data.revised_version)}">
+        <button class="copy-btn" onclick="copyBlock(this)">Copy</button>${esc(data.revised_version)}
+      </div></div>`;
+  }
+
+  if (data.next_step) {
+    html += `<div class="next-block"><div class="next-label">Next Step</div>${esc(data.next_step)}</div>`;
+  }
+
+  document.getElementById('outputBody').innerHTML = html;
+}
+
+// ── TAB
+function showTab(ch) {
+  document.querySelectorAll('.output-tab').forEach(t => t.classList.toggle('active', t.dataset.ch === ch));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.dataset.ch === ch));
+  // Always show global FH flags above tab content
+  const gff = document.getElementById('globalFhFlags');
+  if (gff) gff.style.display = 'block';
+}
+
+// ── COPY
+function copyBlock(btn) {
+  const block = btn.closest('[data-raw]');
+  navigator.clipboard.writeText(block?.dataset.raw || '').then(() => {
+    const o = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = o, 1500);
+  });
+}
+
+function copyAll() {
+  if (!currentResults || currentResults.mode !== 'generate') return;
+  const assets = currentResults.data.assets || [];
+  const fhFlags = currentResults.data.fh_flags || [];
+  let text = assets.map(a =>
+    `=== ${getLbl(a.channel).toUpperCase()} ===\n${a.content}` +
+    (a.confirm_needed ? `\n\nCONFIRM: ${a.confirm_needed}` : '') +
+    (a.next_step ? `\n\nNEXT: ${a.next_step}` : '')
+  ).join('\n\n---\n\n');
+  if (fhFlags.length) {
+    text += '\n\n=== COMPLIANCE FLAGS (DO NOT PUBLISH FLAGGED LANGUAGE) ===\n';
+    text += fhFlags.map(f => `[${f.risk_level}] "${f.flagged_input||f.flagged_phrase}" — ${f.legal_basis}`).join('\n');
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.querySelector('.copy-all-btn');
+    if (b) { b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy All Assets to Clipboard', 1800); }
+  });
+}
+
+// ── HISTORY
+function renderHistory() {
+  if (!draftHistory.length) return;
+  document.getElementById('historyWrap').style.display = 'block';
+  document.getElementById('historyList').innerHTML = draftHistory.map((d, i) => {
+    const preview = d.facts.replace(/\n/g,' ').substring(0, 55);
+    const time = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    return `<div class="history-chip" onclick="restoreDraft(${i})">
+      <div><div class="history-chip-label">${i===0?'Latest':'Draft '+(i+1)} · ${time}</div>
+      <div style="font-size:11px;margin-top:2px;color:var(--cream-dim);">${esc(preview)}${d.facts.length>55?'…':''}</div></div>
+      <span class="history-restore">Restore →</span>
+    </div>`;
+  }).join('');
+}
+
+function restoreDraft(i) {
+  const d = draftHistory[i]; if (!d) return;
+  document.getElementById('listingFacts').value = d.facts;
+  document.getElementById('assetType').value = d.assetType;
+  document.getElementById('propertyType').value = d.propertyType;
+  document.getElementById('tone').value = d.tone;
+  document.querySelectorAll('#generateArea .channel-chip').forEach(chip => {
+    const v = chip.querySelector('input').value;
+    const on = d.channels.includes(v);
+    chip.classList.toggle('active', on);
+    chip.querySelector('input').checked = on;
+  });
+}
+
+// ── HELPERS
+function setLoading(on, msg) {
+  const btn = document.getElementById(currentMode === 'generate' ? 'generateBtn' : 'auditBtn');
+  btn.disabled = on;
+  document.getElementById('genStatus').textContent = on ? msg : '';
+  if (on) {
+    document.getElementById('outputTabsBar').style.display = 'none';
+    document.getElementById('outputBody').innerHTML = `<div class="loading-wrap">
+      <div class="spinner"></div>
+      <div class="loading-text">${esc(msg)}</div>
+      <div class="loading-sub">Checking against MA office compliance policy</div>
+    </div>`;
+  }
+}
+
+function showError(msg) {
+  document.getElementById('outputBody').innerHTML = `<div class="empty-state">
+    <div class="empty-icon">⚠️</div>
+    <div class="empty-title">Failed</div>
+    <div class="empty-sub">${esc(msg)}</div>
+  </div>`;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#8899aa; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(11,17,32,0.97);">
+  Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
+</div>
+</body>
+</html>

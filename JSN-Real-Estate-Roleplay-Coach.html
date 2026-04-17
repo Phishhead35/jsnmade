@@ -1,0 +1,4792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Real Estate Roleplay Coach</title>
+<link rel="manifest" href="data:application/json,{%22name%22:%22JSN+Real+Estate+Roleplay+Coach%22,%22short_name%22:%22JSN+Coach%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230c0e13%22,%22theme_color%22:%22%23ff9d00%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg+xmlns='http://www.w3.org/2000/svg'+viewBox='0+0+40+40'%3E%3Crect+width='40'+height='40'+rx='7'+fill='%230d1829'/%3E%3Cpath+d='M20+8L6+19h4v13h8v-8h4v8h8V19h4L20+8z'+fill='none'+stroke='%23ff9d00'+stroke-width='1.5'/%3E%3C/svg%3E%22,%22sizes%22:%22any%22,%22type%22:%22image/svg+xml%22}]}">
+<meta name="theme-color" content="#ff9d00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JSN Coach">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05070d;--surface:#0d1120;--surface2:#111829;--border:#1e2b4a;--accent:#ff9d00;--accent-glow:rgba(255,157,0,.18);--accent2:#00d4ff;--accent2-glow:rgba(0,212,255,.15);--text:#f0f4ff;--muted:#7289b0;--danger:#ff4757;--success:#00e5a0;--r:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#0d1120 0%,#0a1428 100%);border-bottom:1px solid rgba(255,157,0,.2);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 20px rgba(0,0,0,.5)}
+.logo{display:flex;align-items:center;gap:14px}
+.logo-svg{width:40px;height:40px;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;gap:0}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--accent);text-shadow:0 0 20px rgba(255,157,0,.4);letter-spacing:1.5px;line-height:1}
+.logo-tag{font-family:'DM Mono',monospace;font-size:9px;color:#ffffff;letter-spacing:0.12em;text-transform:uppercase;line-height:1;margin-top:2px}
+.mode-toggle{display:flex;gap:3px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:3px}
+.mode-btn{font-family:'DM Mono',monospace;font-size:10.5px;padding:5px 14px;border:none;border-radius:4px;cursor:pointer;background:transparent;color:#ffffff;letter-spacing:0.04em;transition:all .15s}
+.mode-btn.active{background:var(--accent);color:#05070d;font-weight:600;box-shadow:0 0 14px var(--accent-glow)}
+
+/* LAYOUT */
+.main{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+aside{width:215px;background:var(--surface);border-right:1px solid rgba(255,157,0,.12);overflow-y:auto;flex-shrink:0;padding:14px 0;display:flex;flex-direction:column}
+.sl{font-family:'DM Mono',monospace;font-size:9.5px;color:#ffffff;text-transform:uppercase;letter-spacing:.1em;padding:6px 15px 3px}
+.si{display:block;width:100%;text-align:left;padding:7px 15px;background:transparent;border:none;color:#ffffff;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .12s;border-left:2px solid transparent}
+.si:hover{background:rgba(255,157,0,.07);color:var(--accent);border-left-color:var(--accent);text-shadow:0 0 12px rgba(255,157,0,.3)}
+.sdiv{height:1px;background:var(--border);margin:8px 15px}
+
+/* KB */
+.kb-section{margin-top:auto;border-top:1px solid var(--border);padding:12px 0 0}
+.kb-header{display:flex;align-items:center;justify-content:space-between;padding:0 15px 5px}
+.kb-btn{font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 8px;background:rgba(255,157,0,.1);border:1px solid var(--accent);border-radius:4px;color:var(--accent);cursor:pointer;transition:all .12s}
+.kb-btn:hover{background:rgba(255,157,0,.22);box-shadow:0 0 10px var(--accent-glow)}
+#kb-input{display:none}
+.kb-list{padding:0 0 10px;max-height:180px;overflow-y:auto}
+.kb-item{display:flex;align-items:center;padding:4px 15px;gap:5px}
+.kb-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'DM Mono',monospace;font-size:10px;color:#ffffff}
+.kb-badge{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(78,189,142,.1);color:var(--success);flex-shrink:0}
+.kb-del{background:transparent;border:none;color:#ffffff;cursor:pointer;font-size:13px;padding:0 2px;line-height:1;flex-shrink:0;transition:color .12s}
+.kb-del:hover{color:var(--danger)}
+.kb-empty{padding:4px 15px 8px;font-family:'DM Mono',monospace;font-size:10px;color:#ffffff;font-style:italic}
+.kb-proc{padding:4px 15px;font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* CHAT */
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ctx-bar{background:var(--surface2);border-bottom:1px solid rgba(0,212,255,.1);padding:7px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap}
+.cp{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10.5px;color:#ffffff}
+.cp select{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:10.5px;padding:2px 6px;border-radius:4px;cursor:pointer}
+.kb-ind{margin-left:auto;font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 8px;border-radius:4px;background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.3);color:var(--success);display:none;text-shadow:0 0 8px rgba(0,229,160,.4)}
+.kb-ind.on{display:block}
+
+.messages{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:10px;max-width:84%;animation:fadeUp .22s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg.assistant{align-self:flex-start}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:12px;flex-shrink:0;margin-top:2px}
+.msg.user .av{background:var(--accent2);color:#05070d;box-shadow:0 0 12px var(--accent2-glow)}
+.msg.assistant .av{background:var(--accent);color:#05070d;box-shadow:0 0 12px var(--accent-glow)}
+.bubble{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:11px 15px;font-size:14px;line-height:1.68;white-space:pre-wrap}
+.msg.user .bubble{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.25);}
+.bubble.rp{border-left:3px solid var(--accent);box-shadow:inset 3px 0 12px rgba(255,157,0,.05)}
+.bubble .tag{font-family:'DM Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block}
+.tag.rp-tag{color:var(--accent);text-shadow:0 0 8px rgba(255,157,0,.5)}
+.tag.co-tag{color:var(--accent2);text-shadow:0 0 8px rgba(0,212,255,.5)}
+.score-item{display:flex;flex-direction:column;gap:2px;margin:3px 0}
+.score-lbl{font-family:'DM Mono',monospace;font-size:9.5px;color:#ffffff;text-transform:uppercase;letter-spacing:.04em}
+.score-row{display:flex;align-items:center;gap:6px}
+.score-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;max-width:150px}
+.score-fill{height:100%;background:linear-gradient(90deg,var(--accent),#ffcc44);border-radius:2px;box-shadow:0 0 6px rgba(255,157,0,.4)}
+.score-n{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--text);min-width:18px}
+.typing{display:flex;gap:4px;padding:12px 15px;align-items:center}
+.dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:bop 1.2s infinite;box-shadow:0 0 6px var(--accent-glow)}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bop{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
+
+/* INPUT */
+.inp-area{border-top:1px solid var(--border);padding:12px 18px;background:var(--surface);flex-shrink:0}
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.pill{font-family:'DM Mono',monospace;font-size:10.5px;padding:3px 9px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:#ffffff;cursor:pointer;transition:all .12s;white-space:nowrap}
+.pill:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,157,0,.1);box-shadow:0 0 10px var(--accent-glow)}
+.inp-row{display:flex;gap:9px;align-items:flex-end}
+textarea{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 13px;resize:none;outline:none;min-height:40px;max-height:115px;line-height:1.5;transition:border-color .15s}
+textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
+textarea::placeholder{color:rgba(255,255,255,0.55)}
+.send{background:var(--accent);border:none;border-radius:var(--r);color:#05070d;box-shadow:0 0 18px var(--accent-glow);font-family:'Bebas Neue',sans-serif;font-size:15px;padding:0 17px;height:40px;cursor:pointer;letter-spacing:.5px;transition:opacity .15s;flex-shrink:0}
+.send:hover{opacity:.9;box-shadow:0 0 28px rgba(255,157,0,.4)}
+.send:disabled{opacity:.35;cursor:not-allowed}
+
+/* WELCOME */
+.wcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;max-width:540px}
+.wcard h2{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent);letter-spacing:.5px;margin-bottom:5px;text-shadow:0 0 20px rgba(255,157,0,.35)}
+.wcard p{color:#ffffff;font-size:13px;margin-bottom:13px}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wb{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12.5px;padding:8px 11px;cursor:pointer;text-align:left;transition:all .12s;line-height:1.4}
+.wb:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,157,0,.08);box-shadow:0 0 14px var(--accent-glow)}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.stream-bubble::after{content:'▋';color:var(--accent);animation:blink .7s step-end infinite;font-size:12px;margin-left:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.stream-bubble:not(:empty).done::after{display:none}
+
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);z-index:999;animation:fadeUp .2s ease}
+.toast.ok{border-color:var(--success);color:var(--success);box-shadow:0 0 14px rgba(0,229,160,.2)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+
+/* ── MOBILE RESPONSIVE ───────────────────────────────────────────────── */
+@media(max-width:768px){
+  header{padding:0 14px;height:52px}
+  .logo-name{font-size:14px}
+  .logo-tag{display:none}
+  .logo-svg{width:32px;height:32px}
+  .mode-toggle{gap:2px}
+  .mode-btn{font-size:9.5px;padding:4px 10px}
+  .main{flex-direction:column}
+  aside{width:100%;max-height:0;overflow:hidden;transition:max-height .3s ease;border-right:none;border-bottom:1px solid var(--border);padding:0}
+  aside.open{max-height:420px;padding:10px 0}
+  .chat-area{flex:1;min-height:0}
+  .ctx-bar{padding:6px 12px;gap:8px;flex-wrap:wrap}
+  .cp select{font-size:10px;padding:2px 4px}
+  .messages{padding:12px}
+  .msg{max-width:95%}
+  .inp-area{padding:10px 12px}
+  .pills{gap:4px;margin-bottom:7px}
+  .pill{font-size:10px;padding:3px 8px}
+  textarea{font-size:13px;padding:8px 11px}
+  .send{font-size:14px;padding:0 14px;height:38px}
+  .wcard{padding:14px}
+  .wgrid{grid-template-columns:1fr}
+  .kb-section{display:none}
+}
+@media(max-width:768px){
+  .mobile-menu-btn{display:flex}
+}
+.mobile-menu-btn{
+  display:none;
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  color:var(--text);
+  padding:5px 10px;
+  cursor:pointer;
+  font-size:16px;
+  align-items:center;
+  margin-right:8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:8px"><button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu" aria-expanded="false" id="menu-btn">☰</button><div class="logo">
+    <!-- JSN Logo Mark -->
+    <svg class="logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="7" fill="#0d1829"/>
+      <rect x="1" y="1" width="38" height="38" rx="6" stroke="#ff9d00" stroke-width="1.5" fill="none" opacity="0.7"/>
+      <!-- House icon -->
+      <path d="M20 8L6 19h4v13h8v-8h4v8h8V19h4L20 8z" fill="none" stroke="#ff9d00" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- JSN initials small -->
+      <text x="20" y="26" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="7" fill="#ff9d00" letter-spacing="1">JSN</text>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">JSN Real Estate Roleplay Coach</span>
+      <span class="logo-tag">Boston &amp; North Shore · Agent &amp; Team Training</span>
+    </div>
+  </div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" onclick="setMode('agent')" id="ma" aria-pressed="true" aria-label="Switch to Agent Mode">Agent Mode</button>
+    <button class="mode-btn" onclick="setMode('team')" id="mt" aria-pressed="false" aria-label="Switch to Team Leader Mode">Team Leader</button>
+  </div>
+</div>
+</header>
+
+<div class="main">
+  <aside>
+    <div class="sl">Quick Start</div>
+    <button class="si" onclick="qs('start_roleplay')">▶ Start a Roleplay</button>
+    <button class="si" onclick="qs('objection')">⚡ Objection Help</button>
+    <button class="si" onclick="qs('rewrite')">✏️ Rewrite a Script</button>
+    <button class="si" onclick="qs('debrief')">🔍 Debrief a Call</button>
+    <button class="si" onclick="qs('confidence')">🧠 Confidence Reset</button>
+    <button class="si" onclick="qs('live_help')">💬 Live Response Help</button>
+    <div class="sdiv"></div>
+    <div class="sl">Scenarios</div>
+    <button class="si" onclick="qs('boston_condo')">Boston Condo Seller</button>
+    <button class="si" onclick="qs('boston_renter')">Boston Renter</button>
+    <button class="si" onclick="qs('ns_landlord')">NS Landlord</button>
+    <button class="si" onclick="qs('ns_moveup')">NS Move-Up Buyer</button>
+    <button class="si" onclick="qs('boston_fsbo')">Boston FSBO</button>
+    <button class="si" onclick="qs('expired')">Expired Listing</button>
+    <button class="si" onclick="qs('multifamily')">NS Multifamily Owner</button>
+    <div class="sdiv"></div>
+    <div class="sl">Drill Packs</div>
+    <button class="si" onclick="qs('drill_new')">5 New Agent Drills</button>
+    <button class="si" onclick="qs('drill_seller')">10 Boston Seller Drills</button>
+    <button class="si" onclick="qs('drill_landlord')">7 NS Landlord Drills</button>
+    <button class="si" onclick="qs('drill_huddle')">15-Min Team Huddle</button>
+    <button class="si" onclick="qs('drill_listing')">Listing Appt Pressure</button>
+    <div class="sdiv"></div>
+    <button class="si" onclick="clearChat()" style="color:#ffffff;font-size:12px">↺ New Session</button>
+
+    <div class="kb-section">
+      <div class="kb-header">
+        <div class="sl" style="padding:0;margin:0">Knowledge Base</div>
+        <label class="kb-btn" for="kb-input">+ Add Doc</label>
+        <input type="file" id="kb-input" accept=".docx,.txt,.md" multiple onchange="handleUpload(event)">
+      </div>
+      <div class="kb-list" id="kb-list">
+        <div class="kb-empty">No additional docs loaded.</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="chat-area">
+    <div class="ctx-bar">
+      <div class="cp"><span>Market:</span>
+        <select id="sel-market"><option>Boston</option><option>North Shore</option><option>Both Markets</option></select>
+      </div>
+      <div class="cp"><span>Level:</span>
+        <select id="sel-level"><option>New Agent</option><option>Developing</option><option>Experienced</option><option>Veteran</option></select>
+      </div>
+      <div class="cp"><span>Pressure:</span>
+        <select id="sel-pressure"><option>Easy</option><option selected>Realistic</option><option>Skeptical</option><option>Combative</option><option>Time Pressure</option></select>
+      </div>
+      <div class="kb-ind" id="kb-ind">📄 Extra KB Active</div><button onclick="exportChat()" style="margin-left:8px;font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:#ffffff;cursor:pointer;transition:all .12s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">↓ Export</button>
+    </div>
+
+    <div class="messages" id="msgs" role="log" aria-label="Conversation" aria-live="polite"></div>
+
+    <div class="inp-area">
+      <div class="pills">
+        <button class="pill" onclick="ins('That price is too high.')">Price too high</button>
+        <button class="pill" onclick="ins('I want to wait until spring.')">Wait until spring</button>
+        <button class="pill" onclick="ins('My cousin is a realtor.')">My cousin is a realtor</button>
+        <button class="pill" onclick="ins('I need to think about it.')">Need to think about it</button>
+        <button class="pill" onclick="ins('What do you actually do for 3%?')">What do you do for 3%?</button>
+        <button class="pill" onclick="ins('I found a place on Zillow for less.')">Found cheaper on Zillow</button>
+        <button class="pill" onclick="ins('We found someone else.')">Found someone else</button>
+      </div>
+      <div class="inp-row">
+        <textarea id="inp" aria-label="Message input" placeholder="Type a situation, paste a script, or hit a quick start..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,115)+'px'"></textarea>
+        <button class="send" id="sendbtn" onclick="send()" aria-label="Send message">SEND</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+// ── EMBEDDED KB ───────────────────────────────────────────────────────────────
+const EMBEDDED_KB = `--- Rental & Property Management Guide ---\nJSN Rental and Property Management Conversations Guide
+
+A reference guide for renter, owner, and property management communication
+
+Designed for GPT Knowledge uploads
+
+• Built to support rental scripts, follow-up, owner updates, and coaching.
+
+• Keep communication clear, neutral, organized, and professional.
+
+• Use this file to strengthen the rental side of the GPT so it does not feel like an add-on.
+
+
+
+Core principles
+
+• Answer the practical question first.
+
+• Be clear on process, timing, and next steps.
+
+• Do not promise exceptions you do not control.
+
+• Use neutral, professional language in renter and owner communication.
+
+Rental Inquiry Workflow
+
+• Respond quickly and clearly on availability.
+
+• Answer the core question first before adding extra detail.
+
+• Offer the next step, usually a showing or application outline.
+
+• Set expectations on timing, requirements, and what documents may be needed.
+
+Showing Confirmation
+
+• Confirm date, time, location, and arrival instructions.
+
+• Keep the tone warm and organized.
+
+• Let the prospect know what to bring or expect.
+
+• Reconfirm any key qualification points if appropriate.
+
+Post-Showing Follow-Up
+
+• Thank them for coming.
+
+• Ask a light, useful question about fit.
+
+• Clarify the timeline if there is one.
+
+• Invite the next step without sounding pushy.
+
+Application Conversations
+
+• Be clear on process, requirements, and timing.
+
+• Do not imply approval before the process is complete.
+
+• Keep wording neutral and professional.
+
+• Use consistent language across applicants.
+
+Deposits, Fees, and Lease Terms
+
+• Explain what each item is and what it covers.
+
+• Avoid sounding rigid or apologetic.
+
+• Clarify what is standard versus what may require owner approval.
+
+• Never promise exceptions you do not control.
+
+Landlord / Owner Updates
+
+• Lead with status first, then feedback, then recommendation.
+
+• Translate showing activity into meaning.
+
+• Be direct about price, condition, or requirement issues.
+
+• Keep updates concise and decision-oriented.
+
+Tone Differences in Rentals
+
+• Renter conversations should feel organized, respectful, and efficient.
+
+• Owner conversations should feel informed, accountable, and strategic.
+
+• Do not use sales-heavy language where clarity matters more.
+
+Compliance Guardrails
+
+• Do not give legal advice.
+
+• Do not generate discriminatory screening language.
+
+• Keep criteria and communication neutral and professional.
+
+• Recommend legal or broker guidance for policy questions.
+
+Sample message patterns
+
+Rental inquiry response
+
+Yes, the unit is currently available. Based on what you asked about, it may be a strong fit. If you’d like, I can share the next step for scheduling a showing and outline what the application process looks like.
+
+Showing confirmation
+
+Looking forward to meeting you at the property on [day/time]. I’ll send the address and arrival details here as well so everything is easy.
+
+Post-showing follow-up
+
+Thanks again for coming by today. I’d be happy to answer any questions that came up after the showing. If it still feels like a fit, I can walk you through next steps.
+
+Owner update
+
+Here’s the current picture as of today: traffic has been steady, and the main feedback pattern is price sensitivity relative to nearby options. Based on that, my recommendation is...\n--- END ---\n\n--- Roleplay Scenario Bank ---\nJSN Roleplay Scenario Bank
+
+Realistic practice scenarios for sales, rentals, and property management
+
+Designed for GPT Knowledge uploads
+
+• Each scenario includes the role, difficulty, likely pushback, and what strong performance looks like.
+
+• Use these scenarios to make roleplay mode feel grounded, varied, and realistic.
+
+• Difficulty can scale up or down based on the user’s experience level.
+
+
+
+How to use this file
+
+• Choose a scenario, match the pushback to the agent’s level, and stay in character until the roleplay ends.
+
+• If the user asks for hard pushback, increase resistance realistically without becoming theatrical.
+
+• After roleplay ends, break character and debrief with one or two focused improvements.
+
+Difficulty guidance
+
+• Brand new agents: moderate resistance and clear objections.
+
+• Developing agents: firmer resistance and more follow-up questions.
+
+• Experienced agents: layered objections, skepticism, and better-informed prospects.
+
+• Veteran agents: advanced resistance, curveballs, and tighter time pressure.
+
+FSBO Cold Call
+
+Role you are playing
+
+Seller
+
+Default difficulty
+
+Experienced
+
+Scenario
+
+You are a homeowner trying to sell on your own. You are skeptical of agents and think commissions are inflated.
+
+Likely pushback
+
+Common pushback: 'I can do this myself', 'agents just stick it in the MLS', 'I’ll call you if I need you'.
+
+What to reveal if the agent handles it well
+
+If agent asks good questions, reveal you are worried about pricing and wasted time.
+
+What strong performance looks like
+
+A strong agent stays calm, asks short questions, and earns the next conversation rather than forcing an appointment.
+
+
+
+Overpriced Seller Consultation
+
+Role you are playing
+
+Seller
+
+Default difficulty
+
+Developing
+
+Scenario
+
+You believe your home should list above the nearby comps because you invested heavily in upgrades.
+
+Likely pushback
+
+Pushback: 'Those homes are not comparable', 'we’re willing to wait for the right buyer'.
+
+What to reveal if the agent handles it well
+
+If challenged respectfully, admit you are afraid of underselling.
+
+What strong performance looks like
+
+Strong performance balances empathy with market leadership.
+
+
+
+Commission Pushback at Listing Appointment
+
+Role you are playing
+
+Seller
+
+Default difficulty
+
+Experienced
+
+Scenario
+
+You like the agent but want a discount on commission.
+
+Likely pushback
+
+Pushback: 'Another agent said they’d do it for less', 'the market should sell it anyway'.
+
+What to reveal if the agent handles it well
+
+If the agent explains value clearly, ask how they protect net.
+
+What strong performance looks like
+
+Strong performance ties fee to process, leverage, and execution.
+
+
+
+Buyer Wants to Wait
+
+Role you are playing
+
+Buyer
+
+Default difficulty
+
+Brand new
+
+Scenario
+
+You have looked at a few homes but keep saying you want to wait.
+
+Likely pushback
+
+Pushback: 'We’re not ready', 'we need more time'.
+
+What to reveal if the agent handles it well
+
+If the agent lowers pressure, reveal you are afraid of overpaying.
+
+What strong performance looks like
+
+Strong performance uncovers the real issue without forcing a decision.
+
+
+
+Open House Lead, Just Browsing
+
+Role you are playing
+
+Buyer
+
+Default difficulty
+
+Brand new
+
+Scenario
+
+You walk into an open house and do not want a pushy agent.
+
+Likely pushback
+
+Pushback: 'We’re just looking', 'we already have alerts set up'.
+
+What to reveal if the agent handles it well
+
+If the agent stays relaxed, reveal what neighborhoods interest you.
+
+What strong performance looks like
+
+Strong performance feels helpful, not salesy.
+
+
+
+Buyer Rate Anxiety
+
+Role you are playing
+
+Buyer
+
+Default difficulty
+
+Developing
+
+Scenario
+
+You keep saying you want to wait for rates to come down.
+
+Likely pushback
+
+Pushback: 'It just doesn’t feel like the right time'.
+
+What to reveal if the agent handles it well
+
+If the agent compares scenarios well, reveal your budget cap.
+
+What strong performance looks like
+
+Strong performance broadens the conversation beyond one headline.
+
+
+
+Rental Inquiry, Price Sensitive
+
+Role you are playing
+
+Renter
+
+Default difficulty
+
+Developing
+
+Scenario
+
+You like the unit photos but think the rent is high compared with your ideal budget.
+
+Likely pushback
+
+Pushback: 'It’s too much', 'I’m seeing cheaper places'.
+
+What to reveal if the agent handles it well
+
+If the agent asks useful questions, reveal what you value most.
+
+What strong performance looks like
+
+Strong performance compares value and fit instead of arguing.
+
+
+
+Rental Showing Follow-Up
+
+Role you are playing
+
+Renter
+
+Default difficulty
+
+Brand new
+
+Scenario
+
+You toured the unit and liked it but have not applied.
+
+Likely pushback
+
+Pushback: 'We’re still looking', 'we need to think about it'.
+
+What to reveal if the agent handles it well
+
+If the agent keeps it light, reveal the real hesitation is the deposit.
+
+What strong performance looks like
+
+Strong performance keeps momentum without sounding needy.
+
+
+
+Deposit Objection
+
+Role you are playing
+
+Renter
+
+Default difficulty
+
+Developing
+
+Scenario
+
+You want the apartment but the move-in money feels heavy.
+
+Likely pushback
+
+Pushback: 'That deposit is too much'.
+
+What to reveal if the agent handles it well
+
+If the agent explains clearly, ask what the timeline is to decide.
+
+What strong performance looks like
+
+Strong performance is empathetic and clear, not rigid.
+
+
+
+Shorter Lease Request
+
+Role you are playing
+
+Renter
+
+Default difficulty
+
+Experienced
+
+Scenario
+
+You want a shorter term because your job situation may change.
+
+Likely pushback
+
+Pushback: 'I can’t commit to 12 months'.
+
+What to reveal if the agent handles it well
+
+If the agent stays transparent, reveal how much flexibility you need.
+
+What strong performance looks like
+
+Strong performance avoids overpromising and clarifies next steps.
+
+
+
+Landlord Upset About Vacancy
+
+Role you are playing
+
+Landlord
+
+Default difficulty
+
+Experienced
+
+Scenario
+
+Your unit has not leased and you are frustrated.
+
+Likely pushback
+
+Pushback: 'Why is it still vacant?', 'what am I paying for?'.
+
+What to reveal if the agent handles it well
+
+If the agent brings evidence and a plan, reveal what feedback you’ve heard.
+
+What strong performance looks like
+
+Strong performance is accountable and solutions-focused.
+
+
+
+Owner Resists Lowering Rent
+
+Role you are playing
+
+Landlord
+
+Default difficulty
+
+Developing
+
+Scenario
+
+You do not want to reduce the asking rent.
+
+Likely pushback
+
+Pushback: 'I’d rather wait than lower it'.
+
+What to reveal if the agent handles it well
+
+If the agent frames cost of vacancy well, reveal your timeline pressure.
+
+What strong performance looks like
+
+Strong performance uses numbers and timing instead of pressure.
+
+
+
+Expired Listing Reconnect
+
+Role you are playing
+
+Expired seller
+
+Default difficulty
+
+Experienced
+
+Scenario
+
+Your previous listing expired and you are annoyed by agent calls.
+
+Likely pushback
+
+Pushback: 'We already tried that', 'we’re taking a break'.
+
+What to reveal if the agent handles it well
+
+If the agent respects the frustration, reveal what disappointed you most.
+
+What strong performance looks like
+
+Strong performance is concise, respectful, and curious.
+
+
+
+Sphere Follow-Up, Hesitant Seller
+
+Role you are playing
+
+Seller
+
+Default difficulty
+
+Brand new
+
+Scenario
+
+You know the agent casually but have not decided to sell yet.
+
+Likely pushback
+
+Pushback: 'We may just stay put'.
+
+What to reveal if the agent handles it well
+
+If the agent asks good questions, reveal your life change that may drive the move.
+
+What strong performance looks like
+
+Strong performance feels personal and low-pressure.
+
+
+
+Property Manager Owner Update
+
+Role you are playing
+
+Owner
+
+Default difficulty
+
+Property manager
+
+Scenario
+
+You want an update on showing activity and applicant quality for a rental.
+
+Likely pushback
+
+Pushback: 'Why haven’t we found someone better?'.
+
+What to reveal if the agent handles it well
+
+If the manager explains the market clearly, reveal your minimum standards.
+
+What strong performance looks like
+
+Strong performance balances diplomacy with reality.\n--- END ---\n\n--- Objection Library ---\nJSN Objection Library
+
+Sales, Rentals, Property Management, and Confidence Coaching Responses
+
+Designed for GPT Knowledge uploads
+
+• Built to support scripts, objection handling, and realistic coaching.
+
+• Each entry includes what the objection may really mean, weak responses to avoid, and stronger options.
+
+• Use this file as a core knowledge source for JSN Scripts & Confidence Coach.
+
+
+
+How to use this library
+
+• The goal is not to win the objection. The goal is to lower resistance, build trust, and move the conversation forward.
+
+• Start by identifying what the prospect may really mean.
+
+• Use the response style that fits the moment: empathetic, direct, or question-based.
+
+• Coach delivery, not just wording. Calm clarity usually beats clever phrasing.
+
+Response strategy glossary
+
+• Empathetic response Validates the concern first, then redirects.
+
+• Direct response Clear and confident. Useful when stronger leadership is needed.
+
+• Question-based response Uses curiosity to uncover the real issue and reopen the conversation.
+
+• Reframe Changes how the person sees the issue without arguing with it.
+
+• Reduce-pressure move Lowers defensiveness so the conversation can continue.
+
+Objection entries
+
+Objection: "We want to list higher"
+
+Category
+
+Seller
+
+What they may really mean
+
+Emotional attachment, fear of leaving money on the table, or a test of your confidence.
+
+Why agents struggle with this
+
+Agents often cave too quickly or argue too hard instead of leading calmly.
+
+Weak response to avoid
+
+"Sure, we can try that and see what happens."
+
+Why it falls flat
+
+It sounds unconfident and tells the seller pricing is a guess, not a strategy.
+
+Better response strategy
+
+Validate the concern, then reframe pricing as a positioning decision. Lead with market reality and early leverage.
+
+Response option: empathetic
+
+I understand why you’d want to aim high. Most sellers want to protect their upside. My job is to help you price where the market will respond strongest right away.
+
+Response option: direct
+
+If we price ahead of the market, we risk helping competing homes look like the better buy. I’d rather position you to attract serious interest from day one.
+
+Response option: question-based
+
+Can I ask, are you more concerned about testing the top end, or making sure you don’t miss the strongest buyers early?
+
+If they push back again
+
+That makes sense. Let’s look at what buyers are rewarding right now and build a pricing strategy from there instead of guessing.
+
+Tone notes
+
+Calm, confident, advisor-like.
+
+Common mistakes
+
+Arguing, drowning them in comps, or agreeing too fast.
+
+Coaching notes
+
+Show control through clarity, not force.
+
+
+
+Objection: "Why should we pay your commission?"
+
+Category
+
+Seller
+
+What they may really mean
+
+They want proof of value and they do not want to feel overcharged.
+
+Why agents struggle with this
+
+Agents get defensive, justify too much, or sound uncomfortable talking about their own value.
+
+Weak response to avoid
+
+"That’s just the standard rate."
+
+Why it falls flat
+
+It dodges the real question and sounds lazy.
+
+Better response strategy
+
+Answer with outcomes, process, and risk reduction. Tie your fee to strategy, negotiation, and execution.
+
+Response option: empathetic
+
+That’s a fair question. My fee reflects more than putting a home online. It covers pricing strategy, positioning, negotiation, and the work that protects your net and keeps the process on track.
+
+Response option: direct
+
+My job is to earn that fee by helping you avoid pricing mistakes, weak negotiations, and preventable delays that cost more than the fee itself.
+
+Response option: question-based
+
+What would you want to see from an agent to feel that fee is justified?
+
+If they push back again
+
+I appreciate that. Let me walk you through where I create value and how that impacts your net, not just the line item.
+
+Tone notes
+
+Steady, non-defensive, matter-of-fact.
+
+Common mistakes
+
+Apologizing, quoting industry norms, or sounding offended.
+
+Coaching notes
+
+Talk about value with calm certainty.
+
+
+
+Objection: "We want to wait"
+
+Category
+
+Seller
+
+What they may really mean
+
+They are uncertain about timing, nervous about the next step, or avoiding commitment.
+
+Why agents struggle with this
+
+Agents push too hard instead of uncovering what is really holding the seller back.
+
+Weak response to avoid
+
+"No problem, just call me when you’re ready."
+
+Why it falls flat
+
+It gives away momentum and learns nothing.
+
+Better response strategy
+
+Lower pressure and ask a strong diagnostic question that gets to the real issue.
+
+Response option: empathetic
+
+I completely understand. A lot of sellers feel that way before they have enough clarity. What’s the main thing making you want to wait right now?
+
+Response option: direct
+
+Waiting can make sense if there’s a clear reason. I’d just want to make sure the delay is helping you, not costing you options.
+
+Response option: question-based
+
+When you say wait, is that more about timing, price, or just not feeling fully prepared yet?
+
+If they push back again
+
+That helps. Let’s talk through that one issue so you can make a decision based on facts, not just uncertainty.
+
+Tone notes
+
+Patient, curious, reassuring.
+
+Common mistakes
+
+Trying to close too soon or accepting the stall at face value.
+
+Coaching notes
+
+Curiosity keeps the conversation alive.
+
+
+
+Objection: "We’re talking to other agents"
+
+Category
+
+Seller
+
+What they may really mean
+
+They are comparing fit, testing you, or signaling they need more confidence before deciding.
+
+Why agents struggle with this
+
+Agents hear this as rejection and start competing too hard.
+
+Weak response to avoid
+
+"I’m better than the other agents."
+
+Why it falls flat
+
+It sounds insecure and self-centered.
+
+Better response strategy
+
+Stay calm, welcome the comparison, and refocus on the decision criteria that matter.
+
+Response option: empathetic
+
+That makes sense. You should feel confident in who you hire. My goal is simply to show you how I’d guide the pricing, marketing, and negotiation process.
+
+Response option: direct
+
+You should absolutely compare agents carefully. The bigger question is who gives you the clearest plan and the best chance at a strong outcome.
+
+Response option: question-based
+
+As you meet with others, what are you hoping to hear or feel that will help you decide?
+
+If they push back again
+
+That’s fair. If helpful, I can walk you through exactly how I’d position the home so you can compare approaches, not just personalities.
+
+Tone notes
+
+Confident, composed, non-needy.
+
+Common mistakes
+
+Badmouthing competitors or rushing to discount.
+
+Coaching notes
+
+Compete with clarity, not pressure.
+
+
+
+Objection: "We’re not ready yet"
+
+Category
+
+Buyer
+
+What they may really mean
+
+They are uncertain, overwhelmed, or afraid of making a mistake.
+
+Why agents struggle with this
+
+Agents respond with pressure instead of helping the buyer regain clarity.
+
+Weak response to avoid
+
+"You need to move fast before rates go up again."
+
+Why it falls flat
+
+It increases anxiety and can make you sound pushy.
+
+Better response strategy
+
+Normalize the hesitation, then narrow the next step to something small and useful.
+
+Response option: empathetic
+
+That’s completely fair. Buying is a big decision. We don’t need to force the whole process today. Let’s just figure out what would help you feel more prepared.
+
+Response option: direct
+
+Being cautious is not a problem. The goal is to make your next move clearer, not bigger than it needs to be.
+
+Response option: question-based
+
+What part feels least settled right now: timing, budget, or confidence in the right home?
+
+If they push back again
+
+That helps. Let’s solve that piece first so the next step feels manageable instead of heavy.
+
+Tone notes
+
+Calm, steady, low-pressure.
+
+Common mistakes
+
+Pushing urgency too early or acting disappointed.
+
+Coaching notes
+
+Reduce pressure, then create movement.
+
+
+
+Objection: "We want to wait for rates to come down"
+
+Category
+
+Buyer
+
+What they may really mean
+
+They are trying to reduce financial risk and avoid buying at the wrong time.
+
+Why agents struggle with this
+
+Agents often argue with macroeconomics instead of helping the buyer evaluate the decision practically.
+
+Weak response to avoid
+
+"No one can time the market, so you should buy now."
+
+Why it falls flat
+
+It sounds dismissive and doesn’t address their concern.
+
+Better response strategy
+
+Acknowledge the logic, then broaden the decision beyond one variable.
+
+Response option: empathetic
+
+I get why rates are top of mind. The bigger question is whether waiting improves your full picture enough to outweigh what you may give up on price, options, or timing.
+
+Response option: direct
+
+Rates matter, but they’re only one part of the decision. I’d rather help you compare realistic scenarios than make the choice based on headlines alone.
+
+Response option: question-based
+
+If rates moved a little but prices or competition changed too, how would you want to weigh that?
+
+If they push back again
+
+That’s reasonable. Let’s compare a couple of real scenarios so you can decide from a place of clarity instead of uncertainty.
+
+Tone notes
+
+Analytical, grounded, calm.
+
+Common mistakes
+
+Lecturing, predicting rates, or oversimplifying affordability.
+
+Coaching notes
+
+Help them compare scenarios, not slogans.
+
+
+
+Objection: "We’re just browsing"
+
+Category
+
+Buyer
+
+What they may really mean
+
+They do not want pressure and may not trust the conversation yet.
+
+Why agents struggle with this
+
+Agents either back off completely or pounce too hard.
+
+Weak response to avoid
+
+"Great, call me when you’re serious."
+
+Why it falls flat
+
+It ends the relationship before it starts.
+
+Better response strategy
+
+Lower pressure and create a low-commitment next step.
+
+Response option: empathetic
+
+That’s totally fine. A lot of buyers start there. I’m happy to be a resource while you get a feel for the market.
+
+Response option: direct
+
+No problem. Browsing is still useful if we use it to sharpen what you like, what you don’t, and what price point feels realistic.
+
+Response option: question-based
+
+What would be most helpful while you’re browsing: better listings, neighborhood guidance, or a clearer sense of price range?
+
+If they push back again
+
+Perfect. Let’s keep it simple and make your search more informed without turning it into a bigger process than you want right now.
+
+Tone notes
+
+Friendly, relaxed, helpful.
+
+Common mistakes
+
+Acting annoyed or trying to force commitment.
+
+Coaching notes
+
+Serve first. Control comes later.
+
+
+
+Objection: "The rent is too high"
+
+Category
+
+Rental
+
+What they may really mean
+
+They like the unit but are testing flexibility or comparing alternatives.
+
+Why agents struggle with this
+
+Agents defend the price instead of reinforcing value and fit.
+
+Weak response to avoid
+
+"That’s the price."
+
+Why it falls flat
+
+It shuts down the conversation and adds friction.
+
+Better response strategy
+
+Acknowledge the concern, then tie the rent back to the full package and ask a clarifying question.
+
+Response option: empathetic
+
+I understand. Rent is a big part of the decision. When people feel that way, it usually helps to compare the full value, not just the monthly number.
+
+Response option: direct
+
+I hear you. The question is whether this home gives you enough in location, condition, and fit to justify the price compared with what else you’re seeing.
+
+Response option: question-based
+
+When you say high, are you comparing it to other units you’ve seen, or to the monthly number you hoped to stay under?
+
+If they push back again
+
+That makes sense. If helpful, let’s compare this unit against the other options you’re weighing so you can judge the value clearly.
+
+Tone notes
+
+Professional, calm, non-defensive.
+
+Common mistakes
+
+Getting rigid, discounting too quickly, or arguing.
+
+Coaching notes
+
+Lead with value, then diagnose.
+
+
+
+Objection: "The deposit is too much"
+
+Category
+
+Rental
+
+What they may really mean
+
+They may have cash-flow concerns or be testing whether fees are negotiable.
+
+Why agents struggle with this
+
+Agents often sound inflexible or start negotiating without authority.
+
+Weak response to avoid
+
+"Everyone has to pay it."
+
+Why it falls flat
+
+It sounds dismissive and unhelpful.
+
+Better response strategy
+
+Stay empathetic, explain the purpose, and explore timing or process if appropriate.
+
+Response option: empathetic
+
+I understand. Up-front costs can feel heavy. The deposit is there to protect the owner and secure the unit, but I’m happy to walk you through exactly how it works.
+
+Response option: direct
+
+I hear that. The important thing is to make sure you know what’s required, what it covers, and whether the timing works for you before you move forward.
+
+Response option: question-based
+
+Is the concern more about the amount itself, or the total up-front cost when combined with the other move-in expenses?
+
+If they push back again
+
+That helps. Let me break down the full move-in picture so you can see exactly what you’d be committing to.
+
+Tone notes
+
+Clear, matter-of-fact, respectful.
+
+Common mistakes
+
+Sounding cold or promising exceptions you can’t offer.
+
+Coaching notes
+
+Clarity lowers resistance.
+
+
+
+Objection: "We’re still looking"
+
+Category
+
+Rental
+
+What they may really mean
+
+They are interested but not ready to commit, or they want to keep leverage.
+
+Why agents struggle with this
+
+Agents either chase too hard or back off completely.
+
+Weak response to avoid
+
+"Okay, let me know."
+
+Why it falls flat
+
+It gives away any chance to move the process forward.
+
+Better response strategy
+
+Keep the tone light, clarify their benchmark, and create a reason to stay in touch.
+
+Response option: empathetic
+
+That makes sense. A lot of renters compare a few options. Usually the helpful thing is to figure out what this unit would need to have for you to feel ready.
+
+Response option: direct
+
+Totally fair. If you’re still looking, the key is understanding what you’re comparing against so you can make a cleaner decision.
+
+Response option: question-based
+
+What are the top one or two things you’re still hoping to see before deciding?
+
+If they push back again
+
+Good to know. If this remains one of your stronger options, I can keep you updated on timing so you can make the decision with the right context.
+
+Tone notes
+
+Light, helpful, non-needy.
+
+Common mistakes
+
+Acting desperate or passive.
+
+Coaching notes
+
+Stay relevant without chasing.
+
+
+
+Objection: "We need a shorter lease"
+
+Category
+
+Rental
+
+What they may really mean
+
+They need flexibility and are unsure whether the standard term fits their life.
+
+Why agents struggle with this
+
+Agents sometimes shut it down too quickly or imply the prospect is difficult.
+
+Weak response to avoid
+
+"The lease is twelve months, take it or leave it."
+
+Why it falls flat
+
+It creates unnecessary resistance.
+
+Better response strategy
+
+Clarify the need, then explain what is standard and what can be explored.
+
+Response option: empathetic
+
+I understand. Flexibility can matter a lot depending on your situation. The standard term is twelve months, but let’s talk through what you need so I can be clear about what may or may not be possible.
+
+Response option: direct
+
+That’s a reasonable question. I just want to be transparent about the owner’s preferred terms while still understanding your timing needs.
+
+Response option: question-based
+
+What’s driving the shorter lease: job timing, relocation uncertainty, or something else?
+
+If they push back again
+
+Got it. Let me confirm what flexibility exists so I can give you an accurate answer rather than guessing.
+
+Tone notes
+
+Open, transparent, professional.
+
+Common mistakes
+
+Being rigid too early or overpromising.
+
+Coaching notes
+
+Lead with clarity, not resistance.
+
+
+
+Objection: "Why is the unit still vacant?"
+
+Category
+
+Landlord
+
+What they may really mean
+
+They are concerned about price, demand, or your performance.
+
+Why agents struggle with this
+
+Agents get defensive instead of bringing evidence and a plan.
+
+Weak response to avoid
+
+"The market is just slow."
+
+Why it falls flat
+
+It sounds vague and avoids accountability.
+
+Better response strategy
+
+Acknowledge the concern, explain the key drivers, and present a concrete adjustment plan.
+
+Response option: empathetic
+
+That’s a fair concern. Vacancy usually comes down to a mix of price, presentation, timing, and competition. The good news is we can evaluate each of those directly instead of guessing.
+
+Response option: direct
+
+I’d treat vacancy as feedback, not failure. If the traffic is low, that points one way. If the traffic is strong but applications are weak, that points another.
+
+Response option: question-based
+
+Would you like me to walk you through whether the bigger issue looks like price, positioning, or prospect quality?
+
+If they push back again
+
+Let’s review the showing feedback and market comparables together so we can make the next move based on evidence.
+
+Tone notes
+
+Steady, accountable, solution-oriented.
+
+Common mistakes
+
+Blaming the market or sounding defensive.
+
+Coaching notes
+
+Bring diagnosis plus next steps.
+
+
+
+Objection: "I don’t want to lower the rent"
+
+Category
+
+Landlord
+
+What they may really mean
+
+They fear losing income or setting a weak precedent.
+
+Why agents struggle with this
+
+Agents often jump straight to persuasion without showing the cost of vacancy.
+
+Weak response to avoid
+
+"But it’s overpriced."
+
+Why it falls flat
+
+It triggers defensiveness and narrows the conversation.
+
+Better response strategy
+
+Respect the goal, then compare holding firm versus adjusting with numbers and timing.
+
+Response option: empathetic
+
+I understand. No owner wants to give away income. The question is whether holding the current number protects your return, or quietly costs more through vacancy and missed momentum.
+
+Response option: direct
+
+Your rent target matters. I’d just want to compare that target against the cost of sitting vacant so the decision is purely financial, not emotional.
+
+Response option: question-based
+
+Would it help to look at the difference between a small rent adjustment and another month of vacancy?
+
+If they push back again
+
+That’s fair. Let’s compare the real cost of each path so you can decide with the full picture.
+
+Tone notes
+
+Analytical, respectful, calm.
+
+Common mistakes
+
+Making it personal or sounding impatient.
+
+Coaching notes
+
+Use math and timing, not pressure.
+
+
+
+Objection: "We already have an agent"
+
+Category
+
+Prospecting
+
+What they may really mean
+
+They want to end the conversation quickly or may genuinely be committed elsewhere.
+
+Why agents struggle with this
+
+Agents either push disrespectfully or retreat without leaving any value.
+
+Weak response to avoid
+
+"Well, are you happy with them?"
+
+Why it falls flat
+
+It can sound combative and self-serving.
+
+Better response strategy
+
+Respect the relationship first, then leave a professional door open.
+
+Response option: empathetic
+
+Absolutely. I’m glad you have support in place. If anything changes or you ever want a second perspective, I’m happy to be a resource.
+
+Response option: direct
+
+That’s good to hear. My goal isn’t to step on anyone’s relationship, just to make sure you know I’m available if you ever need another option.
+
+Response option: question-based
+
+Out of curiosity, when did you start working together?
+
+If they push back again
+
+Understood. I’ll stay out of the way, but if you ever want a backup opinion, I’m easy to reach.
+
+Tone notes
+
+Respectful, light, professional.
+
+Common mistakes
+
+Trying to poach aggressively or sounding defeated.
+
+Coaching notes
+
+Leave the door open without forcing it.
+
+
+
+Objection: "I freeze when they push back"
+
+Category
+
+Confidence
+
+What they may really mean
+
+The agent lacks a simple framework and starts reacting emotionally instead of staying present.
+
+Why agents struggle with this
+
+Without a repeatable structure, pressure makes them rush, overtalk, or go blank.
+
+Weak response to avoid
+
+"I just need a perfect script."
+
+Why it falls flat
+
+It puts the answer outside the agent instead of building skill.
+
+Better response strategy
+
+Give them a repeatable three-step pattern: slow down, validate, then ask a clarifying question.
+
+Response option: empathetic
+
+When pushback happens, your first job is not to win. It’s to stay steady. A simple pattern is: pause, validate the concern, then ask one clarifying question.
+
+Response option: direct
+
+You do not need a perfect line. You need a calm first move. Slowing down is often what makes you sound more confident.
+
+Response option: question-based
+
+What if your first goal was just to buy yourself three seconds and ask a better question?
+
+If they push back again
+
+Next time, try this: ‘That’s fair. Can I ask what’s driving that for you?’ That keeps you in the conversation without forcing an answer too early.
+
+Tone notes
+
+Grounded, reassuring, practical.
+
+Common mistakes
+
+Talking too fast, over-explaining, or trying to win instantly.
+
+Coaching notes
+
+Confidence often sounds like calm pacing, not clever wording.
+
+
+
+Delivery principles
+
+• Do not rush to answer. A short pause often sounds more confident.
+
+• Validate without surrendering your position.
+
+• Ask better follow-up questions before explaining too much.
+
+• Do not argue with the objection. Diagnose it.
+
+• Lead the conversation without sounding controlling.
+
+• Confidence is usually calm, clear, and concise.
+
+Phrases to avoid
+
+• 'That’s just the market.' Sounds lazy and dismissive.
+
+• 'Trust me.' Asks for confidence instead of earning it.
+
+• 'You have to act now.' Creates pressure without context.
+
+• 'That’s not true.' Turns the moment into an argument.
+
+• 'Everyone pays that.' Sounds rigid and unhelpful.\n--- END ---\n\n--- Quick Guide ---\nJSN Real Estate Roleplay Coach Quick-Start Sheet
+
+What this is
+
+JSN Real Estate Roleplay Coach helps agents and team leaders practice real conversations before they happen live.
+
+Use it for:
+
+roleplay 
+
+objection handling 
+
+script rewrites 
+
+live response help 
+
+confidence resets 
+
+post-call debriefs 
+
+team training drills 
+
+It is built for Boston proper first and the North Shore second.
+
+
+
+Pick the scenario. Run the rep. Score the rep.Coach one thing only. Then rerun the weak spot better.Track the score, review the pattern, and repeat next week.
+
+
+
+Who it is for
+
+Agent Mode
+
+Use this when you want personal help with:
+
+sounding more natural 
+
+handling objections 
+
+practicing a hard conversation 
+
+rewriting a message or script 
+
+recovering after a rough call 
+
+Team Leader Mode
+
+Use this when you want to:
+
+run drills with agents 
+
+score reps 
+
+coach in meetings or huddles 
+
+pressure-test objection handling 
+
+run repeatable practice sessions 
+
+
+
+The fastest way to use it
+
+Option 1: Start a roleplay
+
+Type:
+
+Start Agent Mode with a Boston condo seller roleplay.
+
+Option 2: Get help with a real message
+
+Type:
+
+Rewrite this so I sound natural:[paste your message]
+
+Option 3: Run a team drill
+
+Type:
+
+Run a 15-minute team huddle pack for developing agents.
+
+
+
+How to start in 5 steps
+
+Pick Agent Mode or Team Leader Mode 
+
+Pick a scenario or drill pack 
+
+Pick a level 
+
+New Agent 
+
+Developing Agent 
+
+Experienced Agent 
+
+Veteran Agent 
+
+Pick a pressure level 
+
+Easy 
+
+Realistic 
+
+Skeptical 
+
+Combative 
+
+Time Pressure 
+
+Begin 
+
+If you only give part of that, the GPT will fill in the rest and start.
+
+
+
+Main things it can do
+
+1. Roleplay practice
+
+Practice tough conversations with realistic pushback.
+
+Examples:
+
+Boston condo seller 
+
+Boston renter 
+
+Boston FSBO 
+
+Boston expired listing 
+
+North Shore landlord 
+
+North Shore move-up buyer 
+
+North Shore multifamily owner 
+
+2. Objection help
+
+It can explain:
+
+what the objection likely means 
+
+what weak response to avoid 
+
+what stronger response to use 
+
+3. Rewrite your script
+
+It can make your wording:
+
+shorter 
+
+calmer 
+
+less robotic 
+
+easier to say out loud 
+
+4. Live response help
+
+Paste what someone texted or said and ask for the best next line.
+
+5. Confidence reset
+
+Use this if you froze, got rattled, or need a calm next step fast.
+
+6. Post-call debrief
+
+Use this to review what happened, where you lost leverage, and what to do better next time.
+
+7. Team training
+
+Use this to run drills, score reps, and coach agents consistently.
+
+
+
+Built-in drill packs
+
+5 objection drills for new agents 
+
+10 Boston seller drills 
+
+7 North Shore landlord drills 
+
+15-minute team huddle pack 
+
+Listing appointment pressure pack 
+
+
+
+What good prompts look like
+
+For agents
+
+Start Agent Mode with a Boston FSBO roleplay. 
+
+Rewrite this so I sound more confident. 
+
+Help me respond to “we want to wait.” 
+
+I froze on a call. Give me a reset and a better next line. 
+
+Debrief this listing appointment with me. 
+
+For team leaders
+
+Run a 15-minute team huddle pack for new agents. 
+
+Give me 5 objection drills for developing agents. 
+
+Score this rep on control, clarity, and empathy. 
+
+Run a North Shore landlord drill with skeptical pressure. 
+
+Give me one rerun rep based on this weak performance. 
+
+
+
+What it scores
+
+When scoring is used, it can score:
+
+Control 
+
+Clarity 
+
+Empathy 
+
+Objection Diagnosis 
+
+Next-Step Creation 
+
+Confidence Under Pressure 
+
+Team Leader Mode can also give:
+
+total score 
+
+top two strengths 
+
+top two priorities 
+
+one exact rep to rerun 
+
+
+
+Local focus
+
+This GPT is tailored to:
+
+Boston proper 
+
+North Shore 
+
+It can also get more specific with local subtracks like:
+
+Boston condo seller by property type 
+
+renter situations involving roommates, parking, or commuting 
+
+North Shore multifamily owners by owner profile 
+
+move-up buyers with family, timing, and budget pressure 
+
+
+
+What it is not for
+
+This GPT is not your pipeline organizer.
+
+Use it to practice and improve performance.Do not use it as your main tool for:
+
+lead stages 
+
+follow-up timing systems 
+
+CRM organization 
+
+nurture sequence management 
+
+task tracking 
+
+That belongs in your Pipeline GPT.
+
+Simple rule:
+
+Roleplay Coach teaches 
+
+Pipeline GPT organizes 
+
+
+
+Safety and guardrails
+
+This GPT should not be used for:
+
+legal advice 
+
+discriminatory screening language 
+
+fair housing violations 
+
+made-up market facts 
+
+promises you cannot control 
+
+For legal, MLS, compliance, brokerage, or policy questions, verify with the proper local source.
+
+
+
+Best practice
+
+Use this GPT often, not just once.
+
+The best results come from:
+
+short frequent reps 
+
+realistic pressure 
+
+rerunning weak spots 
+
+reviewing scores over time 
+
+using the same drill packs consistently\n--- END ---\n\n--- Weekly Team Training Framework ---\nJSN Real Estate Roleplay Coach Weekly Team Training Framework
+
+What this is
+
+This is your repeatable weekly training rhythm for using JSN Real Estate Roleplay Coach with agents.
+
+The goal is to make training:
+
+consistent 
+
+simple 
+
+measurable 
+
+easy to run 
+
+easy to repeat 
+
+This framework is built for short, real-world sessions, not long classroom-style meetings.
+
+
+
+The simple weekly rhythm
+
+Monday
+
+Objection Day
+
+Focus:
+
+common objections 
+
+calm responses 
+
+short reps 
+
+simple score tracking 
+
+Best packs:
+
+5 objection drills for new agents 
+
+10 Boston seller drills 
+
+
+
+Tuesday
+
+Roleplay Day
+
+Focus:
+
+full conversations 
+
+realistic pushback 
+
+staying in control 
+
+uncovering hidden concerns 
+
+Best local tracks:
+
+Boston condo seller 
+
+Boston FSBO 
+
+Boston expired listing 
+
+Boston renter 
+
+North Shore landlord 
+
+North Shore move-up buyer 
+
+North Shore multifamily owner 
+
+
+
+Wednesday
+
+Rewrite + Response Day
+
+Focus:
+
+making agents sound more natural 
+
+fixing robotic scripts 
+
+improving follow-up wording 
+
+live response help 
+
+Best use cases:
+
+text rewrites 
+
+email rewrites 
+
+objection rewrites 
+
+better next-line practice 
+
+
+
+Thursday
+
+Pressure Day
+
+Focus:
+
+stronger pushback 
+
+faster pace 
+
+tougher objections 
+
+confidence under pressure 
+
+Best packs:
+
+Listing appointment pressure pack 
+
+skeptical or combative roleplay 
+
+time-pressure reps 
+
+
+
+Friday
+
+Debrief + Rerun Day
+
+Focus:
+
+review weak spots 
+
+rerun low-scoring reps 
+
+compare improvement 
+
+set next week’s focus 
+
+Best tools:
+
+Rep Score Tracker 
+
+QA Scorecard 
+
+one rerun rep for each agent 
+
+
+
+Weekly session structure
+
+Best default session length
+
+10 to 15 minutes
+
+That is enough.
+
+Do not try to turn every session into a seminar.
+
+
+
+Recommended session format
+
+Use this format most days:
+
+Minute 1–2
+
+Set the scenario, level, and pressure
+
+Minute 3–5
+
+Run rep 1
+
+Minute 6–7
+
+Quick score + debrief
+
+Minute 8–10
+
+Run rep 2
+
+Minute 11–12
+
+Quick score + debrief
+
+Minute 13–15
+
+Rerun the weakest rep better
+
+That’s your core structure.
+
+
+
+Weekly plan by day
+
+Monday — Objection Day
+
+Goal
+
+Build comfort with the most common objections.
+
+Good prompt
+
+Run 5 objection drills for developing agents with realistic pressure.
+
+What to score
+
+Clarity 
+
+Empathy 
+
+Objection Diagnosis 
+
+What to look for
+
+Are reps staying calm? 
+
+Are they overexplaining? 
+
+Are they diagnosing the real issue? 
+
+Good coaching theme
+
+“Shorter, calmer, better question.”
+
+
+
+Tuesday — Roleplay Day
+
+Goal
+
+Practice full conversations with realistic local context.
+
+Good prompt
+
+Run a Boston condo seller roleplay for a developing agent with realistic pressure.
+
+What to score
+
+Control 
+
+Objection Diagnosis 
+
+Next-Step Creation 
+
+What to look for
+
+Can the agent stay in control? 
+
+Can they earn the hidden concern? 
+
+Can they move to a next step? 
+
+Good coaching theme
+
+“Stay curious before explaining.”
+
+
+
+Wednesday — Rewrite + Response Day
+
+Goal
+
+Make agents sound more natural and field-ready.
+
+Good prompt
+
+Rewrite this so I sound natural and confident:[paste script or message]
+
+What to score
+
+You do not need full rep scoring here every time.
+
+Instead, look for:
+
+shorter wording 
+
+cleaner tone 
+
+easier delivery 
+
+stronger next line 
+
+What to look for
+
+Does it sound human? 
+
+Could the agent actually say it live? 
+
+Is it too polished or too robotic? 
+
+Good coaching theme
+
+“Say less, sound better.”
+
+
+
+Thursday — Pressure Day
+
+Goal
+
+Train agents to hold up under tougher resistance.
+
+Good prompt
+
+Run the listing appointment pressure pack for experienced agents with skeptical pressure.
+
+What to score
+
+Control 
+
+Confidence Under Pressure 
+
+Next-Step Creation 
+
+What to look for
+
+Do they get reactive? 
+
+Do they rush? 
+
+Do they lose structure when pressure rises? 
+
+Good coaching theme
+
+“Slow down and lead.”
+
+
+
+Friday — Debrief + Rerun Day
+
+Goal
+
+Turn the week’s weak spots into progress.
+
+Good prompt
+
+Score this rep and give me one exact rerun based on the weakest area.
+
+What to review
+
+lowest scores from the week 
+
+repeated mistakes 
+
+strongest improvements 
+
+one focus for next week 
+
+Good coaching theme
+
+“Rerun the weak spot, don’t just talk about it.”
+
+
+
+Recommended weekly training formats
+
+Format A: Solo-agent weekly rhythm
+
+Best for:
+
+individual agents 
+
+self-practice 
+
+smaller teams 
+
+Suggested structure
+
+Monday: one objection drill 
+
+Tuesday: one local roleplay 
+
+Wednesday: one rewrite or live response 
+
+Thursday: one pressure rep 
+
+Friday: one debrief and rerun 
+
+This can be done in 10 minutes a day.
+
+
+
+Format B: Small team rhythm
+
+Best for:
+
+3 to 8 agents 
+
+daily huddles 
+
+weekly roleplay blocks 
+
+Suggested structure
+
+Monday: 2 objection reps 
+
+Tuesday: 2 roleplay reps 
+
+Wednesday: 2 rewrites or text-response drills 
+
+Thursday: 2 high-pressure reps 
+
+Friday: 2 reruns + weekly summary 
+
+Keep sessions tight and rotating.
+
+
+
+Format C: Team leader / office rhythm
+
+Best for:
+
+recurring office training 
+
+stronger consistency 
+
+score tracking over time 
+
+Suggested structure
+
+One formal 15-minute huddle each week 
+
+One lighter midweek script/rewrite session 
+
+One Friday rerun / coaching review 
+
+This is often enough to create real improvement without burnout.
+
+
+
+Training by skill level
+
+New Agent
+
+Focus on:
+
+simple objection handling 
+
+calm pacing 
+
+basic next-step creation 
+
+confidence building 
+
+Best pressure:
+
+Easy 
+
+Realistic 
+
+Do not overload them.
+
+
+
+Developing Agent
+
+Focus on:
+
+diagnosing objections better 
+
+sounding more natural 
+
+handling firmer pushback 
+
+staying structured 
+
+Best pressure:
+
+Realistic 
+
+Skeptical 
+
+This is usually your main group.
+
+
+
+Experienced Agent
+
+Focus on:
+
+cleaner reframes 
+
+better control 
+
+stronger leadership 
+
+sharper local positioning 
+
+Best pressure:
+
+Skeptical 
+
+Combative 
+
+Time Pressure 
+
+
+
+Veteran Agent
+
+Focus on:
+
+layered objections 
+
+tougher local nuance 
+
+very efficient responses 
+
+stronger next-step control 
+
+Best pressure:
+
+Combative 
+
+Time Pressure 
+
+
+
+Best local tracks by day
+
+Monday
+
+commission pushback 
+
+we want to wait 
+
+just browsing 
+
+rent too high 
+
+we already have an agent 
+
+Tuesday
+
+Boston condo seller 
+
+Boston FSBO 
+
+Boston expired listing 
+
+North Shore landlord 
+
+North Shore move-up buyer 
+
+Wednesday
+
+Boston renter wording 
+
+landlord update rewrites 
+
+listing appointment rewrites 
+
+live text follow-up help 
+
+Thursday
+
+listing appointment pressure pack 
+
+Boston condo seller commission pushback 
+
+North Shore multifamily owner numbers pushback 
+
+expired listing skepticism 
+
+Friday
+
+rerun the week’s weakest rep 
+
+compare first score vs rerun score 
+
+
+
+Weekly scoring habit
+
+Each week, log:
+
+number of reps 
+
+average total score 
+
+strongest category 
+
+weakest category 
+
+main coaching theme 
+
+next week focus 
+
+Use the Rep Score Tracker for this.
+
+Do not just score reps.Review the scores.
+
+That is how improvement becomes visible.
+
+
+
+Best weekly manager habits
+
+Do
+
+keep sessions short 
+
+run reps often 
+
+reuse the same drills 
+
+rerun weak reps immediately 
+
+track scores 
+
+coach one thing at a time 
+
+Don’t
+
+lecture too long 
+
+switch formats every week 
+
+overload agents with too many corrections 
+
+skip the rerun 
+
+treat one bad rep like a disaster 
+
+
+
+Monthly rhythm
+
+Every 4 weeks, do a simple review.
+
+Ask:
+
+What reps improved most? 
+
+What objections still break people? 
+
+Which drill packs are helping most? 
+
+Which agents need more confidence work? 
+
+Which agents need more pressure? 
+
+Then adjust the next month’s focus.
+
+
+
+Simple prompt bank for weekly use
+
+Monday
+
+Run 5 objection drills for developing agents with realistic pressure.
+
+Tuesday
+
+Run a Boston FSBO roleplay for a developing agent with realistic pressure.
+
+Wednesday
+
+Rewrite this so I sound more natural and confident:[paste script]
+
+Thursday
+
+Run the listing appointment pressure pack for experienced agents with skeptical pressure.
+
+Friday
+
+Score this rep and give me one exact rerun based on the weakest area.
+
+
+
+The simplest version of the whole system
+
+Every week:
+
+run reps 
+
+score reps 
+
+rerun weak reps 
+
+log scores 
+
+review patterns 
+
+repeat 
+
+That’s the system.\n--- END ---\n\n--- QA Scorecard ---\nJSN Real Estate Roleplay Coach QA Scorecard
+
+What this is
+
+Use this scorecard to test JSN Real Estate Roleplay Coach like a real agent or team leader would use it.
+
+The goal is to check whether the GPT feels:
+
+realistic 
+
+useful 
+
+locally grounded 
+
+consistent 
+
+safe 
+
+strong enough for repeat team use 
+
+
+
+Test Setup
+
+Tester Name: __________________________________
+
+Date: ________________________________________
+
+Mode Tested: Agent Mode / Team Leader Mode
+
+Scenario or Drill Pack: __________________________________
+
+Local Track or Subtrack: __________________________________
+
+User Level: New Agent / Developing Agent / Experienced Agent / Veteran Agent
+
+Pressure Level: Easy / Realistic / Skeptical / Combative / Time Pressure
+
+Prompt Used:
+
+
+
+
+
+
+
+
+
+Core Evaluation
+
+Score each category from 1 to 5
+
+1 = Poor3 = Usable5 = Excellent
+
+
+
+1. Realism of Pushback
+
+Did the prospect sound like a real Boston or North Shore seller, buyer, renter, landlord, or owner?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+2. Local Authenticity
+
+Did the response feel grounded in Boston proper or the North Shore rather than generic real estate language?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+3. Difficulty Consistency
+
+Did the objection level match the selected skill level and pressure setting?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+4. Coaching Usefulness
+
+Was the coaching practical, specific, and easy to apply live?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+5. Naturalness of Rewrites
+
+Did rewrites sound human, concise, and easy to say out loud?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+6. Score Consistency
+
+If the GPT scored the rep, did the scoring feel fair and aligned with the actual performance?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+7. Solo-Agent Value
+
+Would an individual agent find this useful without needing a manager present?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+8. Team-Leader Value
+
+Would a team leader be able to use this in a huddle, meeting, or one-on-one session?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+9. Rental / Property Management Usefulness
+
+If rental or property management was involved, did the response feel organized, practical, and professional?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+10. Compliance Safety
+
+Did the output avoid legal advice, discriminatory language, invented exceptions, misleading claims, and fabricated market facts?
+
+Score: 1 2 3 4 5
+
+Notes:
+
+
+
+
+
+
+
+Failure Flags
+
+Check any that apply:
+
+☐ Robotic or overly scripted☐ Too generic / not local enough☐ Pushback too easy☐ Pushback too harsh or unrealistic☐ Coaching too vague☐ Rewrite too long☐ Weak next step☐ Poor score justification☐ Not aligned to selected level☐ Not aligned to selected pressure☐ Weak Boston authenticity☐ Weak North Shore authenticity☐ Weak renter / landlord realism☐ Compliance concern
+
+
+
+Quick Assessment
+
+Would you use this output with little or no editing?☐ Yes ☐ No
+
+Did the GPT feel more like a real coach or just a script generator?
+
+
+
+
+
+Did the roleplay earn the hidden concern naturally?☐ Yes ☐ No
+
+Would you use this for live team training?☐ Yes ☐ No
+
+
+
+Overall Score
+
+Add the 10 category scores:
+
+Total Score: ______ / 50
+
+Rating Guide
+
+45–50 = Excellent 
+
+38–44 = Strong 
+
+30–37 = Usable but needs work 
+
+Below 30 = Needs improvement 
+
+
+
+Best Parts
+
+
+
+
+
+
+
+
+
+Needs Improvement
+
+
+
+
+
+
+
+
+
+Specific Wording or Behavior to Fix
+
+
+
+
+
+
+
+
+
+Retest Recommendation
+
+What should be tested again next?\n--- END ---\n\n--- Drill Pack Library ---\nJSN Real Estate Roleplay Coach Drill Pack Library
+
+How to use this library
+
+Each drill should be run with:
+
+Mode: Agent Mode or Team Leader Mode 
+
+Level: New Agent, Developing Agent, Experienced Agent, Veteran Agent 
+
+Pressure: Easy, Realistic, Skeptical, Combative, or Time Pressure 
+
+Use this format when running a drill:
+
+Drill name 
+
+Scenario 
+
+Role being played 
+
+Default pushback 
+
+Hidden concern 
+
+Target skill 
+
+Score focus 
+
+Debrief focus 
+
+
+
+Pack 1: 5 Objection Drills for New Agents
+
+Drill 1: Commission Pushback Basics
+
+Scenario: Listing conversation with a seller who questions the feeRole being played: SellerDefault pushback: “Why should we pay your commission?”Hidden concern: They want proof of value and do not want to feel overchargedTarget skill: Stay calm and explain value without sounding defensiveScore focus: Clarity, Empathy, ControlDebrief focus: Did the agent answer value clearly without overexplaining?
+
+Drill 2: We Want to Wait
+
+Scenario: Seller says they are not ready to move forwardRole being played: SellerDefault pushback: “We want to wait for now.”Hidden concern: Uncertainty, fear, or avoidance of commitmentTarget skill: Lower pressure and diagnose the real reasonScore focus: Objection Diagnosis, EmpathyDebrief focus: Did the agent uncover what “wait” really meant?
+
+Drill 3: Just Browsing
+
+Scenario: Buyer at an open house does not want pressureRole being played: BuyerDefault pushback: “We’re just browsing.”Hidden concern: They do not trust the conversation yet and want spaceTarget skill: Stay helpful without backing off completelyScore focus: Empathy, Next-Step CreationDebrief focus: Did the agent keep the conversation alive without sounding pushy?
+
+Drill 4: Rent Is Too High
+
+Scenario: Renter likes the unit but resists the priceRole being played: RenterDefault pushback: “The rent is too high.”Hidden concern: Budget pressure and comparison-shoppingTarget skill: Reinforce value and ask a clarifying questionScore focus: Clarity, Objection DiagnosisDebrief focus: Did the agent diagnose the concern instead of arguing price?
+
+Drill 5: We Already Have an Agent
+
+Scenario: Prospecting call or outreach conversationRole being played: ProspectDefault pushback: “We already have an agent.”Hidden concern: They may want to end the conversation quickly or may be committed elsewhereTarget skill: Respect the relationship and leave the door openScore focus: Control, Confidence Under PressureDebrief focus: Did the agent stay professional without sounding needy?
+
+
+
+Pack 2: 10 Boston Seller Drills
+
+Drill 1: Boston Condo Seller Wants to List Higher
+
+Scenario: Condo owner believes their unit should list above nearby compsRole being played: SellerDefault pushback: “The condo down the street sold for more.”Hidden concern: Fear of underselling and attachment to upgradesTarget skill: Lead pricing without becoming combativeScore focus: Control, Objection DiagnosisDebrief focus: Did the agent reframe pricing as strategy, not opinion?
+
+Drill 2: Boston Condo Seller Commission Pushback
+
+Scenario: Seller questions paying full commission on a condoRole being played: SellerDefault pushback: “Why should we pay full commission on a condo?”Hidden concern: Concern that net proceeds will feel too thinTarget skill: Tie fee to outcomes, not effortScore focus: Clarity, Confidence Under PressureDebrief focus: Did the agent sound matter-of-fact or defensive?
+
+Drill 3: Brownstone Condo Comparison Problem
+
+Scenario: Seller thinks their brownstone unit should be valued above nearby alternativesRole being played: SellerDefault pushback: “Those condos are not really comparable.”Hidden concern: They fear being lumped in with weaker inventoryTarget skill: Respect the distinction while leading the pricing conversationScore focus: Empathy, ControlDebrief focus: Did the agent validate without surrendering leadership?
+
+Drill 4: Parking-Sensitive Condo Seller
+
+Scenario: Seller thinks parking should justify a big premiumRole being played: SellerDefault pushback: “Parking alone makes this worth more.”Hidden concern: They want their unique advantage fully recognizedTarget skill: Acknowledge differentiators without overpricingScore focus: Clarity, Objection DiagnosisDebrief focus: Did the agent position the feature without overpromising?
+
+Drill 5: Boston FSBO Cold Call
+
+Scenario: Owner is trying to sell without an agentRole being played: FSBO sellerDefault pushback: “I can do this myself.”Hidden concern: Concern about wasted time, pricing, and showing managementTarget skill: Respect their choice and earn the next conversationScore focus: Empathy, Next-Step CreationDebrief focus: Did the agent offer value instead of just pitching?
+
+Drill 6: Boston FSBO MLS Dismissal
+
+Scenario: Seller minimizes agent valueRole being played: FSBO sellerDefault pushback: “Agents just stick it on the MLS.”Hidden concern: They doubt that representation changes the outcomeTarget skill: Differentiate process and strategy simplyScore focus: Clarity, Confidence Under PressureDebrief focus: Did the agent make value concrete?
+
+Drill 7: Boston Expired Listing Frustration
+
+Scenario: Seller had a prior listing failRole being played: Expired sellerDefault pushback: “We already tried that.”Hidden concern: Embarrassment and skepticismTarget skill: Separate yourself from the prior experience without badmouthingScore focus: Empathy, ControlDebrief focus: Did the agent respect the frustration first?
+
+Drill 8: Boston Expired Seller Taking a Break
+
+Scenario: Seller wants to pause after a failed listingRole being played: Expired sellerDefault pushback: “We’re taking a break.”Hidden concern: They feel emotionally drained and do not want another sales pitchTarget skill: Lower pressure and uncover the real disappointmentScore focus: Empathy, Objection DiagnosisDebrief focus: Did the agent reopen the conversation gently?
+
+Drill 9: Listing Appointment Comparison Shopping
+
+Scenario: Seller is meeting with multiple agentsRole being played: SellerDefault pushback: “We’re talking to other agents.”Hidden concern: They want clarity and confidence before decidingTarget skill: Compete with calm clarity, not pressureScore focus: Control, Next-Step CreationDebrief focus: Did the agent guide the decision criteria well?
+
+Drill 10: Boston Seller Timing Hesitation
+
+Scenario: Seller might move but is hesitantRole being played: SellerDefault pushback: “We may just stay put.”Hidden concern: Lifestyle uncertainty and fear of making the wrong moveTarget skill: Use low-pressure questions to uncover motivationScore focus: Empathy, Objection DiagnosisDebrief focus: Did the agent move from vague hesitation to a real issue?
+
+
+
+Pack 3: 7 North Shore Landlord Drills
+
+Drill 1: Vacancy Frustration
+
+Scenario: Owner is upset the unit is still emptyRole being played: LandlordDefault pushback: “Why is it still vacant?”Hidden concern: Fear of lost income and doubt in the planTarget skill: Stay accountable and diagnosticScore focus: Control, ClarityDebrief focus: Did the agent explain the issue and the next step clearly?
+
+Drill 2: Refusing to Lower Rent
+
+Scenario: Owner does not want to adjust priceRole being played: LandlordDefault pushback: “I don’t want to lower the rent.”Hidden concern: Fear of giving away incomeTarget skill: Compare rent target vs cost of vacancyScore focus: Clarity, Objection DiagnosisDebrief focus: Did the agent frame the decision financially?
+
+Drill 3: What Am I Paying You For?
+
+Scenario: Owner questions your valueRole being played: LandlordDefault pushback: “What exactly am I paying you for?”Hidden concern: They are frustrated and want proof of performanceTarget skill: Answer with process, judgment, and problem-solving valueScore focus: Confidence Under Pressure, ClarityDebrief focus: Did the agent avoid sounding defensive?
+
+Drill 4: Applicant Quality Complaint
+
+Scenario: Owner thinks the leads are weakRole being played: LandlordDefault pushback: “Why haven’t we found someone better?”Hidden concern: They want quality without compromising speedTarget skill: Explain market reality without sounding passiveScore focus: Control, ClarityDebrief focus: Did the agent interpret the feedback, not just report activity?
+
+Drill 5: Shorter Lease Request Conflict
+
+Scenario: Prospect wants a shorter lease and the owner resists flexibilityRole being played: LandlordDefault pushback: “I don’t want to set a bad precedent.”Hidden concern: Concern about lease stability and future leverageTarget skill: Stay practical, neutral, and clear on what is standardScore focus: Empathy, ClarityDebrief focus: Did the agent avoid overpromising?
+
+Drill 6: North Shore Multifamily Owner Numbers Focus
+
+Scenario: Owner is viewing the property as an investment firstRole being played: Multifamily ownerDefault pushback: “The numbers have to make sense.”Hidden concern: Protecting cash flow and returnTarget skill: Speak in financial terms, not generic sales languageScore focus: Clarity, Objection DiagnosisDebrief focus: Did the agent sound investment-minded?
+
+Drill 7: Tired Landlord Resistance
+
+Scenario: Owner is frustrated after a long stretch of problemsRole being played: Tired landlordDefault pushback: “I’m tired of dealing with this.”Hidden concern: Burnout and lack of trust that things will improveTarget skill: Reduce emotional resistance and offer a cleaner path forwardScore focus: Empathy, Next-Step CreationDebrief focus: Did the agent create a manageable next step?
+
+
+
+Pack 4: 15-Minute Team Huddle Pack
+
+Rep 1: Just Browsing Buyer
+
+Scenario: Open house conversationRole being played: BuyerPushback: “We’re just looking.”Target skill: Lower pressure earlyScore focus: Empathy
+
+Rep 2: Seller Wants to Wait
+
+Scenario: Listing conversationRole being played: SellerPushback: “We want to wait.”Target skill: Diagnose the real hesitationScore focus: Objection Diagnosis
+
+Rep 3: Rent Too High
+
+Scenario: Rental inquiryRole being played: RenterPushback: “The rent is too high.”Target skill: Lead with value, then clarifyScore focus: Clarity
+
+Rep 4: Commission Pushback
+
+Scenario: Listing appointmentRole being played: SellerPushback: “Another agent said they’d do it for less.”Target skill: Stay steady on valueScore focus: Confidence Under Pressure
+
+Rep 5: Rerun Rep
+
+Use the weakest rep from the first 4 and rerun it better.
+
+Best use: Developing agents, weekly huddles, 10–15 minutes
+
+
+
+Pack 5: Listing Appointment Pressure Pack
+
+Drill 1: Price Too High
+
+Scenario: Seller wants to test a higher priceRole being played: SellerPushback: “We want to list higher.”Hidden concern: Fear of leaving money on the tableTarget skill: Reframe pricing as positioningScore focus: Control, Clarity
+
+Drill 2: Fee Discount Request
+
+Scenario: Seller asks for a discountRole being played: SellerPushback: “Another agent said they’d do it for less.”Hidden concern: Concern about value and netTarget skill: Explain value without chasing approvalScore focus: Confidence Under Pressure, Clarity
+
+Drill 3: Comparison Shopping
+
+Scenario: Seller is interviewing several agentsRole being played: SellerPushback: “We’re talking to a few agents first.”Hidden concern: Need for confidence and clarityTarget skill: Compete with process and leadershipScore focus: Next-Step Creation, Control
+
+Drill 4: Timing Stall
+
+Scenario: Seller is hesitant to commitRole being played: SellerPushback: “We’re not ready yet.”Hidden concern: Timing uncertainty and emotional resistanceTarget skill: Uncover what is really blocking actionScore focus: Objection Diagnosis, Empathy
+
+Drill 5: Trust Test
+
+Scenario: Seller is skeptical and keeps pushing backRole being played: SellerPushback: “How do I know you’re any different?”Hidden concern: They do not want another weak experienceTarget skill: Build trust through clarity, not self-promotionScore focus: Control, Confidence Under Pressure
+
+Best use: Experienced agents, listing-side training, progressive pressure practice
+
+
+
+Suggested facilitator prompts
+
+Run the 5 objection drills for new agents at realistic pressure. 
+
+Run the 10 Boston seller drills for developing agents. 
+
+Run the 7 North Shore landlord drills with skeptical pressure. 
+
+Run a 15-minute team huddle pack for developing agents. 
+
+Run the listing appointment pressure pack for experienced agents. 
+
+Score this rep and give me one exact rerun. 
+
+Take drill 3 and make it more combative. 
+
+Turn this drill into a Time Pressure version. 
+
+
+
+Best practice for this library
+
+Start lower pressure than you think 
+
+Coach one thing at a time 
+
+Rerun weak reps immediately 
+
+Reuse the same drills weekly so improvement is measurable 
+
+Log scores in the tracker after each session\n--- END ---\n\n--- Facilitator Guide ---\nJSN Real Estate Roleplay Coach Facilitator Guide
+
+What this is
+
+This guide is for team leaders, managers, and trainers using JSN Real Estate Roleplay Coach with agents.
+
+Use it to run:
+
+team huddles 
+
+1:1 coaching 
+
+objection drills 
+
+roleplay practice 
+
+score-based rep reviews 
+
+rerun drills after weak performance 
+
+This GPT is for practice and performance, not pipeline management.
+
+Simple rule:
+
+Roleplay Coach teaches 
+
+Pipeline GPT organizes 
+
+
+
+What this tool is best at
+
+Use JSN Real Estate Roleplay Coach when you want agents to:
+
+sound more natural 
+
+handle pushback better 
+
+stay calmer under pressure 
+
+improve scripts 
+
+practice live conversations 
+
+get scored and coached 
+
+rerun weak spots until they improve 
+
+It is especially strong for:
+
+Boston seller conversations 
+
+Boston renter conversations 
+
+North Shore landlord conversations 
+
+North Shore multifamily owner conversations 
+
+move-up buyer conversations 
+
+FSBO and expired listing practice 
+
+
+
+Who should use this
+
+Team Leader Mode
+
+Use Team Leader Mode when you are:
+
+running a meeting 
+
+coaching one rep 
+
+doing a morning huddle 
+
+practicing objections as a group 
+
+evaluating performance 
+
+building consistency across the team 
+
+Agent Mode
+
+Use Agent Mode when one rep is practicing alone or wants individual coaching.
+
+
+
+What to decide before you start
+
+Before each session, pick these 4 things:
+
+1. Mode
+
+Agent Mode 
+
+Team Leader Mode 
+
+2. Scenario or drill pack
+
+Examples:
+
+Boston condo seller 
+
+Boston FSBO 
+
+Boston expired listing 
+
+Boston renter 
+
+North Shore landlord 
+
+North Shore move-up buyer 
+
+North Shore multifamily owner 
+
+15-minute team huddle pack 
+
+Listing appointment pressure pack 
+
+3. Skill level
+
+New Agent 
+
+Developing Agent 
+
+Experienced Agent 
+
+Veteran Agent 
+
+4. Pressure level
+
+Easy 
+
+Realistic 
+
+Skeptical 
+
+Combative 
+
+Time Pressure 
+
+
+
+Recommended session formats
+
+Format 1: 10-minute 1:1 coaching session
+
+Best for:
+
+one rep 
+
+targeted objection work 
+
+script cleanup 
+
+confidence recovery after a rough call 
+
+Flow:
+
+Pick one scenario 
+
+Run one rep 
+
+Score it 
+
+Debrief using the standard structure 
+
+Rerun the same rep once 
+
+Use when:
+
+an agent keeps getting stuck on one objection 
+
+you want fast coaching without overcomplicating it 
+
+
+
+Format 2: 15-minute team huddle
+
+Best for:
+
+daily or weekly team practice 
+
+short group training 
+
+keeping reps sharp 
+
+Flow:
+
+Pick one drill pack 
+
+Run 3 to 5 short reps 
+
+Keep the pressure moderate 
+
+Score quickly 
+
+End with one rerun rep 
+
+Good prompt:Run a 15-minute team huddle pack for developing agents with realistic pressure.
+
+
+
+Format 3: objection ladder session
+
+Best for:
+
+building comfort under pressure 
+
+helping newer agents improve control 
+
+Flow:
+
+Start with one objection 
+
+Run it at Easy 
+
+Run it again at Realistic 
+
+Run it again at Skeptical 
+
+Compare how the rep changed under pressure 
+
+Use this when an agent sounds okay at low pressure but falls apart when pushback gets firmer.
+
+
+
+Format 4: listing appointment pressure session
+
+Best for:
+
+pricing objections 
+
+commission pushback 
+
+skeptical sellers 
+
+seller comparison shopping 
+
+Flow:
+
+Use the Listing Appointment Pressure Pack 
+
+Run reps in order from lower pressure to higher pressure 
+
+Score each one 
+
+Repeat the weakest rep 
+
+End with one “best version” rerun 
+
+
+
+Format 5: group round-robin
+
+Best for:
+
+meetings with multiple agents 
+
+quick reps without one person taking all the time 
+
+Flow:
+
+Pick one scenario 
+
+Agent 1 answers first pushback 
+
+Agent 2 handles the next pushback 
+
+Agent 3 closes for the next step 
+
+Score the group briefly 
+
+Choose one person to rerun the full version 
+
+This keeps the energy moving and avoids one person dominating the session.
+
+
+
+The best built-in drill packs
+
+Use these as your starting pack list:
+
+1. 5 objection drills for new agents
+
+Use for:
+
+new reps 
+
+confidence building 
+
+simpler structure 
+
+lower-pressure reps 
+
+2. 10 Boston seller drills
+
+Use for:
+
+listing-side practice 
+
+condo sellers 
+
+FSBOs 
+
+expired listings 
+
+pricing and commission practice 
+
+3. 7 North Shore landlord drills
+
+Use for:
+
+owner updates 
+
+vacancy conversations 
+
+pricing resistance 
+
+multifamily owner coaching 
+
+4. 15-minute team huddle pack
+
+Use for:
+
+weekly training 
+
+consistent team practice 
+
+fast roleplay reps 
+
+5. Listing appointment pressure pack
+
+Use for:
+
+stronger agents 
+
+deeper pushback 
+
+higher-stakes seller conversations 
+
+
+
+How to score reps
+
+Use these 6 categories:
+
+Control 
+
+Clarity 
+
+Empathy 
+
+Objection Diagnosis 
+
+Next-Step Creation 
+
+Confidence Under Pressure 
+
+Simple score meaning
+
+4–5 = inconsistent 
+
+6–7 = usable 
+
+8 = strong 
+
+9 = excellent 
+
+10 = elite 
+
+What to listen for
+
+ControlDoes the rep stay steady, or get pulled around?
+
+ClarityDo they sound clean and easy to follow, or muddy and too long?
+
+EmpathyDo they validate without becoming weak or overly appeasing?
+
+Objection DiagnosisDo they answer the real concern, or only the surface words?
+
+Next-Step CreationDo they move the conversation forward?
+
+Confidence Under PressureDo they stay calm, or rush, freeze, or overtalk?
+
+
+
+How to debrief
+
+Use the same structure every time:
+
+What worked 
+
+Where you lost leverage 
+
+Better line or rewrite 
+
+Delivery note 
+
+One rep to try next 
+
+This keeps coaching clean and repeatable.
+
+
+
+Best coaching habits for facilitators
+
+Do:
+
+keep reps short 
+
+coach one thing at a time 
+
+rerun weak spots 
+
+use the same scoring categories every time 
+
+increase pressure slowly 
+
+make the rep try again after feedback 
+
+Don’t:
+
+give 10 corrections at once 
+
+turn every rep into a lecture 
+
+jump to advanced pressure too fast 
+
+let reps hide behind long explanations 
+
+skip the rerun 
+
+The rerun is where improvement happens.
+
+
+
+How to match pressure to rep level
+
+New Agent
+
+Start with:
+
+Easy 
+
+Realistic 
+
+Do not start them at Combative unless they ask for it.
+
+Developing Agent
+
+Use:
+
+Realistic 
+
+Skeptical 
+
+This is usually the sweet spot.
+
+Experienced Agent
+
+Use:
+
+Skeptical 
+
+Combative 
+
+Time Pressure 
+
+Veteran Agent
+
+Use:
+
+Combative 
+
+Time Pressure 
+
+layered objections 
+
+
+
+Local scenarios to prioritize
+
+If you are training Boston and North Shore agents, start with these:
+
+Boston
+
+condo seller pricing 
+
+condo seller commission pushback 
+
+FSBO skepticism 
+
+expired listing frustration 
+
+renter objections around parking, roommates, commute, and price 
+
+North Shore
+
+landlord vacancy frustration 
+
+owner resistance to lowering rent 
+
+multifamily owner numbers conversations 
+
+move-up buyer timing and budget pressure 
+
+
+
+How to run a great 15-minute session
+
+Use this simple format:
+
+Minute 1–2
+
+Set the scenario and level
+
+Minute 3–5
+
+Run rep 1
+
+Minute 6–7
+
+Quick score and debrief
+
+Minute 8–10
+
+Run rep 2
+
+Minute 11–12
+
+Quick score and debrief
+
+Minute 13–15
+
+Rerun the weakest rep better
+
+That is enough. Keep it tight.
+
+
+
+When a rep performs badly
+
+Do not overreact.
+
+Use this sequence:
+
+slow the pace down 
+
+name one main problem 
+
+give one better line 
+
+give one delivery note 
+
+rerun the rep immediately 
+
+Example:
+
+Main problem: you answered too fast 
+
+Better line: “That’s fair. Can I ask what’s driving that for you?” 
+
+Delivery note: slower, calmer, shorter 
+
+Then rerun 
+
+
+
+When a rep performs well
+
+Do not just say “good job.”
+
+Push it one level further:
+
+raise the pressure 
+
+add a second objection 
+
+shorten the time to respond 
+
+make the hidden concern harder to uncover 
+
+Good reps should earn harder reps.
+
+
+
+Suggested prompt library for facilitators
+
+Run a 15-minute team huddle pack for developing agents. 
+
+Give me 5 objection drills for new agents. 
+
+Run a Boston condo seller roleplay with realistic pressure. 
+
+Run a North Shore landlord drill with skeptical pressure. 
+
+Score this rep on control, clarity, empathy, and next-step creation. 
+
+Give me one rerun rep based on this weak performance. 
+
+Run the listing appointment pressure pack for experienced agents. 
+
+Give me a Boston FSBO objection ladder from easy to skeptical. 
+
+
+
+How to use this with your score tracker
+
+After each rep, log:
+
+date 
+
+rep name 
+
+scenario 
+
+level 
+
+pressure 
+
+6 category scores 
+
+total score 
+
+one coach note 
+
+one rerun target 
+
+Review scores weekly, not just once.
+
+
+
+Best practice
+
+Use this tool often in short sessions.
+
+The best team results usually come from:
+
+10–15 minute sessions 
+
+2–4 reps per session 
+
+repeated scenarios 
+
+score tracking 
+
+reruns of weak spots 
+
+consistent facilitator structure 
+
+
+
+Final reminder
+
+This GPT works best when you treat it like a training tool, not just a content generator.
+
+Keep it simple:
+
+pick the scenario 
+
+run the rep 
+
+score it 
+
+coach it 
+
+rerun it 
+
+That’s the system.\n--- END ---\n\n--- Conversation Playbook ---\nJSN Real Estate Conversation Playbook
+
+Goals, flow, mistakes, and strong lines for common conversations
+
+Designed for GPT Knowledge uploads
+
+• Use this file to improve structure, not just wording.
+
+• Every section focuses on the purpose of the conversation and the next step to earn.
+
+• Strong conversations feel clear, calm, and useful.
+
+
+
+Guiding principles
+
+• Lead with questions before explanations.
+
+• Lower pressure early so the other person can talk honestly.
+
+• Keep the conversation moving toward one clear next step.
+
+• Do not confuse sounding polished with being persuasive.
+
+Listing Appointment
+
+Goal
+
+Build trust, uncover motivation, lead pricing and process, and win the next step or signed listing.
+
+Suggested flow
+
+• Set the agenda and lower tension• Understand timing, motivation, and concerns• Review pricing strategy and positioning• Explain your process and value• Invite questions and close for the next step
+
+Common mistakes
+
+• Leading with a presentation instead of questions• Talking too much about yourself• Defending commission too early• Avoiding a clear close
+
+Strong lines
+
+• Before we talk strategy, I want to understand what matters most to you in this move.• My goal is to give you a plan you can feel confident in, not just a number.• If we decide to work together, here’s how I’d position the home from day one.
+
+
+
+Buyer Consultation
+
+Goal
+
+Clarify needs, budget, timing, and decision drivers so the search becomes focused and manageable.
+
+Suggested flow
+
+• Ask about timing, lifestyle, and must-haves• Clarify budget comfort and financing stage• Discuss current market conditions without hype• Set search expectations and communication rhythm• Agree on the next concrete step
+
+Common mistakes
+
+• Touring homes before clarifying fit• Overloading with market stats• Using pressure instead of guidance
+
+Strong lines
+
+• The goal today is not to rush you. It’s to make your next move clearer.• What would make this process feel more manageable for you?• Let’s narrow the search so each home tells us something useful.
+
+
+
+Open House Conversation
+
+Goal
+
+Create rapport, learn where they are in the process, and earn follow-up permission.
+
+Suggested flow
+
+• Welcome lightly• Ask one low-pressure question• Listen for timing and seriousness• Offer one useful insight• Ask permission to follow up
+
+Common mistakes
+
+• Pouncing on people• Asking too many questions too fast• Pitching before listening
+
+Strong lines
+
+• Feel free to look around. Are you already out seeing homes, or just starting to get a feel for the market?• A lot of people start exactly there.• Would it be helpful if I sent you a few comparable options after today?
+
+
+
+FSBO Outreach
+
+Goal
+
+Earn the right to continue the conversation by showing respect, curiosity, and useful perspective.
+
+Suggested flow
+
+• Acknowledge their choice to sell on their own• Ask a short question about activity or goals• Offer insight, not a pitch• Leave the door open for future conversation
+
+Common mistakes
+
+• Sounding scripted• Trying to attack the FSBO decision• Pushing for a meeting too early
+
+Strong lines
+
+• You may do a great job on your own. I’m not calling to talk you out of that.• Out of curiosity, how has activity been so far?• If you ever want a second set of eyes on price or strategy, I’m happy to help.
+
+
+
+Expired Listing Reconnect
+
+Goal
+
+Separate yourself from pushy agents, understand what failed, and position yourself as a better next move.
+
+Suggested flow
+
+• Acknowledge the frustration• Ask what disappointed them most• Listen before diagnosing• Offer a focused improvement path• Ask for a brief follow-up conversation
+
+Common mistakes
+
+• Blaming the prior agent immediately• Pitching too soon• Ignoring their frustration
+
+Strong lines
+
+• I’m sure you’ve had more calls than you wanted, so I’ll be brief.• What do you feel missed the mark most the last time?• If I could show you a different approach in 15 minutes, would that be worth a look?
+
+
+
+Rental Inquiry Response
+
+Goal
+
+Turn initial interest into a showing or application step without sounding transactional.
+
+Suggested flow
+
+• Answer availability clearly• Reinforce fit and key details• Invite the next action• Set timing expectations
+
+Common mistakes
+
+• Being vague about next steps• Sounding cold or copy-paste• Ignoring their stated need
+
+Strong lines
+
+• Yes, it’s currently available, and based on what you asked about, it may be a strong fit.• If you’d like, I can get you set for a showing and outline exactly what the next steps would be.• The fastest way to move this forward is...
+
+
+
+Landlord / Owner Update
+
+Goal
+
+Keep the owner informed, grounded, and confident in the plan.
+
+Suggested flow
+
+• Lead with the current status• Summarize traffic and feedback• Explain what the feedback means• Recommend the next move• Confirm decision or follow-up timing
+
+Common mistakes
+
+• Reporting activity without interpretation• Sounding defensive• Avoiding hard truths
+
+Strong lines
+
+• Here’s the clear picture as of today.• The main pattern I’m seeing is...• Based on that, my recommendation is...\n--- END ---\n\n--- Confidence Coaching Guide ---\nJSN Confidence Coaching Guide
+
+Mindset, delivery, reset tools, and practical coaching notes
+
+Designed for GPT Knowledge uploads
+
+• Built to support nervous agents, experienced agents under pressure, and team training.
+
+• Confidence is treated as a trainable skill, not a personality trait.
+
+• Use this file to coach delivery, mindset, and recovery.
+
+
+
+How to use this guide
+
+• Use short coaching notes during live help and longer notes after roleplay.
+
+• Favor calm, practical reframes over hype.
+
+• The best coaching usually gives the agent one thing to improve next.
+
+Core Coaching Philosophy
+
+• Confidence usually sounds calm, not loud.
+
+• The goal is not to memorize the perfect line. The goal is to stay steady enough to think clearly.
+
+• Scripts help you start strong. Presence helps you finish strong.
+
+• You do not need to win every objection. You need to guide the conversation without losing your footing.
+
+Pre-Call Reset
+
+• Sit up, slow your breathing, and relax your jaw.
+
+• Decide on one clear outcome for the call.
+
+• Remind yourself: your job is to ask, listen, and lead, not perform.
+
+• Use a simple opener you know well so you are not improvising under stress.
+
+When You Freeze
+
+• Pause. Silence is better than panicked filler.
+
+• Validate the concern in one short line.
+
+• Ask one clarifying question.
+
+• Buy yourself time with structure: 'That’s fair. Can I ask what’s driving that for you?'
+
+Sounding Less Robotic
+
+• Shorten your sentences.
+
+• Trade polished wording for natural wording.
+
+• Use your own voice where possible.
+
+• Read your script out loud and cut anything you would never actually say.
+
+Recovery After a Bad Moment
+
+• Do not spiral because one response felt clunky.
+
+• Reset with honesty and simplicity: 'Let me say that more clearly.'
+
+• Return to the prospect’s concern instead of focusing on your mistake.
+
+• Confidence grows faster when you recover well, not when you never stumble.
+
+Mindset for Newer Agents
+
+• Feeling awkward does not mean you are bad at this. It means you are learning a live skill.
+
+• Your first goal is not mastery. It is repetition with feedback.
+
+• You do not need to sound like a top producer. You need to sound clear, calm, and coachable.
+
+• Small reps beat one perfect script.
+
+Micro-frameworks
+
+Pause, validate, ask
+
+When pushback hits, pause for a beat, validate the concern, then ask one clarifying question.
+
+Less performance, more presence
+
+You do not need a perfect voice. You need calm pacing and a useful next question.
+
+One strong next step
+
+Do not try to win the whole conversation at once. Earn the next right step.\n--- END ---\n\n--- Listing & Rental QA Eval Sheet ---\nJSN LISTING & RENTAL GENERATOR
+
+Real Estate Listing & Rental QA Evaluation Sheet
+
+
+
+Tester Information
+
+Tester Name: ____________________________________
+
+Date: ___________________________________________
+
+Prompt Used: _____________________________________
+
+Tester Instructions
+
+Use this tool the way an agent or office staff member would actually use it: quick prompts, messy notes, partial property details, rough voice-to-text, or pasted listing information.
+
+Focus on whether the output feels polished, accurate, marketable, and usable with little to no editing.
+
+Test Scenario
+
+(Select one or use a real scenario)
+
+☐ Standard sales listing description☐ Rental listing description☐ Luxury listing description☐ MLS-friendly short version☐ Social media caption request☐ Open house description☐ Messy notes → polished listing☐ Basic property facts only → full marketing copy☐ Voice-to-text style prompt☐ Multi-version request (standard / luxury / short)☐ Rental listing with limited details☐ Listing generated from incomplete information
+
+Evaluation Criteria
+
+Scale: 1 = Poor | 3 = Usable | 5 = Excellent
+
+Criteria
+
+1
+
+2
+
+3
+
+4
+
+5
+
+Sounds natural / human
+
+☐
+
+☐
+
+☐
+
+☐
+
+☐
+
+Clear and well-written
+
+☐
+
+☐
+
+☐
+
+☐
+
+☐
+
+Highlights the property well
+
+☐
+
+☐
+
+☐
+
+☐
+
+☐
+
+Accurate to the prompt/details given
+
+☐
+
+☐
+
+☐
+
+☐
+
+☐
+
+Ready to use with little editing
+
+☐
+
+☐
+
+☐
+
+☐
+
+☐
+
+Total Score: ______ / 25
+
+Quick Assessment
+
+Would you use this output with little or no editing?☐ Yes ☐ No
+
+Did anything feel off?☐ Robotic☐ Too long☐ Too generic☐ Too salesy☐ Missed key property details☐ Added information not provided☐ Weak rental positioning☐ Weak marketing language
+
+Feedback
+
+What worked well:
+
+____________________________________________________
+
+____________________________________________________
+
+____________________________________________________
+
+What needs improvement:
+
+____________________________________________________
+
+____________________________________________________
+
+____________________________________________________
+
+Specific wording to adjust (if any):
+
+____________________________________________________
+
+____________________________________________________
+
+____________________________________________________
+
+Final Rating
+
+☐ Excellent☐ Good☐ Needs Improvement
+
+Quick Quality Check (Optional)
+
+☐ Human-sounding☐ Professional☐ Accurate☐ Marketable☐ Ready to post/send
+
+Overall Score: 1 2 3 4 5\n--- END ---`;
+
+// ── IndexedDB for user-uploaded extra docs ────────────────────────────────────
+const DB='JSNCoachKB2',ST='docs';let db=null;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(ST)) db.createObjectStore(ST,{keyPath:'id',autoIncrement:true});
+      if(!db.objectStoreNames.contains('meta')) db.createObjectStore('meta',{keyPath:'key'});
+    };r.onsuccess=e=>{db=e.target.result;res()};r.onerror=e=>rej(e)})}
+const txs=(m)=>db.transaction(ST,m).objectStore(ST);
+const dbAll=()=>new Promise((r,j)=>{const q=txs('readonly').getAll();q.onsuccess=()=>r(q.result);q.onerror=e=>j(e)});
+const dbAdd=(d)=>new Promise((r,j)=>{const q=txs('readwrite').add(d);q.onsuccess=()=>r(q.result);q.onerror=e=>j(e)});
+const dbDel=(id)=>new Promise((r,j)=>{const q=txs('readwrite').delete(id);q.onsuccess=()=>r();q.onerror=e=>j(e)});
+
+function metaTx(mode){return db.transaction('meta',mode).objectStore('meta');}
+const dbSetMeta=(key,value)=>new Promise((r,j)=>{const q=metaTx('readwrite').put({key,value});q.onsuccess=()=>r();q.onerror=e=>j(e)});
+const dbGetMeta=(key)=>new Promise((r,j)=>{const q=metaTx('readonly').get(key);q.onsuccess=()=>{if(q.result)r(q.result.value);else j(new Error('not found'))};q.onerror=e=>j(e)});
+
+let extraDocs=[];
+async function loadExtra(){extraDocs=await dbAll();renderKB();updateInd()}
+function renderKB(){
+  const el=document.getElementById('kb-list');
+  if(!extraDocs.length){el.innerHTML='<div class="kb-empty">No additional docs loaded.</div>';return}
+  el.innerHTML=extraDocs.map(d=>`<div class="kb-item"><span class="kb-name" title="${d.name}">${d.name}</span><span class="kb-badge">active</span><button class="kb-del" onclick="delDoc(${d.id})">×</button></div>`).join('')
+}
+function updateInd(){const el=document.getElementById('kb-ind');if(extraDocs.length){el.textContent=`📄 +${extraDocs.length} doc${extraDocs.length>1?'s':''}`;el.classList.add('on')}else el.classList.remove('on')}
+async function delDoc(id){await dbDel(id);extraDocs=extraDocs.filter(d=>d.id!==id);renderKB();updateInd();toast('Removed.')}
+
+async function handleUpload(e){
+  const files=Array.from(e.target.files);e.target.value='';
+  for(const file of files){
+    const proc=document.createElement('div');proc.className='kb-proc';proc.textContent=`Reading ${file.name}...`;
+    document.getElementById('kb-list').appendChild(proc);
+    try{
+      let text='';
+      if(file.name.endsWith('.docx')){const buf=await file.arrayBuffer();const r=await mammoth.extractRawText({arrayBuffer:buf});text=r.value}
+      else text=await file.text();
+      if(!text.trim()){toast(`${file.name}: no text found.`,'err');proc.remove();continue}
+      const t=text.length>40000?text.slice(0,40000)+'\n[truncated]':text;
+      const doc={name:file.name,text:t,addedAt:new Date().toISOString()};
+      doc.id=await dbAdd(doc);extraDocs.push(doc);proc.remove();renderKB();updateInd();
+      toast(`${file.name} added.`,'ok');
+    }catch(err){proc.remove();toast(`Error: ${file.name}`,'err');console.error(err)}
+  }
+}
+
+function buildExtra(){
+  if(!extraDocs.length)return'';
+  return'\n\nADDITIONAL USER DOCUMENTS:\n'+extraDocs.map(d=>`--- ${d.name} ---\n${d.text}\n--- END ---`).join('\n\n');
+}
+
+// ── SYSTEM PROMPT ─────────────────────────────────────────────────────────────
+const BASE=`You are JSN Real Estate Roleplay Coach. You help Boston and North Shore agents practice real conversations before they happen live. Boston proper first, North Shore second. Use uploaded JSN files as the primary source for objections, drills, roleplay flow, rental communication, confidence coaching, facilitator use, QA, and weekly training.
+
+FIRST TURN ONLY: Sound like a polished, brisk front-desk operator at a strong boutique office. Open with one short sentence saying this coach helps Boston and North Shore agents practice real conversations before they happen live. Then give 5 fast-start options, one per line, concrete and action-first. Prioritize: Boston condo seller roleplay, Boston FSBO objection help, rewriting a message so it sounds natural, best next line for a rough conversation, North Shore landlord drill. Do not repeat the menu after the first real interaction unless the user resets or asks for options.
+
+If the user pastes a message, objection, rough note, or situation, skip menus and help directly. Infer the task and move. Do not ask unnecessary setup questions. If the user froze or is rattled, lead with a calm reset and the best next line.
+
+Infer solo coaching when helping one person. Infer team mode for huddles, scoring, or multi-rep practice. If unclear, default to solo coaching.
+
+CORE BEHAVIOR: Lead with the best next line, rewrite, reset, or roleplay turn before explaining. Keep outputs tight, sayable, usable live, and confidence-building. Favor one clear fix over long lectures. Stay practical, concise, natural, local, and easy to read aloud. Avoid robotic phrasing, hype, pressure tactics, hard-selling language, and long lectures when one fix will do. Clean up messy inputs silently and help anyway.
+
+ROLEPLAY: Stay in character during the rep and break character for the debrief. Push back realistically, never theatrically or abusively. Hidden concerns must be earned.
+
+Levels: New Agent, Developing Agent, Experienced Agent, Veteran Agent.
+Pressure: Easy, Realistic, Skeptical, Combative, Time Pressure. Infer best fit if not given.
+
+DIFFICULTY:
+New Agent = Easy or Realistic, one clear objection.
+Developing = Realistic or Skeptical, firmer follow-up.
+Experienced = Skeptical, Combative, or Time Pressure, layered objections.
+Veteran = Combative or Time Pressure, sharper curveballs and harder-to-earn hidden concerns.
+Escalation ladder: surface objection, clarifying pushback, hidden concern if earned, secondary objection or comparison pressure, then time pressure or sharper challenge.
+Move up if rep handles it well. Stay if partly handled. Simplify if they struggle.
+
+TASK RULES:
+Roleplay: begins quickly with minimal setup.
+Objection help: what it likely means, weak response to avoid, one stronger version.
+Rewrite: improve wording first, then one short coaching note.
+Live response help: best next line first.
+Confidence reset: short reset, one clean line, one delivery note.
+Rental/PM tasks: answer the practical question first, keep communication neutral, organized, clear.
+
+LEVERAGE DEBRIEF: After every scored rep or completed roleplay, break character and deliver: one sentence naming the main performance truth, then coach verdict, main coaching truth, what worked, where you lost leverage, better line or rewrite, delivery note, one rep to try next. Name whether the hidden concern was earned.
+
+BAD-REP RECOVERY: Main problem / Better line / Delivery note / Rerun target / then rerun.
+If rep is solid: raise pressure, tighten response time, add a second objection, or make the hidden concern harder to uncover.
+
+SCORING: Fair, grounded, coaching-led. Do not inflate. Most decent reps: 6-8 range. Score what was actually said. If not enough to score fairly, say so briefly and give a best-effort coaching read. Score meaning: 1-4 off track, 5-6 usable but inconsistent, 7 solid, 8 strong, 9 excellent, 10 elite.
+
+Solo coaching output:
+Verdict: [short supportive verdict]
+Control X | Clarity X | Empathy X | Diagnosis X | Next Step X | Pressure X
+Then Leverage Debrief.
+
+Team mode output: Sound like a manager running the room, easy to read aloud. When relevant include: drill name, scenario, role, pushback, hidden concern, target skill, score focus, one exact rerun rep.
+Multi-rep huddle order: rep name or number / scenario / pushback / target skill / score line / one coach note / one rerun target.
+End with: strongest rep, most common breakdown, team coaching theme, one rerun the group should hear again.
+Team score block: Verdict: [short evaluator-ready verdict] / Scores: Control X | Clarity X | Empathy X | Diagnosis X | Next Step X | Pressure X / Total: X/60 / Top strengths: [2 items] / Top priorities: [2 items] / Then Leverage Debrief and one exact rerun rep.
+
+LOCAL TEXTURE: Use realistic Boston and North Shore nuance: condo pricing, upgrades attachment, parking, commute tradeoffs, brownstone comparison logic, landlord vacancy math, multifamily owner numbers focus, seller skepticism about agent value. Do not invent market facts.
+
+GUARDRAILS: No legal advice, discriminatory screening language, fair housing violations, invented exceptions, misleading claims, fabricated market facts, or promises about pricing, timing, approval, or outcomes. For legal, MLS, compliance, brokerage-policy, or fair housing issues, advise verification with the proper broker, attorney, or local compliance source.
+
+No memory across separate chats. Work only from the current conversation and uploaded files.
+
+BUILT-IN PACKS: 5 objection drills for new agents, 10 Boston seller drills, 7 North Shore landlord drills, 15-minute team huddle pack, Listing appointment pressure pack, roleplay practice, objection handling, script rewrites, live response help, confidence reset, post-call debrief, team training drills.
+
+FORMAT:
+Roleplay lines: open with [PROSPECT]
+Coaching lines: open with [COACH]
+Rewrites: original then rewrite.
+Scores: "Label: X/10" one per line - this triggers visual score bars in the UI.
+
+STRONG DEFAULTS: Asked for roleplay - infer and begin. Asked to practice generally - offer a few concrete local options first. User pastes a message - improve it first, then coach briefly. User says they froze - confidence reset plus a cleaner next line.`;
+function getSys(){
+  const market=document.getElementById('sel-market').value;
+  const level=document.getElementById('sel-level').value;
+  const pressure=document.getElementById('sel-pressure').value;
+  const mode=curMode==='team'?'Team Leader Mode':'Agent Mode';
+  return BASE+`\n\nSession: ${mode}. Market: ${market}. Level: ${level}. Pressure: ${pressure}.`+buildExtra();
+}
+
+// ── APP ───────────────────────────────────────────────────────────────────────
+let history=[],curMode='agent',loading=false;
+
+// setMode defined above
+
+const QS={
+  start_roleplay:"Start a roleplay. Pick the best scenario for my current settings and jump in as the prospect.",
+  objection:"I need objection help. Give me a common Boston or North Shore objection to practice.",
+  rewrite:"Help me rewrite a script. Give me a sample Boston seller opener or I'll paste mine.",
+  live_help:"I need live response help. Give me a real scenario and let me try a response.",
+  debrief:"I want to debrief a rough call. Ask me what happened.",
+  confidence:"Give me a quick confidence reset. I have a tough call in 5 minutes.",
+  boston_condo:"Start a Boston condo seller roleplay. They're thinking about listing but worried about timing.",
+  boston_renter:"Start a Boston renter roleplay. They're frustrated and comparing multiple apartments.",
+  ns_landlord:"Start a North Shore landlord roleplay. They're skeptical about using an agent.",
+  ns_moveup:"Start a North Shore move-up buyer roleplay. They need to sell first but are nervous.",
+  boston_fsbo:"Start a Boston FSBO roleplay. They think they can sell it themselves.",
+  expired:"Start an expired listing roleplay. They're frustrated their home didn't sell.",
+  multifamily:"Start a North Shore multifamily owner roleplay. They've self-managed for years.",
+  drill_new:"Run the 5 objection drills for new agents. Start with drill 1.",
+  drill_seller:"Start the 10 Boston seller drills. Begin with drill 1.",
+  drill_landlord:"Run the 7 North Shore landlord drills. Give me drill 1.",
+  drill_huddle:"Set up the 15-minute team huddle drill pack. Give me the facilitator brief and first drill.",
+  drill_listing:"Run the listing appointment pressure pack. Start with the first scenario.",
+};
+
+function qs(k){const t=QS[k];if(t){trackEvent('quickstart',{key:k});document.getElementById('inp').value=t;send()}}
+function ins(t){document.getElementById('inp').value=t;document.getElementById('inp').focus()}
+function clearChat(){
+  history=[];
+  dbSetMeta('currentSession','').catch(()=>{});
+  renderWelcome();
+}
+
+function renderWelcome(){
+  document.getElementById('msgs').innerHTML=`
+    <div class="msg assistant">
+      <div class="av">C</div>
+      <div class="bubble wcard">
+        <h2>JSN Roleplay Coach</h2>
+        <p>Practice Boston and North Shore real estate conversations before they happen live. All 11 knowledge base documents are loaded. Pick a fast start or type your situation.</p>
+        <div class="wgrid">
+          <button class="wb" onclick="qs('start_roleplay')">▶ Start a Roleplay</button>
+          <button class="wb" onclick="qs('objection')">⚡ Handle an Objection</button>
+          <button class="wb" onclick="qs('rewrite')">✏️ Rewrite a Script</button>
+          <button class="wb" onclick="qs('drill_huddle')">👥 Team Huddle Drill</button>
+          <button class="wb" onclick="qs('debrief')">🔍 Debrief a Rough Call</button>
+          <button class="wb" onclick="qs('confidence')">🧠 Confidence Reset</button>
+        </div>
+      </div>
+    </div>`
+}
+
+function addMsg(role,content){
+  const msgs=document.getElementById('msgs');
+  const div=document.createElement('div');div.className=`msg ${role}`;
+  const isRP=content.includes('[PROSPECT]');
+  const isCO=content.includes('[COACH]');
+  const tag=isRP?`<span class="tag rp-tag">▶ PROSPECT</span>`:isCO?`<span class="tag co-tag">◈ COACHING</span>`:'';
+  const clean=content.replace('[PROSPECT]','').replace('[COACH]','').trim();
+  div.innerHTML=`<div class="av">${role==='user'?'YOU':'C'}</div><div class="bubble ${isRP?'rp':''}">${tag}${fmt(clean)}</div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function fmt(t){
+  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>');
+  t=t.replace(/^([\w\s\/]+):\s*(\d+)\/10/gm,(_,lbl,sc)=>{
+    const pct=parseInt(sc)*10;
+    return`<div class="score-item"><span class="score-lbl">${lbl}</span><div class="score-row"><div class="score-bar"><div class="score-fill" style="width:${pct}%"></div></div><span class="score-n">${sc}/10</span></div></div>`
+  });
+  return t;
+}
+
+function showTyping(){
+  const msgs=document.getElementById('msgs');
+  const d=document.createElement('div');d.id='typing';d.className='msg assistant';
+  d.innerHTML=`<div class="av">C</div><div class="bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+function rmTyping(){const e=document.getElementById('typing');if(e)e.remove()}
+
+let tt;
+function toast(msg,type=''){
+  document.querySelector('.toast')?.remove();clearTimeout(tt);
+  const d=document.createElement('div');d.className=`toast ${type}`;d.textContent=msg;
+  document.body.appendChild(d);tt=setTimeout(()=>d.remove(),3000);
+}
+
+const MAX_TURNS=20; // 10 exchanges
+
+function trimHistory(){
+  // Keep history within token-safe limit
+  if(history.length>MAX_TURNS){
+    history=history.slice(history.length-MAX_TURNS);
+  }
+}
+
+function buildMessages(){
+  // Ensure history always starts with a user turn (API requirement)
+  let msgs=[...history];
+  while(msgs.length>0 && msgs[0].role!=='user') msgs=msgs.slice(1);
+  return msgs;
+}
+
+async function send(){
+  if(loading)return;
+  const inp=document.getElementById('inp');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('user',text);
+  history.push({role:'user',content:text});
+  trimHistory();
+  trackEvent('message',{chars:text.length});
+  loading=true;document.getElementById('sendbtn').disabled=true;showTyping();
+
+  // ── STREAMING ──────────────────────────────────────────────────────────────
+  try{
+    const r=await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        app:'roleplay',
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1024,
+        stream:true,
+        system:getSys(),
+        messages:buildMessages()
+      })
+    });
+
+    if(r.status===429){
+      rmTyping();
+      addMsg('assistant','[COACH] Too many requests. Wait a moment and try again.');
+      loading=false;document.getElementById('sendbtn').disabled=false;
+      return;
+    }
+    if(!r.ok){
+      const err=await r.json().catch(()=>({}));
+      rmTyping();
+      addMsg('assistant',`[COACH] Error ${r.status}: ${err.error?.message||'Something went wrong. Try again.'}`);
+      loading=false;document.getElementById('sendbtn').disabled=false;
+      return;
+    }
+
+    // Create the assistant bubble immediately for streaming
+    rmTyping();
+    const msgs=document.getElementById('msgs');
+    const div=document.createElement('div');
+    div.className='msg assistant';
+    div.innerHTML=`<div class="av" aria-hidden="true">C</div><div class="bubble stream-bubble" id="stream-bubble" aria-live="polite" aria-label="Coach response"></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop=msgs.scrollHeight;
+
+    const bubble=document.getElementById('stream-bubble');
+    let fullText='';
+    let renderBuffer='';
+    let renderTimer=null;
+
+    const reader=r.body.getReader();
+    const decoder=new TextDecoder();
+
+    while(true){
+      const {done,value}=await reader.read();
+      if(done)break;
+      const chunk=decoder.decode(value,{stream:true});
+      const lines=chunk.split('\n');
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;
+        const data=line.slice(5).trim();
+        if(data==='[DONE]')break;
+        try{
+          const parsed=JSON.parse(data);
+          if(parsed.type==='content_block_delta'&&parsed.delta?.type==='text_delta'){
+            fullText+=parsed.delta.text;
+            renderBuffer+=parsed.delta.text;
+            // Throttle DOM updates for performance
+            if(!renderTimer){
+              renderTimer=setTimeout(()=>{
+                bubble.innerHTML=fmt(fullText);
+                msgs.scrollTop=msgs.scrollHeight;
+                renderTimer=null;
+              },30);
+            }
+          }
+        }catch(e){}
+      }
+    }
+    // Final render
+    clearTimeout(renderTimer);
+    bubble.innerHTML=fmt(fullText);
+    bubble.removeAttribute('id');
+
+    // Apply roleplay/coach tag styling
+    const isRP=fullText.includes('[PROSPECT]');
+    const isCO=fullText.includes('[COACH]');
+    if(isRP){bubble.classList.add('rp');bubble.innerHTML=`<span class="tag rp-tag">▶ PROSPECT</span>${fmt(fullText.replace('[PROSPECT]','').trim())}`;}
+    else if(isCO){bubble.innerHTML=`<span class="tag co-tag">◈ COACHING</span>${fmt(fullText.replace('[COACH]','').trim())}`;}
+
+    history.push({role:'assistant',content:fullText});
+    trimHistory();
+    msgs.scrollTop=msgs.scrollHeight;
+
+  }catch(e){
+    rmTyping();
+    const eb=document.getElementById('stream-bubble');
+    if(eb){eb.textContent='[COACH] Connection error. Try again.';eb.removeAttribute('id');}
+    else addMsg('assistant','[COACH] Connection error. Try again.');
+  }
+  loading=false;document.getElementById('sendbtn').disabled=false;
+}
+
+
+
+// ── SESSION RESTORE ───────────────────────────────────────────────────────────
+async function saveSession(){
+  try{
+    const sessionData={
+      history:history,
+      mode:curMode,
+      market:document.getElementById('sel-market').value,
+      level:document.getElementById('sel-level').value,
+      pressure:document.getElementById('sel-pressure').value,
+      savedAt:new Date().toISOString()
+    };
+    await dbSetMeta('currentSession', JSON.stringify(sessionData));
+  }catch(e){}
+}
+
+async function restoreSession(){
+  try{
+    const saved = await dbGetMeta('currentSession');
+    if(!saved){renderWelcome();return;}
+    const session = JSON.parse(saved);
+    // Only restore if session is less than 24 hours old
+    const age = Date.now() - new Date(session.savedAt).getTime();
+    if(age > 86400000){renderWelcome();return;}
+    history = session.history || [];
+    curMode = session.mode || 'agent';
+    document.getElementById('ma').classList.toggle('active', curMode==='agent');
+    document.getElementById('mt').classList.toggle('active', curMode==='team');
+    document.getElementById('ma').setAttribute('aria-pressed', curMode==='agent');
+    document.getElementById('mt').setAttribute('aria-pressed', curMode==='team');
+    if(session.market) document.getElementById('sel-market').value = session.market;
+    if(session.level) document.getElementById('sel-level').value = session.level;
+    if(session.pressure) document.getElementById('sel-pressure').value = session.pressure;
+    if(history.length===0){renderWelcome();return;}
+    // Rebuild the chat UI from history
+    document.getElementById('msgs').innerHTML='';
+    for(let i=0;i<history.length;i++){
+      const msg=history[i];
+      addMsg(msg.role, msg.content);
+    }
+    // Show restore toast
+    toast('Session restored.','ok');
+  }catch(e){renderWelcome();}
+}
+
+// ── ANALYTICS ─────────────────────────────────────────────────────────────────
+const analytics={
+  sessionStart: Date.now(),
+  messageCount: 0,
+  scenariosUsed: {},
+  modesUsed: {agent:0, team:0},
+  quickStartsUsed: {},
+  exportCount: 0,
+  totalChars: 0,
+};
+
+function trackEvent(type, data={}){
+  try{
+    switch(type){
+      case 'message':
+        analytics.messageCount++;
+        analytics.totalChars += (data.chars||0);
+        analytics.modesUsed[curMode]=(analytics.modesUsed[curMode]||0)+1;
+        break;
+      case 'quickstart':
+        analytics.quickStartsUsed[data.key]=(analytics.quickStartsUsed[data.key]||0)+1;
+        break;
+      case 'export':
+        analytics.exportCount++;
+        break;
+    }
+    // Persist analytics to IndexedDB
+    dbSetMeta('analytics', JSON.stringify({...analytics, lastUpdated: new Date().toISOString()}));
+  }catch(e){}
+}
+
+async function showAnalytics(){
+  const saved = await dbGetMeta('analytics').catch(()=>null);
+  const a = saved ? JSON.parse(saved) : analytics;
+  const sessionMins = Math.round((Date.now() - analytics.sessionStart)/60000);
+  const topScenarios = Object.entries(a.quickStartsUsed||{})
+    .sort((x,y)=>y[1]-x[1]).slice(0,3)
+    .map(([k,v])=>`${k.replace(/_/g,' ')}: ${v}`).join(', ')||'none yet';
+
+  const msg = [
+    '[COACH] Session Analytics',
+    '',
+    'Messages this session: '+analytics.messageCount,
+    'Session time: '+sessionMins+' min',
+    'Agent mode uses: '+analytics.modesUsed.agent,
+    'Team mode uses: '+analytics.modesUsed.team,
+    'Top scenarios: '+topScenarios,
+    'Exports: '+analytics.exportCount,
+  ].join('\n');
+  addMsg('assistant', msg);
+}
+
+function toggleSidebar(){
+  const aside=document.querySelector('aside');
+  const btn=document.getElementById('menu-btn');
+  const isOpen=aside.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+  btn.textContent=isOpen?'X':'=';
+}
+
+function setMode(m){
+  curMode=m;
+  const ma=document.getElementById('ma');
+  const mt=document.getElementById('mt');
+  ma.classList.toggle('active',m==='agent');
+  mt.classList.toggle('active',m==='team');
+  ma.setAttribute('aria-pressed', m==='agent');
+  mt.setAttribute('aria-pressed', m==='team');
+}
+
+function exportChat(){
+  if(!history.length){toast('Nothing to export yet.','err');return;}
+  const lines=[];
+  const date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  lines.push('JSN Real Estate Roleplay Coach - Session Export');
+  lines.push(date);
+  lines.push('Mode: '+(curMode==='team'?'Team Leader':'Agent'));
+  lines.push('Market: '+document.getElementById('sel-market').value);
+  lines.push('Level: '+document.getElementById('sel-level').value);
+  lines.push('Pressure: '+document.getElementById('sel-pressure').value);
+  lines.push('\n'+('─'.repeat(50))+'\n');
+  history.forEach(msg=>{
+    const role=msg.role==='user'?'YOU':'COACH';
+    lines.push(`[${role}]`);
+    lines.push(msg.content.trim());
+    lines.push('');
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`JSN-Coach-Session-${date.replace(/ /g,'-')}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  trackEvent('export'); toast('Session exported.','ok');
+}
+
+(async()=>{
+  await openDB();
+  await loadExtra();
+  await restoreSession();
+})();
+</script>
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#8899aa; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(8,15,30,0.97);">
+  This tool is for sales training and roleplay practice only. Not legal, compliance, financial, or professional advice. Real client communications should be reviewed by your broker before sending.
+</div>
+</body>
+</html>
