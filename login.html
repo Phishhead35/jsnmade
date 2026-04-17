@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSN Real Estate Performance System — Sign In</title>
+<meta name="description" content="Sign in to the JSN Real Estate Performance System">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy:   #080f1e;
+  --navy2:  #0e1829;
+  --navy3:  #162035;
+  --orange: #ff6b2b;
+  --orange2:#ff8c55;
+  --cyan:   #00d4c8;
+  --white:  #ffffff;
+  --gray:   #7a8fa8;
+  --gray2:  #a8bdd0;
+  --green:  #1fd38a;
+  --red:    #ff3d52;
+  --border: rgba(0,212,200,0.13);
+  --glow-o: 0 0 32px rgba(255,107,43,0.2);
+  --glow-c: 0 0 32px rgba(0,212,200,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+html { font-size:16px; height:100%; }
+
+body {
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(0,212,200,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(255,107,43,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(255,107,43,0.02) 0%, transparent 60%);
+  animation: bgpulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgpulse {
+  0%   { background-position: 0% 0%, 100% 100%, 50% 50%; }
+  100% { background-position: 5% 5%, 95% 95%, 52% 48%; }
+}
+
+/* skip link */
+.skip-link {
+  position:absolute; top:-100%; left:8px;
+  background:var(--orange); color:white;
+  padding:8px 16px; border-radius:0 0 6px 6px;
+  font-size:13px; font-weight:600; z-index:9999;
+  text-decoration:none;
+}
+.skip-link:focus { top:0; }
+
+/* ── CARD ── */
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--navy2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+  animation: cardin 0.5s ease both;
+}
+@keyframes cardin {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── HEADER ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--orange), var(--orange2));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: 18px; color: white;
+  box-shadow: var(--glow-o);
+  flex-shrink: 0;
+}
+.brand-text { }
+.brand-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800; font-size: 20px;
+  letter-spacing: 0.03em; color: var(--white);
+  line-height: 1.1;
+}
+.brand-sub {
+  font-size: 11px; color: var(--gray);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  font-weight: 300;
+}
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.tab {
+  flex: 1; padding: 10px 0;
+  background: none; border: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--gray); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--gray2); }
+.tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.tab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 12px; font-weight: 500;
+  color: var(--gray2); margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+.form-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: var(--white);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; padding: 11px 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(0,212,200,0.1);
+}
+.form-input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.form-input::placeholder { color: var(--gray); opacity: 0.5; }
+
+/* ── BUTTON ── */
+.btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--orange), #d94d18);
+  border: none; border-radius: 8px;
+  color: white; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 13px; margin-top: 8px;
+  box-shadow: var(--glow-o);
+  transition: all 0.2s;
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; }
+.btn-primary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+/* ── STATUS MESSAGES ── */
+.msg {
+  border-radius: 8px; padding: 12px 14px;
+  font-size: 13px; line-height: 1.5;
+  margin-top: 14px; display: none;
+}
+.msg.success {
+  background: rgba(31,211,138,0.08);
+  border: 1px solid rgba(31,211,138,0.25);
+  color: var(--green);
+}
+.msg.error {
+  background: rgba(255,61,82,0.08);
+  border: 1px solid rgba(255,61,82,0.25);
+  color: var(--red);
+}
+.msg.show { display: block; }
+
+/* ── DIVIDER ── */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0;
+}
+.divider-line {
+  flex: 1; height: 1px;
+  background: var(--border);
+}
+.divider-text {
+  font-size: 11px; color: var(--gray);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── FOOTER ── */
+.card-footer {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-text {
+  font-size: 11px; color: var(--gray);
+  line-height: 1.6;
+}
+
+/* ── APP GRID ── */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 28px;
+}
+.app-dot {
+  height: 3px; border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.app-dot.active { background: var(--cyan); }
+
+/* ── LOADING SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── FORGOT PASSWORD ── */
+.forgot-link {
+  font-size: 12px; color: var(--gray);
+  text-decoration: none; cursor: pointer;
+  background: none; border: none;
+  transition: color 0.2s;
+  display: block; text-align: right;
+  margin-top: -8px; margin-bottom: 16px;
+}
+.forgot-link:hover { color: var(--cyan); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#emailInput">Skip to sign in form</a>
+
+<div class="card" role="main">
+
+  <div class="brand">
+    <div class="logo-mark" aria-hidden="true">JSN</div>
+    <div class="brand-text">
+      <div class="brand-name">Real Estate Performance System</div>
+      <div class="brand-sub">jsnmade.com · All 7 tools</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" role="tablist" aria-label="Sign in or sign up">
+    <button class="tab active" id="tab-signin" role="tab" aria-selected="true"
+      aria-controls="panel-signin" onclick="switchTab('signin')">Sign In</button>
+    <button class="tab" id="tab-signup" role="tab" aria-selected="false"
+      aria-controls="panel-signup" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <!-- SIGN IN PANEL -->
+  <div id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
+    <div class="form-group">
+      <label class="form-label" for="emailInput">Email address</label>
+      <input class="form-input" type="email" id="emailInput"
+        placeholder="agent@brokerage.com"
+        autocomplete="email" autocapitalize="off" spellcheck="false" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="passwordInput">Password</label>
+      <input class="form-input" type="password" id="passwordInput"
+        placeholder="••••••••"
+        autocomplete="current-password" />
+    </div>
+    <button class="forgot-link" onclick="showForgot()" type="button">Forgot password?</button>
+    <button class="btn-primary" id="signinBtn" onclick="handleSignIn()">
+      Sign In
+    </button>
+    <div class="msg" id="signinMsg" role="alert" aria-live="polite"></div>
+  </div>
+
+  <!-- SIGN UP PANEL -->
+  <div id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" style="display:none">
+    <div class="form-group">
+      <label class="form-label" for="signupName">Full name</label>
+      <input class="form-input" type="text" id="signupName"
+        placeholder="Jane Smith"
+        autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="signupEmail">Email address</label>
+      <input class="form-input" type="email" id="signupEmail"
+        placeholder="agent@brokerage.com"
+        autocomplete="email" autocapitalize="off" spellcheck="false" />
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="signupPassword">Password</label>
+      <input class="form-input" type="password" id="signupPassword"
+        placeholder="8+ characters"
+        autocomplete="new-password" />
+    </div>
+    <button class="btn-primary" id="signupBtn" onclick="handleSignUp()">
+      Create Account
+    </button>
+    <div class="msg" id="signupMsg" role="alert" aria-live="polite"></div>
+  </div>
+
+  <!-- FORGOT PASSWORD PANEL -->
+  <div id="panel-forgot" style="display:none">
+    <p style="font-size:13px;color:var(--gray2);margin-bottom:20px;line-height:1.6">
+      Enter your email and we'll send you a link to reset your password.
+    </p>
+    <div class="form-group">
+      <label class="form-label" for="forgotEmail">Email address</label>
+      <input class="form-input" type="email" id="forgotEmail"
+        placeholder="agent@brokerage.com"
+        autocomplete="email" />
+    </div>
+    <button class="btn-primary" id="forgotBtn" onclick="handleForgot()">
+      Send Reset Link
+    </button>
+    <button onclick="switchTab('signin')" type="button"
+      style="width:100%;background:none;border:none;color:var(--gray);
+      font-size:12px;cursor:pointer;margin-top:12px;padding:6px;">
+      ← Back to sign in
+    </button>
+    <div class="msg" id="forgotMsg" role="alert" aria-live="polite"></div>
+  </div>
+
+  <!-- APP DOTS -->
+  <div class="app-grid" aria-label="7 tools available" role="img">
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot active"></div>
+    <div class="app-dot"></div>
+  </div>
+
+  <div class="card-footer">
+    <div class="footer-text">
+      Pipeline Analyzer · Roleplay Coach · Client Messaging<br>
+      Marketing Kit · Listing Studio · Deal Analyzer · ROI Assistant
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+// Replace these with your actual Supabase credentials
+const SUPABASE_URL = 'https://vmuvgdtfsdydvpxvdgso.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl';
+
+// Where to send users after successful login
+const POST_LOGIN_URL = '/jsn-pipeline-analyzer-v101.html';
+
+// ── INIT ──────────────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Check if already logged in — redirect immediately
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    window.location.href = POST_LOGIN_URL;
+  }
+})();
+
+// ── TAB SWITCHING ─────────────────────────────────────────────
+function switchTab(tab) {
+  const panels = ['signin', 'signup', 'forgot'];
+  panels.forEach(p => {
+    document.getElementById(`panel-${p}`).style.display = p === tab ? 'block' : 'none';
+  });
+  const tabs = ['signin', 'signup'];
+  tabs.forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) {
+      el.classList.toggle('active', t === tab);
+      el.setAttribute('aria-selected', String(t === tab));
+    }
+  });
+  clearMessages();
+}
+
+function showForgot() {
+  document.getElementById('panel-signin').style.display = 'none';
+  document.getElementById('panel-signup').style.display = 'none';
+  document.getElementById('panel-forgot').style.display = 'block';
+  document.getElementById('tab-signin').classList.remove('active');
+  document.getElementById('tab-signup').classList.remove('active');
+  clearMessages();
+}
+
+function clearMessages() {
+  document.querySelectorAll('.msg').forEach(m => {
+    m.className = 'msg'; m.textContent = '';
+  });
+}
+
+function showMsg(id, type, text) {
+  const el = document.getElementById(id);
+  el.className = `msg ${type} show`;
+  el.textContent = text;
+}
+
+function setLoading(btnId, loading, defaultText) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.innerHTML = loading
+    ? `<span class="spinner"></span>Please wait...`
+    : defaultText;
+}
+
+// ── SIGN IN ───────────────────────────────────────────────────
+async function handleSignIn() {
+  const email    = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
+
+  if (!email || !password) {
+    showMsg('signinMsg', 'error', 'Please enter your email and password.');
+    return;
+  }
+
+  setLoading('signinBtn', true, 'Sign In');
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    setLoading('signinBtn', false, 'Sign In');
+    const msgs = {
+      'Invalid login credentials': 'Email or password is incorrect. Try again.',
+      'Email not confirmed':        'Please check your email and confirm your account first.',
+    };
+    showMsg('signinMsg', 'error', msgs[error.message] || error.message);
+    return;
+  }
+
+  // Update last_seen_at in users table
+  if (data.user) {
+    await sb.from('users').update({ last_seen_at: new Date().toISOString() })
+      .eq('id', data.user.id);
+  }
+
+  showMsg('signinMsg', 'success', 'Signed in. Redirecting...');
+  setTimeout(() => { window.location.href = POST_LOGIN_URL; }, 800);
+}
+
+// ── SIGN UP ───────────────────────────────────────────────────
+async function handleSignUp() {
+  const name     = document.getElementById('signupName').value.trim();
+  const email    = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+
+  if (!name || !email || !password) {
+    showMsg('signupMsg', 'error', 'Please fill in all fields.');
+    return;
+  }
+  if (password.length < 8) {
+    showMsg('signupMsg', 'error', 'Password must be at least 8 characters.');
+    return;
+  }
+  if (!email.includes('@')) {
+    showMsg('signupMsg', 'error', 'Please enter a valid email address.');
+    return;
+  }
+
+  setLoading('signupBtn', true, 'Create Account');
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name: name }
+    }
+  });
+
+  if (error) {
+    setLoading('signupBtn', false, 'Create Account');
+    showMsg('signupMsg', 'error', error.message);
+    return;
+  }
+
+  // Insert user profile into public.users table
+  if (data.user) {
+    await sb.from('users').insert({
+      id:         data.user.id,
+      email:      email,
+      full_name:  name,
+      role:       'agent',
+      plan_tier:  'free',
+    }).select();
+  }
+
+  setLoading('signupBtn', false, 'Create Account');
+  showMsg('signupMsg', 'success',
+    'Account created! Check your email for a confirmation link, then sign in.');
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────────────────
+async function handleForgot() {
+  const email = document.getElementById('forgotEmail').value.trim();
+
+  if (!email) {
+    showMsg('forgotMsg', 'error', 'Please enter your email address.');
+    return;
+  }
+
+  setLoading('forgotBtn', true, 'Send Reset Link');
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://jsnmade.com/login.html'
+  });
+
+  setLoading('forgotBtn', false, 'Send Reset Link');
+
+  if (error) {
+    showMsg('forgotMsg', 'error', error.message);
+    return;
+  }
+
+  showMsg('forgotMsg', 'success',
+    'Reset link sent. Check your email — it may take a minute to arrive.');
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const active = document.getElementById('panel-signin').style.display !== 'none';
+  const signup = document.getElementById('panel-signup').style.display !== 'none';
+  const forgot = document.getElementById('panel-forgot').style.display !== 'none';
+  if (active) handleSignIn();
+  else if (signup) handleSignUp();
+  else if (forgot) handleForgot();
+});
+</script>
+</body>
+</html>
