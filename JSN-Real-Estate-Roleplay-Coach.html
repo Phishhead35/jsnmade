@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="JSN Coach">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#05070d;--surface:#0d1120;--surface2:#111829;--border:#1e2b4a;--accent:#ff9d00;--accent-glow:rgba(255,157,0,.18);--accent2:#00d4ff;--accent2-glow:rgba(0,212,255,.15);--text:#f0f4ff;--muted:#7289b0;--danger:#ff4757;--success:#00e5a0;--r:6px}
+:root{--bg:#05070d;--surface:#0d1120;--surface2:#111829;--border:#1e2b4a;--accent:#ff9d00;--accent-glow:rgba(255,157,0,.18);--accent2:#00d4ff;--accent2-glow:rgba(0,212,255,.15);--text:#ffffff;--muted:#7289b0;--danger:#ff4757;--success:#00e5a0;--r:6px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
@@ -4542,11 +4542,10 @@ async function send(){
 
   // ── STREAMING ──────────────────────────────────────────────────────────────
   try{
-    const r=await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev',{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        app:'roleplay',
         model:'claude-sonnet-4-20250514',
         max_tokens:1024,
         stream:true,
@@ -4785,9 +4784,5 @@ function exportChat(){
   await restoreSession();
 })();
 </script>
-<div style="text-align:center; padding:10px 20px; font-size:11px; color:#8899aa; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(8,15,30,0.97);">
-  This tool is for sales training and roleplay practice only. Not legal, compliance, financial, or professional advice. Real client communications should be reviewed by your broker before sending.
-</div>
-<script src="/jsn-nav.js"></script>
 </body>
 </html>
