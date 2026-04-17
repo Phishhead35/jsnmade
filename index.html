@@ -4,24 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JSN Made LLC</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap'>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #1f1a14;
-      --accent: #e87c1e;
-      --accent-dim: rgba(232, 124, 30, 0.08);
-      --text-primary: #f0ebe4;
-      --text-secondary: #6b5f52;
-      --text-muted: #2e2620;
+      --navy:    #0b1120;
+      --navy2:   #121c30;
+      --navy3:   #1a2640;
+      --orange:  #ff6b2b;
+      --orange2: #ff8c55;
+      --cyan:    #00d4c8;
+      --white:   #ffffff;
+      --gray:    #7a8fa8;
+      --gray2:   #a8bdd0;
+      --border:  rgba(0,212,200,0.13);
+      --bg:      #0b1120;
+      --accent:  #ff6b2b;
+      --accent-dim: rgba(255,107,43,0.08);
+      --text-primary:   #ffffff;
+      --text-secondary: #a8bdd0;
+      --text-muted:     #7a8fa8;
     }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
       color: var(--text-primary);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Barlow', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -49,7 +57,7 @@
       backdrop-filter: blur(12px);
     }
     .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: 28px;
       letter-spacing: 0.12em;
       color: var(--text-primary);
@@ -86,7 +94,7 @@
       animation: fadeUp 0.6s ease forwards 0.2s;
     }
     .hero-headline {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: clamp(72px, 12vw, 160px);
       line-height: 0.92;
       letter-spacing: 0.04em;
@@ -119,7 +127,7 @@
     }
     .btn-primary {
       background: var(--accent);
-      color: #0a0a0a;
+      color: #0b1120;
       font-family: 'DM Mono', monospace;
       font-size: 12px;
       font-weight: 500;
@@ -181,7 +189,7 @@
       margin-bottom: 16px;
     }
     .section-title {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: clamp(40px, 6vw, 72px);
       letter-spacing: 0.06em;
       line-height: 1;
@@ -212,17 +220,17 @@
       transform-origin: left;
       transition: transform 0.4s ease;
     }
-    .card:hover { background: #141414; }
+    .card:hover { background: #121c30; }
     .card:hover::before { transform: scaleX(1); }
     .card-number {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: 72px;
       color: var(--text-muted);
       line-height: 1;
       margin-bottom: 24px;
     }
     .card-title {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: 28px;
       letter-spacing: 0.08em;
       color: var(--text-primary);
@@ -270,7 +278,7 @@
       margin-bottom: 24px;
     }
     .coming-soon-title {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: clamp(48px, 8vw, 96px);
       letter-spacing: 0.06em;
       color: var(--text-primary);
@@ -305,7 +313,7 @@
     .email-input:focus { border-color: var(--accent); }
     .email-btn {
       background: var(--accent);
-      color: #0a0a0a;
+      color: #0b1120;
       border: none;
       padding: 14px 24px;
       font-family: 'DM Mono', monospace;
@@ -335,7 +343,7 @@
       gap: 16px;
     }
     .footer-logo {
-      font-family: 'Bebas Neue', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: 22px;
       letter-spacing: 0.1em;
       color: var(--text-primary);
@@ -467,7 +475,7 @@
         const data = await response.json();
         if (data.success) {
           btn.textContent = "You're In";
-          btn.style.background = '#0a0a0a';
+          btn.style.background = '#0b1120';
           btn.style.color = 'var(--accent)';
           btn.style.border = '1px solid var(--accent)';
           input.value = '';
