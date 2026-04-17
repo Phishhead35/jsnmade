@@ -506,14 +506,20 @@ async function handleSignUp() {
   }
 
   // Insert user profile into public.users table
+  // Uses upsert to handle cases where the row already exists
   if (data.user) {
-    await sb.from('users').insert({
-      id:         data.user.id,
-      email:      email,
-      full_name:  name,
-      role:       'agent',
-      plan_tier:  'free',
-    }).select();
+    try {
+      await sb.from('users').upsert({
+        id:          data.user.id,
+        email:       email,
+        full_name:   name,
+        role:        'agent',
+        plan_tier:   'free',
+        created_at:  new Date().toISOString(),
+      }, { onConflict: 'id' });
+    } catch(e) {
+      console.warn('Profile insert skipped:', e.message);
+    }
   }
 
   setLoading('signupBtn', false, 'Create Account');
