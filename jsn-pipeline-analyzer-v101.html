@@ -27,7 +27,7 @@
     --red:     #ff3d52;
     --blue:    #4d9fff;
     --text:    #ffffff;
-    --muted:   #7a8fa8;
+    --muted:   #ffffff;
     --font-head: 'Barlow Condensed', sans-serif;
     --font-body: 'Barlow', sans-serif;
     --font-mono: 'DM Mono', monospace;
@@ -151,7 +151,7 @@
     min-height: 180px;
   }
   textarea:focus { border-color: var(--accent); }
-  textarea::placeholder { color: var(--muted); }
+  textarea::placeholder { color: rgba(255,255,255,0.35); }
 
   .section-head {
     font-family: var(--font-mono);
@@ -236,7 +236,7 @@
     flex-shrink: 0;
   }
   .run-btn:hover { background: #ffb820; }
-  .run-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+  .run-btn:disabled { background: var(--border); color: rgba(255,255,255,0.3); cursor: not-allowed; }
 
   .right-panel {
     flex: 1;
