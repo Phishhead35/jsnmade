@@ -880,7 +880,7 @@
     reveals.forEach(el => observer.observe(el));
 
     // ── EARLY ACCESS FORM ──
-    function handleSignup(btn) {
+    async function handleSignup(btn) {
       const input = btn.previousElementSibling;
       const email = input.value.trim();
 
@@ -891,15 +891,30 @@
         return;
       }
 
-      btn.textContent = 'You\'re on the list ✓';
-      btn.style.background = 'var(--cyan)';
-      btn.style.color = 'var(--navy)';
+      btn.textContent = 'Sending...';
       btn.disabled = true;
       input.disabled = true;
-      input.value = email;
 
-      // TODO: wire to Resend / Supabase when SMTP is set up (#3 on the list)
-      console.log('Early access signup:', email);
+      try {
+        const res = await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev/email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'early_access', email }),
+        });
+
+        if (res.ok) {
+          btn.textContent = "You're on the list ✓";
+          btn.style.background = 'var(--cyan)';
+          btn.style.color = 'var(--navy)';
+        } else {
+          throw new Error('Send failed');
+        }
+      } catch {
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        input.disabled = false;
+        btn.style.background = '';
+      }
     }
 
     // Allow Enter key on input
