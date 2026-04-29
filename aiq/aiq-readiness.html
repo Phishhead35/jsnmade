@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>JSN AIQ Readiness Assessment</title>
-<meta name="description" content="JSN AIQ Readiness Assessment — Find out where your business stands on AI adoption. 25 questions, 5 minutes, a prioritized action plan." />
+<meta name="description" content="JSN AIQ Readiness Assessment. Find out where your business stands on AI adoption. 25 questions, 5 minutes, a prioritized action plan." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <style>
@@ -35,6 +35,8 @@
     padding: 32px 16px;
     position: relative;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   body::before {
     content: '';
@@ -116,7 +118,7 @@
   .gap-name { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #FFFFFF; }
   .gap-score { font-size: 11px; font-weight: 700; margin-left: auto; }
   .gap-action { font-size: 12px; color: #FFFFFF; display: flex; gap: 12px; line-height: 1.5; margin-bottom: 6px; }
-  .gap-arrow { color: rgba(255,255,255,0.5); flex-shrink: 0; }
+  .gap-arrow { color:#FFFFFF; flex-shrink: 0; }
   .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
   .footer { margin-top: 28px; text-align: center; font-size: 10px; letter-spacing: 0.1em; color: #FFFFFF; }
@@ -368,7 +370,7 @@ function render() {
             </div>`).join("")}
         </div>
       </div>
-      ${gaps.length ? '<div class="section-label">Priority Gaps — Domains Below 50</div>' : ""}
+      ${gaps.length ? '<div class="section-label">Priority Gaps. Domains Below 50</div>' : ""}
       ${gapHTML}
       <hr class="divider"/>
 
@@ -376,7 +378,7 @@ function render() {
       <div id="audit-cta" style="margin-bottom:24px">
         <div style="background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.25);padding:32px;margin-bottom:16px;position:relative;overflow:hidden">
           <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)"></div>
-          <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;font-family:var(--mono)">JSN AIQ Audit — Professional Service</div>
+          <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;font-family:var(--mono)">JSN AIQ Audit. Professional Service</div>
           <div style="font-family:'EB Garamond',serif;font-size:clamp(20px,3vw,28px);line-height:1.2;margin-bottom:12px" id="audit-headline">Get a full AI roadmap built for your business</div>
           <div style="font-size:13px;color:#FFFFFF;line-height:1.7;margin-bottom:24px" id="audit-body">Loading...</div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
@@ -462,9 +464,9 @@ function restart() { answers = {}; domainIndex = 0; qIndex = 0; results = null; 
 
 // ── AUDIT CTA ─────────────────────────────────────────────────────────────
 const AUDIT_COPY = {
-  1: { headline: "Your business needs an AI foundation — we'll build the roadmap with you.", body: "Your assessment shows you're at the early stages of AI readiness. The gap between where you are and where your competitors are heading is closing fast. A JSN AIQ Audit gives you a concrete, prioritized roadmap so you know exactly what to do first — without wasting time or money on the wrong tools." },
-  2: { headline: "You know AI matters. Now it's time to build a plan that actually works.", body: "Your assessment shows awareness but no formal strategy yet. That's the most dangerous position — you know enough to know you're behind, but not enough to know where to start. A JSN AIQ Audit turns that uncertainty into a clear 90-day action plan tailored to your business." },
-  3: { headline: "You're experimenting with AI. Let's turn pilots into real results.", body: "Your assessment shows active experimentation — which means you're ahead of most. But pilots without a scaling strategy stay pilots. A JSN AIQ Audit identifies which of your current efforts have the highest ROI potential and builds the infrastructure to scale them." },
+  1: { headline: "Your business needs an AI foundation. we'll build the roadmap with you.", body: "Your assessment shows you're at the early stages of AI readiness. The gap between where you are and where your competitors are heading is closing fast. A JSN AIQ Audit gives you a concrete, prioritized roadmap so you know exactly what to do first. without wasting time or money on the wrong tools." },
+  2: { headline: "You know AI matters. Now it's time to build a plan that actually works.", body: "Your assessment shows awareness but no formal strategy yet. That's the most dangerous position. you know enough to know you're behind, but not enough to know where to start. A JSN AIQ Audit turns that uncertainty into a clear 90-day action plan tailored to your business." },
+  3: { headline: "You're experimenting with AI. Let's turn pilots into real results.", body: "Your assessment shows active experimentation. which means you're ahead of most. But pilots without a scaling strategy stay pilots. A JSN AIQ Audit identifies which of your current efforts have the highest ROI potential and builds the infrastructure to scale them." },
   4: { headline: "You're scaling AI. Let's make sure you're building on the right foundation.", body: "Your assessment shows strong AI adoption across your organization. The risk at this stage is scaling the wrong things or missing governance gaps that become expensive later. A JSN AIQ Audit gives you an independent validation of your strategy and identifies the highest-leverage next moves." },
   5: { headline: "You're transforming. Let's make sure AI stays a competitive advantage.", body: "Your assessment shows exceptional AI maturity. At this level, the work shifts to sustaining competitive differentiation and building the culture and governance that keep AI working for you as the landscape evolves. A JSN AIQ Audit ensures your strategy stays ahead of the curve." }
 };
@@ -502,7 +504,7 @@ async function submitAuditInquiry() {
   btn.textContent = "Submitting...";
   btn.disabled = true;
 
-  // Send to Constant Contact worker — same endpoint, tagged as audit inquiry
+  // Send to Constant Contact worker. same endpoint, tagged as audit inquiry
   const WORKER_URL = "https://cc-leads.YOUR-SUBDOMAIN.workers.dev";
   const nameParts = name.split(" ");
 
@@ -516,7 +518,7 @@ async function submitAuditInquiry() {
         email,
         score: results ? results.composite : 0,
         level: results ? results.maturity.name : "",
-        track: "Audit Inquiry — " + (company || "Unknown"),
+        track: "Audit Inquiry. " + (company || "Unknown"),
         domainScores: results ? results.domainScores : {}
       })
     });
@@ -544,9 +546,9 @@ function goToTraining() {
 function copyResults() {
   if (!results) return;
   const { domainScores, composite, maturity } = results;
-  const text = "AI Readiness Score: " + composite + "/100 — " + maturity.name + " (Level " + maturity.level + ")\n\nDomain Scores:\n" +
+  const text = "AI Readiness Score: " + composite + "/100. " + maturity.name + " (Level " + maturity.level + ")\n\nDomain Scores:\n" +
     DOMAINS.map(d => "  " + d.label + ": " + domainScores[d.id] + "/100").join("\n") +
-    "\n\nGenerated by JSN Made — jsnmade.com";
+    "\n\nGenerated by JSN Made. jsnmade.com";
   navigator.clipboard.writeText(text).then(() => alert("Results copied to clipboard."));
 }
 

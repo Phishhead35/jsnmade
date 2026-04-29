@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JSN AIQ Training — JSN Made</title>
+<title>JSN AIQ Training. JSN Made</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
@@ -28,7 +28,7 @@
   --sans:'DM Sans',sans-serif;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 
 /* NOISE OVERLAY */
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.4}
@@ -40,28 +40,28 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 /* SIDEBAR */
 .sidebar-brand{padding:0 28px 28px;border-bottom:1px solid var(--border)}
-.brand-back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:16px;transition:color 0.15s}
+.brand-back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:16px;transition:color 0.15s}
 .brand-back:hover{color:var(--text)}
 .brand-name{font-family:var(--serif);font-size:18px;color:#1DC6C2}
-.brand-sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.brand-sub{font-size:11px;color:#FFFFFF;margin-top:2px;font-family:var(--mono)}
 
 .score-badge{margin:20px 28px;background:var(--card);border:1px solid var(--border2);padding:16px;position:relative;overflow:hidden}
 .score-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DC6C2,#2DD9D5)}
-.score-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.score-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:6px}
 .score-val{font-family:var(--serif);font-size:36px;line-height:1}
 .score-track-name{font-size:11px;color:#1DC6C2;margin-top:4px;font-family:var(--mono)}
 
-.nav-section{padding:20px 28px 8px;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 28px;cursor:pointer;transition:background 0.12s;font-size:13px;color:var(--muted);position:relative}
+.nav-section{padding:20px 28px 8px;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 28px;cursor:pointer;transition:background 0.12s;font-size:13px;color:#FFFFFF;position:relative}
 .nav-item:hover{background:rgba(255,255,255,0.03);color:var(--text)}
 .nav-item.active{background:rgba(29,198,194,0.08);color:#1DC6C2}
 .nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:#1DC6C2}
 .nav-item.locked{opacity:0.4;cursor:not-allowed}
-.nav-num{font-family:var(--mono);font-size:10px;width:20px;flex-shrink:0;color:var(--dim)}
+.nav-num{font-family:var(--mono);font-size:10px;width:20px;flex-shrink:0;color:rgba(255,255,255,0.6)}
 .nav-item.active .nav-num{color:#1DC6C2}
 .nav-check{margin-left:auto;font-size:10px;color:var(--green)}
 
-.sidebar-footer{margin-top:auto;padding:20px 28px;border-top:1px solid var(--border);font-size:11px;color:var(--dim);font-family:var(--mono)}
+.sidebar-footer{margin-top:auto;padding:20px 28px;border-top:1px solid var(--border);font-size:11px;color:rgba(255,255,255,0.6);font-family:var(--mono)}
 
 /* MAIN */
 .page{display:none;animation:fadeUp 0.3s ease}
@@ -76,17 +76,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .gate-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:16px}
 .gate-h1{font-family:var(--serif);font-size:clamp(28px,4vw,42px);line-height:1.15;margin-bottom:16px}
 .gate-h1 em{color:#1DC6C2;font-style:italic}
-.gate-body{font-size:14px;line-height:1.7;color:var(--muted);margin-bottom:32px}
+.gate-body{font-size:14px;line-height:1.7;color:#FFFFFF;margin-bottom:32px}
 .gate-score-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--card);border:1px solid var(--border);margin-bottom:32px}
 .gate-score-num{font-family:var(--serif);font-size:48px;line-height:1}
-.gate-score-info{font-size:12px;color:var(--muted);line-height:1.5}
+.gate-score-info{font-size:12px;color:#FFFFFF;line-height:1.5}
 .gate-score-info strong{display:block;color:var(--text);font-size:13px;margin-bottom:2px}
 .gate-input{width:100%;background:var(--card);border:1px solid var(--border2);color:var(--text);padding:14px 16px;font-family:var(--mono);font-size:13px;margin-bottom:10px;outline:none;transition:border-color 0.15s}
 .gate-input:focus{border-color:#1DC6C2}
-.gate-input::placeholder{color:var(--muted)}
+.gate-input::placeholder{color:#FFFFFF}
 .btn-primary{background:var(--orange);color:#FFFFFF;border:none;padding:15px 36px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;width:100%;transition:opacity 0.15s}
 .btn-primary:hover{opacity:0.88}
-.gate-privacy{font-size:10px;color:var(--dim);text-align:center;margin-top:12px;font-family:var(--mono)}
+.gate-privacy{font-size:10px;color:rgba(255,255,255,0.6);text-align:center;margin-top:12px;font-family:var(--mono)}
 
 /* LESSON PAGE */
 .lesson-header{margin-bottom:40px}
@@ -94,7 +94,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .lesson-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
 .lesson-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);line-height:1.15;margin-bottom:16px}
 .lesson-title em{color:#1DC6C2;font-style:italic}
-.lesson-meta{display:flex;gap:20px;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.08em}
+.lesson-meta{display:flex;gap:20px;font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.08em}
 .lesson-meta span{display:flex;align-items:center;gap:6px}
 
 .lesson-body{font-size:15px;line-height:1.8;color:#FFFFFF}
@@ -104,21 +104,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 .callout{background:var(--card);border-left:3px solid #1DC6C2;padding:20px 24px;margin:28px 0;border-radius:0}
 .callout-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:8px}
-.callout p{font-size:14px;color:var(--muted);line-height:1.7;margin:0}
+.callout p{font-size:14px;color:#FFFFFF;line-height:1.7;margin:0}
 
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
 .stat-card{background:var(--card);border:1px solid var(--border);padding:20px}
 .stat-num{font-family:var(--serif);font-size:32px;color:#1DC6C2;line-height:1;margin-bottom:6px}
-.stat-label{font-size:12px;color:var(--muted);line-height:1.4}
+.stat-label{font-size:12px;color:#FFFFFF;line-height:1.4}
 
 .example-box{background:var(--card);border:1px solid var(--border2);padding:24px;margin:28px 0}
 .example-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px}
 .example-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.example-item{padding:12px;background:var(--surface);font-size:13px;color:var(--muted);line-height:1.5}
+.example-item{padding:12px;background:var(--surface);font-size:13px;color:#FFFFFF;line-height:1.5}
 .example-item strong{display:block;color:var(--text);font-size:12px;margin-bottom:4px;font-family:var(--mono)}
 
 .lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
-.btn-nav{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:12px 24px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.btn-nav{background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:12px 24px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
 .btn-nav:hover{border-color:#1DC6C2;color:#1DC6C2}
 .btn-nav-primary{background:var(--orange);color:#FFFFFF;border:1px solid #1DC6C2;padding:12px 28px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:opacity 0.15s}
 .btn-nav-primary:hover{opacity:0.88}
@@ -129,10 +129,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .quiz-progress-fill{height:100%;background:var(--orange);transition:width 0.4s ease}
 .quiz-q{color:#FFFFFF;font-family:var(--serif);font-size:clamp(18px,3vw,26px);line-height:1.45;margin-bottom:28px;min-height:60px}
 .quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.quiz-option{background:var(--card);border:1px solid var(--border);padding:16px 20px;cursor:pointer;font-size:14px;color:var(--muted);text-align:left;font-family:var(--sans);transition:all 0.12s;display:flex;align-items:center;gap:14px}
+.quiz-option{background:var(--card);border:1px solid var(--border);padding:16px 20px;cursor:pointer;font-size:14px;color:#FFFFFF;text-align:left;font-family:var(--sans);transition:all 0.12s;display:flex;align-items:center;gap:14px}
 .quiz-option:hover{border-color:rgba(29,198,194,0.3);color:var(--text);background:rgba(29,198,194,0.04)}
 .quiz-option.correct{border-color:#1DC6C2;background:rgba(29,198,194,0.08);color:var(--text)}
-.quiz-option.wrong{border-color:var(--red);background:rgba(255,107,107,0.08);color:var(--muted)}
+.quiz-option.wrong{border-color:var(--red);background:rgba(255,107,107,0.08);color:#FFFFFF}
 .quiz-option.selected{border-color:#1DC6C2;background:rgba(29,198,194,0.08);color:var(--text)}
 .quiz-opt-letter{font-family:var(--mono);font-size:11px;width:22px;height:22px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s}
 .quiz-option.correct .quiz-opt-letter{border-color:var(--green);color:var(--green)}
@@ -145,9 +145,9 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .quiz-score-final{text-align:center;padding:48px 0}
 .quiz-score-circle{width:120px;height:120px;border:2px solid #1DC6C2;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;font-family:var(--serif)}
 .quiz-score-circle .big{font-size:40px;color:#1DC6C2;line-height:1}
-.quiz-score-circle .small{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.quiz-score-circle .small{font-size:12px;color:#FFFFFF;font-family:var(--mono)}
 .quiz-result-title{font-family:var(--serif);font-size:28px;margin-bottom:12px}
-.quiz-result-body{font-size:14px;color:var(--muted);max-width:400px;margin:0 auto 32px;line-height:1.7}
+.quiz-result-body{font-size:14px;color:#FFFFFF;max-width:400px;margin:0 auto 32px;line-height:1.7}
 
 /* CHAT PAGE */
 .chat-header{margin-bottom:32px}
@@ -161,7 +161,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .msg-avatar.ai{background:rgba(29,198,194,0.12);border:1px solid rgba(29,198,194,0.3);color:#1DC6C2}
 .msg-avatar.user{background:rgba(74,158,255,0.15);border:1px solid rgba(74,158,255,0.3);color:var(--blue)}
 .msg-bubble{flex:1}
-.msg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.msg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px}
 .msg-text{font-size:14px;line-height:1.7;color:#FFFFFF}
 .msg-text p{margin-bottom:8px}
 .msg-text p:last-child{margin-bottom:0}
@@ -169,21 +169,21 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .msg.user .msg-name{text-align:right}
 .msg.user .msg-text{background:rgba(74,158,255,0.08);border:1px solid rgba(74,158,255,0.15);padding:12px 16px;display:inline-block;text-align:left}
 .typing{display:flex;gap:4px;align-items:center;padding:4px 0}
-.typing span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span{width:6px;height:6px;background:rgba(255,255,255,0.4);border-radius:50%;animation:bounce 1.2s infinite}
 .typing span:nth-child(2){animation-delay:0.15s}
 .typing span:nth-child(3){animation-delay:0.3s}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 .chat-input-row{border-top:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-end}
 .chat-input{flex:1;background:transparent;border:none;color:var(--text);font-family:var(--sans);font-size:14px;resize:none;outline:none;min-height:36px;max-height:120px;line-height:1.5}
-.chat-input::placeholder{color:var(--muted)}
+.chat-input::placeholder{color:#FFFFFF}
 .chat-send{background:var(--orange);border:none;color:#FFFFFF;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:opacity 0.15s}
 .chat-send:hover{opacity:0.88}
 .chat-send:disabled{opacity:0.4;cursor:not-allowed}
 
 .suggested-qs{margin-top:16px}
-.sq-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.sq-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:10px}
 .sq-grid{display:flex;flex-wrap:wrap;gap:8px}
-.sq-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:8px 14px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.4}
+.sq-btn{background:var(--card);border:1px solid var(--border);color:#FFFFFF;padding:8px 14px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.4}
 .sq-btn:hover{border-color:#1DC6C2;color:#1DC6C2}
 
 /* COMPLETE PAGE */
@@ -191,7 +191,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .complete-icon{font-size:48px;margin-bottom:24px}
 .complete-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);margin-bottom:16px}
 .complete-title em{color:#1DC6C2;font-style:italic}
-.complete-body{font-size:15px;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 40px}
+.complete-body{font-size:15px;color:#FFFFFF;line-height:1.7;max-width:480px;margin:0 auto 40px}
 .next-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;text-align:left}
 .track-card{background:var(--card);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden}
 .track-card.locked{opacity:0.5}
@@ -199,10 +199,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .track-card:nth-child(1)::before{background:#1DC6C2}
 .track-card:nth-child(2)::before{background:var(--blue)}
 .track-card:nth-child(3)::before{background:var(--green)}
-.track-level{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.track-level{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
 .track-title{font-family:var(--serif);font-size:16px;margin-bottom:6px}
-.track-desc{font-size:12px;color:var(--muted);line-height:1.5}
-.track-lock{position:absolute;top:12px;right:12px;font-size:12px;color:var(--dim)}
+.track-desc{font-size:12px;color:#FFFFFF;line-height:1.5}
+.track-lock{position:absolute;top:12px;right:12px;font-size:12px;color:rgba(255,255,255,0.6)}
 
 @media(max-width:768px){
   .gate-wrap{padding:24px 12px}
@@ -248,9 +248,9 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
   <div class="gate-card">
     <div class="gate-eyebrow">// JSN AIQ &nbsp;·&nbsp; READINESS TRAINING</div>
     <h1 class="gate-h1">Your personalized<br><em>AIQ learning path</em> is ready.</h1>
-    <p class="gate-body">Based on your assessment score, we've built a custom training track for you. Enter your email to unlock your full curriculum — lessons, quizzes, and an AI coach built specifically for your maturity level.</p>
+    <p class="gate-body">Based on your assessment score, we've built a custom training track for you. Enter your email to unlock your full curriculum. lessons, quizzes, and an AI coach built specifically for your maturity level.</p>
     <div class="gate-score-row" id="gate-score-row">
-      <div class="gate-score-num" id="gate-score-num" style="color:#1DC6C2">—</div>
+      <div class="gate-score-num" id="gate-score-num" style="color:#1DC6C2">.</div>
       <div class="gate-score-info">
         <strong id="gate-level-name">Loading your results...</strong>
         <span id="gate-track-label"></span>
@@ -277,8 +277,8 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
 
     <div class="score-badge">
       <div class="score-label">Your Score</div>
-      <div class="score-val" id="sb-score">—</div>
-      <div class="score-track-name" id="sb-level">—</div>
+      <div class="score-val" id="sb-score">.</div>
+      <div class="score-track-name" id="sb-level">.</div>
     </div>
 
     <div class="nav-section">Curriculum</div>
@@ -322,13 +322,13 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="lesson-body">
-        <p>Most business leaders have a distorted picture of AI — shaped by science fiction on one end and vendor hype on the other. Before you can make smart decisions about AI, you need an accurate mental model of what it actually is.</p>
+        <p>Most business leaders have a distorted picture of AI. shaped by science fiction on one end and vendor hype on the other. Before you can make smart decisions about AI, you need an accurate mental model of what it actually is.</p>
 
         <p>Here is the honest version: AI is software that learns patterns from data and uses those patterns to make predictions or generate outputs. That is the whole thing. There is no magic, no consciousness, no understanding. It is statistics, done at enormous scale, on enormous amounts of data.</p>
 
         <div class="callout">
           <div class="callout-label">Core Insight</div>
-          <p>AI does not think. It matches. When a language model answers your question, it is not reasoning — it is predicting which words are most likely to follow your prompt, based on patterns learned from billions of examples. Understanding this distinction changes how you evaluate what AI can and cannot do for your business.</p>
+          <p>AI does not think. It matches. When a language model answers your question, it is not reasoning. it is predicting which words are most likely to follow your prompt, based on patterns learned from billions of examples. Understanding this distinction changes how you evaluate what AI can and cannot do for your business.</p>
         </div>
 
         <h3>The Three Types of AI <em>You'll Actually Use</em></h3>
@@ -336,7 +336,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         <p>Forget the academic taxonomy. In a business context, there are three types of AI that matter right now:</p>
 
         <div class="example-box">
-          <div class="example-label">AI Types — Practical Business Lens</div>
+          <div class="example-label">AI Types. Practical Business Lens</div>
           <div class="example-grid">
             <div class="example-item">
               <strong>Predictive AI</strong>
@@ -344,7 +344,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
             </div>
             <div class="example-item">
               <strong>Generative AI</strong>
-              Creates new content — text, images, code, summaries. ChatGPT, Claude, Copilot. High visibility, high hype. Genuinely useful for communication, drafting, and knowledge work. Not magic.
+              Creates new content. text, images, code, summaries. ChatGPT, Claude, Copilot. High visibility, high hype. Genuinely useful for communication, drafting, and knowledge work. Not magic.
             </div>
             <div class="example-item">
               <strong>Process AI</strong>
@@ -352,7 +352,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
             </div>
             <div class="example-item">
               <strong>What It's Not</strong>
-              AI is not a replacement for human judgment on complex, ambiguous decisions. It is not reliable for tasks with no historical data. It is not objective — it inherits the biases in its training data.
+              AI is not a replacement for human judgment on complex, ambiguous decisions. It is not reliable for tasks with no historical data. It is not objective. it inherits the biases in its training data.
             </div>
           </div>
         </div>
@@ -376,14 +376,14 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <p>The pattern is consistent: companies that succeed with AI treat it as an organizational change initiative that happens to use technology — not a technology project that happens to affect the organization. That reframe matters more than any tool or vendor decision.</p>
+        <p>The pattern is consistent: companies that succeed with AI treat it as an organizational change initiative that happens to use technology. not a technology project that happens to affect the organization. That reframe matters more than any tool or vendor decision.</p>
 
         <div class="callout">
           <div class="callout-label">What This Means For You</div>
-          <p>Your score on the assessment reflects where your organization sits on the readiness spectrum. The technical barriers to AI are lower than they have ever been. The organizational barriers — data quality, culture, leadership alignment, clear ownership — remain exactly as hard as they have always been. This curriculum focuses on those.</p>
+          <p>Your score on the assessment reflects where your organization sits on the readiness spectrum. The technical barriers to AI are lower than they have ever been. The organizational barriers. data quality, culture, leadership alignment, clear ownership. remain exactly as hard as they have always been. This curriculum focuses on those.</p>
         </div>
 
-        <p>In the next lesson, we will map specifically where AI creates the highest value in business operations — and how to identify which of those opportunities exist in your organization right now.</p>
+        <p>In the next lesson, we will map specifically where AI creates the highest value in business operations. and how to identify which of those opportunities exist in your organization right now.</p>
       </div>
       <div class="lesson-nav">
         <button class="btn-nav" onclick="showPage('lesson2')" style="margin-left:auto">Next Lesson →</button>
@@ -401,53 +401,53 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         </div>
       </div>
       <div class="lesson-body">
-        <p>The most common mistake executives make when evaluating AI is starting with the technology and working backward to the problem. The companies getting real ROI from AI do the opposite — they start with their most expensive operational problems and work forward to the solution.</p>
+        <p>The most common mistake executives make when evaluating AI is starting with the technology and working backward to the problem. The companies getting real ROI from AI do the opposite. they start with their most expensive operational problems and work forward to the solution.</p>
 
         <p>There are five zones where AI consistently delivers the highest returns across industries. Your job is to identify which of these zones represent real pain in your organization today.</p>
 
         <h3>Zone 1: <em>Prediction & Forecasting</em></h3>
-        <p>Anywhere your business makes decisions based on what you think will happen — demand, inventory, staffing, pricing — AI can improve accuracy significantly. Even a 10% improvement in forecast accuracy in a supply chain operation can generate millions in working capital savings.</p>
+        <p>Anywhere your business makes decisions based on what you think will happen. demand, inventory, staffing, pricing. AI can improve accuracy significantly. Even a 10% improvement in forecast accuracy in a supply chain operation can generate millions in working capital savings.</p>
 
         <div class="callout">
           <div class="callout-label">Real Example</div>
-          <p>A regional food distributor implemented AI-driven demand forecasting on their top 200 SKUs. Waste dropped 23% in 6 months. The tool cost $18,000/year. The waste reduction was worth $340,000. That is a 19x ROI — from one use case.</p>
+          <p>A regional food distributor implemented AI-driven demand forecasting on their top 200 SKUs. Waste dropped 23% in 6 months. The tool cost $18,000/year. The waste reduction was worth $340,000. That is a 19x ROI. from one use case.</p>
         </div>
 
         <h3>Zone 2: <em>Document & Data Processing</em></h3>
-        <p>If your team spends time reading, classifying, extracting, or routing documents — invoices, orders, contracts, emails, reports — this is one of the fastest payback AI applications available. Modern AI can process documents with accuracy rates that match or exceed human performance, at a fraction of the cost and time.</p>
+        <p>If your team spends time reading, classifying, extracting, or routing documents. invoices, orders, contracts, emails, reports. this is one of the fastest payback AI applications available. Modern AI can process documents with accuracy rates that match or exceed human performance, at a fraction of the cost and time.</p>
 
         <h3>Zone 3: <em>Customer Interaction</em></h3>
         <p>AI-assisted customer service, not AI-replaced customer service, is the highest-ROI positioning. Tools that help your team respond faster, with better information, consistently outperform teams without AI support. The goal is augmentation, not replacement.</p>
 
         <h3>Zone 4: <em>Quality & Compliance Monitoring</em></h3>
-        <p>AI excels at pattern detection in large datasets — catching anomalies that humans miss because they are reviewing too much data too quickly. Quality control, compliance monitoring, and fraud detection are mature, proven AI applications with clear, measurable outcomes.</p>
+        <p>AI excels at pattern detection in large datasets. catching anomalies that humans miss because they are reviewing too much data too quickly. Quality control, compliance monitoring, and fraud detection are mature, proven AI applications with clear, measurable outcomes.</p>
 
         <h3>Zone 5: <em>Knowledge Work Acceleration</em></h3>
-        <p>Generative AI tools like Claude and Copilot are demonstrably accelerating knowledge work — drafting, summarizing, researching, coding, analyzing. Studies show productivity gains of 20–40% for knowledge workers who use these tools effectively. The key word is "effectively" — untrained adoption produces mediocre results.</p>
+        <p>Generative AI tools like Claude and Copilot are demonstrably accelerating knowledge work. drafting, summarizing, researching, coding, analyzing. Studies show productivity gains of 20–40% for knowledge workers who use these tools effectively. The key word is "effectively". untrained adoption produces mediocre results.</p>
 
         <div class="example-box">
           <div class="example-label">The Value Identification Exercise</div>
           <div class="example-grid">
             <div class="example-item">
-              <strong>Step 1 — Find the Pain</strong>
-              List your top 5 most expensive operational problems. Not technology problems — business problems. Slow decisions. High error rates. Wasted inventory. Slow onboarding.
+              <strong>Step 1. Find the Pain</strong>
+              List your top 5 most expensive operational problems. Not technology problems. business problems. Slow decisions. High error rates. Wasted inventory. Slow onboarding.
             </div>
             <div class="example-item">
-              <strong>Step 2 — Map to Zones</strong>
+              <strong>Step 2. Map to Zones</strong>
               For each problem, identify which of the five zones it falls into. Problems that don't map to any zone are poor AI candidates for now.
             </div>
             <div class="example-item">
-              <strong>Step 3 — Data Check</strong>
+              <strong>Step 3. Data Check</strong>
               For each mapped problem, ask: do we have at least 12 months of historical data on this? If yes, it's a real candidate. If no, data infrastructure comes first.
             </div>
             <div class="example-item">
-              <strong>Step 4 — Size the Prize</strong>
+              <strong>Step 4. Size the Prize</strong>
               Estimate what a 20% improvement in this area is worth annually. That is your rough ceiling for what you should invest in a pilot. Most teams underspend here.
             </div>
           </div>
         </div>
 
-        <p>In the final lesson, we will cover how to build the internal case for your first AI investment — including how to frame it for leadership, how to structure the pilot, and what success actually looks like in year one.</p>
+        <p>In the final lesson, we will cover how to build the internal case for your first AI investment. including how to frame it for leadership, how to structure the pilot, and what success actually looks like in year one.</p>
       </div>
       <div class="lesson-nav">
         <button class="btn-nav" onclick="showPage('lesson1')">← Previous</button>
@@ -489,7 +489,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
             </div>
             <div class="example-item">
               <strong>Days 16–45: Run</strong>
-              Deploy the tool in a controlled environment. Collect data. Resist the urge to declare victory or failure early. Document every friction point — these become your implementation roadmap.
+              Deploy the tool in a controlled environment. Collect data. Resist the urge to declare victory or failure early. Document every friction point. these become your implementation roadmap.
             </div>
             <div class="example-item">
               <strong>Days 46–75: Measure</strong>
@@ -503,7 +503,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         </div>
 
         <h3>Finding Your <em>Internal Champion</em></h3>
-        <p>Every successful AI initiative has one person who owns it obsessively. This is not a committee. It is one person with the authority to make decisions and the credibility to sell them internally. If you cannot name that person today, finding them is the first step — before any tool evaluation.</p>
+        <p>Every successful AI initiative has one person who owns it obsessively. This is not a committee. It is one person with the authority to make decisions and the credibility to sell them internally. If you cannot name that person today, finding them is the first step. before any tool evaluation.</p>
 
         <div class="stat-grid">
           <div class="stat-card">
@@ -543,7 +543,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       <div class="chat-header">
         <div class="lesson-eyebrow">// AI COACH</div>
         <h1 class="lesson-title">Ask Your <em>AI Coach</em></h1>
-        <p style="font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6">Your AI coach knows your score, your track, and everything covered in this module. Ask anything — how to apply a concept, what to do next, how to handle a specific situation in your business.</p>
+        <p style="font-size:14px;color:#FFFFFF;margin-top:8px;line-height:1.6">Your AI coach knows your score, your track, and everything covered in this module. Ask anything. how to apply a concept, what to do next, how to handle a specific situation in your business.</p>
       </div>
       <div class="chat-container">
         <div class="chat-messages" id="chat-messages"></div>
@@ -643,7 +643,7 @@ const QUIZ = [
   },
   {
     q: "What is the recommended duration for a first AI pilot and why?",
-    opts: ["30 days — fast feedback loops are essential","90 days — long enough for results, short enough to stay focused","6 months — AI needs time to learn your specific data","12 months — enterprise change takes a full fiscal year"],
+    opts: ["30 days. fast feedback loops are essential","90 days. long enough for results, short enough to stay focused","6 months. AI needs time to learn your specific data","12 months. enterprise change takes a full fiscal year"],
     correct: 1,
     feedback: "90 days strikes the right balance. It is long enough to move past initial implementation friction and see real results, but short enough to maintain focus and organizational patience. Shorter pilots often fail to produce meaningful data. Longer pilots lose momentum and tend to expand scope uncontrollably."
   }
@@ -716,10 +716,10 @@ async function unlockTraining() {
     });
 
     if (!res.ok) {
-      console.warn("Lead capture failed silently — continuing anyway");
+      console.warn("Lead capture failed silently. continuing anyway");
     }
   } catch (err) {
-    // Fail silently — don't block the user from accessing training
+    // Fail silently. don't block the user from accessing training
     console.warn("Lead capture error:", err);
   }
 
@@ -766,7 +766,7 @@ function renderQuiz() {
   const letters = ["A","B","C","D"];
   body.innerHTML = `
     <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
+    <div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
     <div class="quiz-q">${q.q}</div>
     <div class="quiz-options">
       ${q.opts.map((o,i) => `<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join("")}
@@ -825,7 +825,7 @@ function renderQuizComplete() {
 // ── CHAT ───────────────────────────────────────────────────────────────────
 function initChat() {
   const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[1];
-  const opening = `Hi ${userName} — I'm your AI coach for this track. I know your assessment score is ${userScore}/100, placing you at the ${m.name} level, and you've just completed the AI Foundations module.\n\nI'm here to help you apply what you've learned to your specific situation. What's on your mind — is there a concept you want to explore further, or a specific challenge in your business you'd like to think through?`;
+  const opening = `Hi ${userName}. I'm your AI coach for this track. I know your assessment score is ${userScore}/100, placing you at the ${m.name} level, and you've just completed the AI Foundations module.\n\nI'm here to help you apply what you've learned to your specific situation. What's on your mind. is there a concept you want to explore further, or a specific challenge in your business you'd like to think through?`;
   addMessage("ai", opening);
 }
 
@@ -871,7 +871,7 @@ async function sendMessage(text) {
 
   const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[1];
   const domainSummary = Object.keys(domainScores).length
-    ? " Domain scores from their assessment — Data & Infrastructure: " + (domainScores.data ?? "N/A") + "/100, Strategy & Leadership: " + (domainScores.strategy ?? "N/A") + "/100, Talent & Culture: " + (domainScores.talent ?? "N/A") + "/100, Current AI Use: " + (domainScores.current ?? "N/A") + "/100, Governance & Risk: " + (domainScores.governance ?? "N/A") + "/100. When advising, prioritize their lowest-scoring domains."
+    ? " Domain scores from their assessment. Data & Infrastructure: " + (domainScores.data ?? "N/A") + "/100, Strategy & Leadership: " + (domainScores.strategy ?? "N/A") + "/100, Talent & Culture: " + (domainScores.talent ?? "N/A") + "/100, Current AI Use: " + (domainScores.current ?? "N/A") + "/100, Governance & Risk: " + (domainScores.governance ?? "N/A") + "/100. When advising, prioritize their lowest-scoring domains."
     : "";
   const systemPrompt = `You are an AI readiness coach on the JSN Made platform. You are helping ${userName}, whose email is ${userEmail}.
 
@@ -884,17 +884,17 @@ They have just completed the AI Foundations training module, which covered:
 
 Your role:
 - Help them apply these concepts to their specific business situation
-- Reference their domain scores when relevant — if Data is their lowest score, prioritize data infrastructure before AI tools
-- Give concrete, actionable advice — not generic platitudes
+- Reference their domain scores when relevant. if Data is their lowest score, prioritize data infrastructure before AI tools
+- Give concrete, actionable advice. not generic platitudes
 - Ask follow-up questions to understand their specific context before giving recommendations
 - Be direct and honest. If they are not ready for something, say so clearly and explain what they need to do first
-- Keep responses concise — 3 to 5 sentences maximum unless they ask for more detail
-- Do not use bullet points or markdown formatting — respond in plain conversational prose
+- Keep responses concise. 3 to 5 sentences maximum unless they ask for more detail
+- Do not use bullet points or markdown formatting. respond in plain conversational prose
 - Do not repeat back what they said before answering
 
 You are knowledgeable, direct, and practical. You care about helping them make real progress, not just feel good about AI.`;
 
-  // WORKER URL — replace YOUR-SUBDOMAIN after deploying anthropic-worker.js
+  // WORKER URL. replace YOUR-SUBDOMAIN after deploying anthropic-worker.js
   const ANTHROPIC_WORKER = "https://jsn-aiq-coach.wewearsmiles.workers.dev";
 
   try {
