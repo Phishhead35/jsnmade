@@ -867,8 +867,11 @@ Your role:
 
 You are knowledgeable, direct, and practical. You care about helping them make real progress, not just feel good about AI.`;
 
+  // WORKER URL — replace YOUR-SUBDOMAIN after deploying anthropic-worker.js
+  const ANTHROPIC_WORKER = "https://jsn-aiq-coach.wewearsmiles.workers.dev";
+
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch(ANTHROPIC_WORKER, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
