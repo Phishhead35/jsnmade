@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JSN AIQ Training — Track 2: From Pilot to Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1121;
+  --surface:#121C2F;
+  --card:#151F33;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(29,198,194,0.25);
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,0.5);
+  --dim:rgba(255,255,255,0.2);
+  --accent:#1DC6C2;
+  --accent2:#2DD9D5;
+  --orange:#FD6B2B;
+  --green:#5BE0A0;
+  --red:#FF6B6B;
+  --mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.4}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:32px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:48px 56px;max-width:900px}
+
+/* SIDEBAR */
+.sidebar-brand{padding:0 28px 28px;border-bottom:1px solid var(--border)}
+.brand-back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:16px;transition:color 0.15s}
+.brand-back:hover{color:var(--accent)}
+.brand-name{font-family:var(--serif);font-size:18px;color:var(--accent)}
+.brand-sub{font-size:11px;color:#FFFFFF;margin-top:2px;font-family:var(--mono)}
+
+.track-badge{margin:20px 28px;background:var(--card);border:1px solid var(--border2);padding:16px;position:relative;overflow:hidden}
+.track-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DC6C2,#2DD9D5)}
+.track-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:6px}
+.track-name{font-family:var(--serif);font-size:20px;line-height:1.2;color:var(--accent)}
+.track-sub{font-size:11px;color:#FFFFFF;margin-top:4px;font-family:var(--mono)}
+
+.nav-section{padding:20px 28px 8px;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 28px;cursor:pointer;transition:background 0.12s;font-size:13px;color:#FFFFFF;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--accent)}
+.nav-item.active{background:rgba(29,198,194,0.08);color:var(--accent)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent)}
+.nav-num{font-family:var(--mono);font-size:10px;width:20px;flex-shrink:0;color:var(--dim)}
+.nav-item.active .nav-num{color:var(--accent)}
+.nav-check{margin-left:auto;font-size:10px;color:var(--green)}
+.sidebar-footer{margin-top:auto;padding:20px 28px;border-top:1px solid var(--border);font-size:10px;color:rgba(255,255,255,0.25);font-family:var(--mono);line-height:1.6}
+
+/* GATE */
+.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:var(--bg);position:fixed;inset:0;z-index:100;transition:opacity 0.4s}
+.gate-wrap.hidden{opacity:0;pointer-events:none}
+.gate-card{background:var(--surface);border:1px solid var(--border2);padding:52px 48px;max-width:520px;width:100%;position:relative}
+.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#1DC6C2,transparent)}
+.gate-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:16px}
+.gate-h1{font-family:var(--serif);font-size:clamp(28px,4vw,42px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
+.gate-h1 em{color:var(--accent);font-style:italic}
+.gate-body{font-size:14px;line-height:1.75;color:#FFFFFF;margin-bottom:32px}
+.gate-track-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--card);border:1px solid var(--border);margin-bottom:32px}
+.gate-track-num{font-family:var(--serif);font-size:48px;line-height:1;color:var(--accent)}
+.gate-track-info{font-size:12px;color:#FFFFFF;line-height:1.5}
+.gate-track-info strong{display:block;color:#FFFFFF;font-size:13px;margin-bottom:2px}
+.gate-input{width:100%;background:var(--card);border:1px solid var(--border2);color:#FFFFFF;padding:14px 16px;font-family:var(--mono);font-size:13px;margin-bottom:10px;outline:none;transition:border-color 0.15s}
+.gate-input:focus{border-color:var(--accent)}
+.gate-input::placeholder{color:var(--muted)}
+.btn-primary{background:var(--orange);color:#FFFFFF;border:none;padding:15px 36px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;width:100%;transition:opacity 0.15s}
+.btn-primary:hover{opacity:0.88}
+.gate-privacy{font-size:10px;color:var(--dim);text-align:center;margin-top:12px;font-family:var(--mono)}
+#gate-error{display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-top:10px;font-family:var(--mono)}
+
+/* PAGES */
+.page{display:none;animation:fadeUp 0.3s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* LESSON */
+.lesson-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.lesson-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.lesson-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
+.lesson-title em{color:var(--accent);font-style:italic}
+.lesson-meta{display:flex;gap:20px;font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.08em;margin-bottom:40px}
+.lesson-body{font-size:15px;line-height:1.8;color:#FFFFFF}
+.lesson-body p{margin-bottom:20px}
+.lesson-body h3{font-family:var(--serif);font-size:22px;color:#FFFFFF;margin:36px 0 14px}
+.lesson-body h3 em{color:var(--accent);font-style:italic}
+
+.callout{background:var(--card);border-left:3px solid #1DC6C2;padding:20px 24px;margin:28px 0}
+.callout-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:8px}
+.callout p{font-size:14px;color:#FFFFFF;line-height:1.7;margin:0}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);padding:20px}
+.stat-num{font-family:var(--serif);font-size:32px;color:#1DC6C2;line-height:1;margin-bottom:6px}
+.stat-label{font-size:12px;color:#FFFFFF;line-height:1.4}
+
+.example-box{background:var(--card);border:1px solid var(--border2);padding:24px;margin:28px 0}
+.example-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px}
+.example-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.example-item{padding:12px;background:var(--surface);font-size:13px;color:#FFFFFF;line-height:1.5}
+.example-item strong{display:block;color:#FFFFFF;font-size:12px;margin-bottom:4px;font-family:var(--mono)}
+
+.matrix{width:100%;border-collapse:collapse;margin:24px 0}
+.matrix th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#1DC6C2;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border2)}
+.matrix td{font-size:13px;color:#FFFFFF;padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.matrix tr:last-child td{border-bottom:none}
+.matrix .good{color:var(--green)}
+.matrix .bad{color:#FF6B6B}
+
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
+.btn-nav{background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:12px 24px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.btn-nav:hover{border-color:var(--accent);color:var(--accent)}
+.btn-nav-primary{background:var(--orange);color:#FFFFFF;border:1px solid var(--orange);padding:12px 28px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:opacity 0.15s}
+.btn-nav-primary:hover{opacity:0.88}
+
+/* QUIZ */
+.quiz-progress{height:1px;background:var(--border);margin-bottom:32px}
+.quiz-progress-fill{height:100%;background:#1DC6C2;transition:width 0.4s ease}
+.quiz-q{font-family:var(--serif);font-size:clamp(18px,3vw,26px);line-height:1.45;margin-bottom:28px;min-height:60px;color:#FFFFFF}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.quiz-option{background:var(--card);border:1px solid var(--border);padding:16px 20px;cursor:pointer;font-size:14px;color:#FFFFFF;text-align:left;font-family:var(--sans);transition:all 0.12s;display:flex;align-items:center;gap:14px}
+.quiz-option:hover{background:rgba(29,198,194,0.05);border-color:rgba(29,198,194,0.3);color:#FFFFFF}
+.quiz-option.correct{border-color:#1DC6C2;background:rgba(29,198,194,0.08);color:#FFFFFF}
+.quiz-option.wrong{border-color:var(--red);background:rgba(255,107,107,0.08);color:#FFFFFF}
+.quiz-option.selected{border-color:#1DC6C2;background:rgba(29,198,194,0.08);color:#FFFFFF}
+.quiz-opt-letter{font-family:var(--mono);font-size:11px;width:22px;height:22px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.12s;color:#FFFFFF}
+.quiz-option.correct .quiz-opt-letter{border-color:#1DC6C2;color:#1DC6C2}
+.quiz-option.wrong .quiz-opt-letter{border-color:var(--red);color:var(--red)}
+.quiz-option.selected .quiz-opt-letter{border-color:#1DC6C2;color:#1DC6C2}
+.quiz-feedback{padding:16px 20px;margin-bottom:24px;font-size:13px;line-height:1.6;display:none;color:#FFFFFF}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:rgba(29,198,194,0.08);border-left:3px solid #1DC6C2}
+.quiz-feedback.wrong{background:rgba(255,107,107,0.08);border-left:3px solid var(--red)}
+.quiz-score-final{text-align:center;padding:48px 0}
+.quiz-score-circle{width:120px;height:120px;border:2px solid #1DC6C2;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;font-family:var(--serif)}
+.quiz-score-circle .big{font-size:40px;color:#1DC6C2;line-height:1}
+.quiz-score-circle .small{font-size:12px;color:#FFFFFF;font-family:var(--mono)}
+.quiz-result-title{font-family:var(--serif);font-size:28px;margin-bottom:12px;color:#FFFFFF}
+.quiz-result-body{font-size:14px;color:#FFFFFF;max-width:400px;margin:0 auto 32px;line-height:1.7}
+
+/* CHAT */
+.chat-container{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;height:520px}
+.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
+.msg{display:flex;gap:12px;align-items:flex-start;animation:fadeUp 0.2s ease}
+.msg-avatar{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:500;margin-top:2px}
+.msg-avatar.ai{background:rgba(29,198,194,0.12);border:1px solid rgba(29,198,194,0.3);color:#1DC6C2}
+.msg-avatar.user{background:rgba(253,107,43,0.12);border:1px solid rgba(253,107,43,0.3);color:var(--orange)}
+.msg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.msg-text{font-size:14px;line-height:1.7;color:#FFFFFF}
+.msg-text p{margin-bottom:8px}
+.msg-text p:last-child{margin-bottom:0}
+.msg.user .msg-bubble{text-align:right}
+.msg.user .msg-name{text-align:right}
+.msg.user .msg-text{background:rgba(253,107,43,0.08);border:1px solid rgba(253,107,43,0.15);padding:12px 16px;display:inline-block;text-align:left}
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.15s}
+.typing span:nth-child(3){animation-delay:0.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.chat-input-row{border-top:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-end}
+.chat-input{flex:1;background:transparent;border:none;color:#FFFFFF;font-family:var(--sans);font-size:14px;resize:none;outline:none;min-height:36px;max-height:120px;line-height:1.5}
+.chat-input::placeholder{color:var(--muted)}
+.chat-send{background:var(--orange);border:none;color:#FFFFFF;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:opacity 0.15s}
+.chat-send:hover{opacity:0.88}
+.chat-send:disabled{opacity:0.4;cursor:not-allowed}
+.suggested-qs{margin-top:16px}
+.sq-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.sq-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sq-btn{background:var(--card);border:1px solid var(--border);color:#FFFFFF;padding:8px 14px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.4}
+.sq-btn:hover{border-color:#1DC6C2;color:#1DC6C2}
+
+/* COMPLETE */
+.complete-wrap{text-align:center;padding:60px 0}
+.complete-icon{font-size:48px;margin-bottom:24px}
+.complete-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);margin-bottom:16px;color:#FFFFFF}
+.complete-title em{color:var(--accent);font-style:italic}
+.complete-body{font-size:15px;color:#FFFFFF;line-height:1.7;max-width:480px;margin:0 auto 40px}
+.next-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;text-align:left}
+.track-card{background:var(--card);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden}
+.track-card.locked{opacity:0.5}
+.track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.track-card:nth-child(1)::before{background:#1DC6C2}
+.track-card:nth-child(2)::before{background:var(--orange)}
+.track-card:nth-child(3)::before{background:var(--green)}
+.track-level{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
+.track-title{font-family:var(--serif);font-size:16px;margin-bottom:6px;color:#FFFFFF}
+.track-desc{font-size:12px;color:#FFFFFF;line-height:1.5}
+.track-lock{position:absolute;top:12px;right:12px;font-size:12px;color:var(--dim)}
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+  .main{padding:32px 20px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .example-grid{grid-template-columns:1fr}
+  .next-tracks{grid-template-columns:1fr}
+  .gate-card{padding:28px 16px}
+  .gate-wrap{padding:24px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- EMAIL GATE -->
+<div class="gate-wrap" id="gate">
+  <div class="gate-card">
+    <div class="gate-eyebrow">// JSN AIQ &nbsp;·&nbsp; TRACK 2</div>
+    <h1 class="gate-h1">From <em>Pilot</em><br>to Proof.</h1>
+    <p class="gate-body">You understand AI. Now it's time to run your first initiative, measure it properly, and build the internal case to scale. This track is for operators ready to move from theory to results.</p>
+    <div class="gate-track-row">
+      <div class="gate-track-num">02</div>
+      <div class="gate-track-info">
+        <strong>Track 2 — From Pilot to Proof</strong>
+        <span>3 lessons · Quiz · AI Coach · ~25 min</span>
+      </div>
+    </div>
+    <input class="gate-input" type="text" id="gate-name" placeholder="Your name" autocomplete="name"/>
+    <input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email" style="margin-bottom:20px"/>
+    <button class="btn-primary" id="gate-btn" onclick="unlockTraining()">Unlock Track 2 →</button>
+    <div id="gate-error"></div>
+    <div class="gate-privacy">No spam. No sharing. Unsubscribe anytime.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="shell" id="app-shell" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <a href="aiq-training.html" class="brand-back">← Track 1</a>
+      <div class="brand-name">JSN AIQ <span style="color:#FFFFFF">Training</span></div>
+      <div class="brand-sub">Track 2 — From Pilot to Proof</div>
+    </div>
+
+    <div class="track-badge">
+      <div class="track-label">Current Track</div>
+      <div class="track-name">From Pilot<br>to Proof</div>
+      <div class="track-sub" id="sb-level">—</div>
+    </div>
+
+    <div class="nav-section">Curriculum</div>
+    <div class="nav-item active" onclick="showPage('lesson1')" id="nav-lesson1">
+      <span class="nav-num">01</span> Picking the Right Project
+    </div>
+    <div class="nav-item" onclick="showPage('lesson2')" id="nav-lesson2">
+      <span class="nav-num">02</span> Running the Pilot
+    </div>
+    <div class="nav-item" onclick="showPage('lesson3')" id="nav-lesson3">
+      <span class="nav-num">03</span> Measuring & Scaling
+    </div>
+    <div class="nav-item" onclick="showPage('quiz')" id="nav-quiz">
+      <span class="nav-num">✎</span> Module Quiz
+    </div>
+    <div class="nav-item" onclick="showPage('chat')" id="nav-chat">
+      <span class="nav-num">◈</span> AI Coach
+    </div>
+    <div class="nav-item" onclick="showPage('complete')" id="nav-complete">
+      <span class="nav-num">★</span> Complete
+    </div>
+
+    <div class="sidebar-footer">
+      <div id="sb-user-name" style="color:#FFFFFF;margin-bottom:4px"></div>
+      <div id="sb-user-email"></div>
+      <div style="margin-top:8px">Recommendations are AI-assisted and for informational purposes only. They do not constitute professional consulting advice.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- LESSON 1 -->
+    <div class="page active" id="page-lesson1">
+      <div class="lesson-eyebrow">// MODULE 01 OF 03</div>
+      <h1 class="lesson-title">Picking the <em>Right</em><br>First AI Project</h1>
+      <div class="lesson-meta">
+        <span>⏱ 9 min read</span>
+        <span>◈ From Pilot to Proof</span>
+      </div>
+      <div class="lesson-body">
+        <p>The number one reason AI pilots fail is not technical — it's that they were working on the wrong problem from the start. A technically perfect AI solution to a low-value problem is still a failure. Choosing well is more important than executing well.</p>
+
+        <p>There are three criteria every good first AI project must meet. If your candidate project doesn't pass all three, move on. There are always better options.</p>
+
+        <h3>The Three <em>Criteria</em></h3>
+
+        <div class="example-box">
+          <div class="example-label">The Pilot Selection Framework</div>
+          <div class="example-grid">
+            <div class="example-item">
+              <strong>1. High Repetition</strong>
+              The task happens frequently — daily, weekly, or at volume. AI ROI compounds with repetition. A task done once a quarter is a poor candidate. A task done 50 times a day is an excellent one. Ask: how many times does this happen per week?
+            </div>
+            <div class="example-item">
+              <strong>2. Measurable Outcome</strong>
+              You can define success in a number before you start. Time saved. Error rate reduced. Cost per unit lowered. Revenue per rep increased. If you can't define the metric before you begin, you won't be able to prove it worked when you're done.
+            </div>
+            <div class="example-item">
+              <strong>3. Low Failure Risk</strong>
+              If the AI gets it wrong, the consequences are manageable. Document drafting, internal reporting, and customer inquiry routing are low risk. Medical diagnosis, financial advice, and legal determinations are high risk. Start where a mistake is recoverable.
+            </div>
+            <div class="example-item">
+              <strong>Bonus: Data Already Exists</strong>
+              The best first projects have 6–12 months of historical data you can use immediately. You're not waiting to collect data — you're deploying against what you already have. This is why data infrastructure matters so much in the assessment.
+            </div>
+          </div>
+        </div>
+
+        <h3>The <em>Prioritization Matrix</em></h3>
+        <p>When you have multiple candidates, score each one across two dimensions: how much value does solving it create, and how easy is it to implement with AI? Projects in the top-right quadrant — high value, easy to implement — are your first pilots.</p>
+
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Project Type</th>
+              <th>Value</th>
+              <th>Ease</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Document drafting & templates</td>
+              <td class="good">High</td>
+              <td class="good">Easy</td>
+              <td class="good">✓ Start here</td>
+            </tr>
+            <tr>
+              <td>Customer inquiry routing</td>
+              <td class="good">High</td>
+              <td class="good">Easy</td>
+              <td class="good">✓ Start here</td>
+            </tr>
+            <tr>
+              <td>Demand forecasting</td>
+              <td class="good">Very High</td>
+              <td style="color:var(--orange)">Medium</td>
+              <td style="color:var(--orange)">→ Phase 2</td>
+            </tr>
+            <tr>
+              <td>Custom AI model training</td>
+              <td class="good">Very High</td>
+              <td class="bad">Hard</td>
+              <td class="bad">✗ Not yet</td>
+            </tr>
+            <tr>
+              <td>Internal knowledge base Q&A</td>
+              <td style="color:var(--orange)">Medium</td>
+              <td class="good">Easy</td>
+              <td style="color:var(--orange)">→ Quick win</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <div class="callout-label">The Golden Rule</div>
+          <p>Pick the project where a 20% improvement is worth more than the cost of the pilot. That's your minimum bar. If you can't estimate what 20% improvement in this area is worth annually, stop and do that math first. It's the most important number in your business case.</p>
+        </div>
+
+        <h3>Common <em>Mistakes</em> to Avoid</h3>
+        <p>The most common first-pilot mistakes aren't about technology — they're about scope and ownership. Avoid these patterns and you're already ahead of most organizations that attempt AI pilots.</p>
+
+        <div class="example-box">
+          <div class="example-label">What Kills Pilots Before They Start</div>
+          <div class="example-grid">
+            <div class="example-item">
+              <strong>No Named Owner</strong>
+              Every pilot needs one person who is accountable for results. Not a committee. Not "the IT team." One person whose job it is to make this work.
+            </div>
+            <div class="example-item">
+              <strong>Undefined Success</strong>
+              "We'll know it's working when it feels better" is not a success criterion. Define the number before day one. Everything else is noise.
+            </div>
+            <div class="example-item">
+              <strong>Scope Creep</strong>
+              The pilot starts as "automate invoice processing" and becomes "rebuild our entire finance workflow." Stay on the original scope until you have proof of concept.
+            </div>
+            <div class="example-item">
+              <strong>Building Custom When Off-the-Shelf Exists</strong>
+              For a first pilot, there is almost always an existing tool you can deploy in days. Custom builds are for Phase 3, not Phase 1.
+            </div>
+          </div>
+        </div>
+
+        <p>In the next lesson, we'll cover how to structure the 90-day pilot itself — timelines, checkpoints, what to measure, and how to run the review that determines whether you scale or pivot.</p>
+      </div>
+      <div class="lesson-nav">
+        <div></div>
+        <button class="btn-nav-primary" onclick="showPage('lesson2')">Next Lesson →</button>
+      </div>
+    </div>
+
+    <!-- LESSON 2 -->
+    <div class="page" id="page-lesson2">
+      <div class="lesson-eyebrow">// MODULE 02 OF 03</div>
+      <h1 class="lesson-title">Running the <em>90-Day</em><br>Pilot</h1>
+      <div class="lesson-meta">
+        <span>⏱ 10 min read</span>
+        <span>◈ From Pilot to Proof</span>
+      </div>
+      <div class="lesson-body">
+        <p>You've chosen your project. You have a named owner and a success metric. Now you need to run it in a way that produces clean, defensible data — because the output of a pilot isn't just results, it's a business case for what comes next.</p>
+
+        <p>The 90-day structure is not arbitrary. Shorter pilots don't produce enough signal. Longer pilots lose momentum and accumulate scope creep. Ninety days is the window where real patterns emerge and organizational patience holds.</p>
+
+        <h3>The Four <em>Phases</em></h3>
+
+        <div class="example-box">
+          <div class="example-label">90-Day Pilot Structure</div>
+          <div class="example-grid">
+            <div class="example-item">
+              <strong>Days 1–15: Setup</strong>
+              Install the tool. Train the owner. Establish your baseline measurement — what does the process look like today, before AI? Document this rigorously. Your baseline is the foundation of your ROI calculation. Do not skip this step.
+            </div>
+            <div class="example-item">
+              <strong>Days 16–45: Run</strong>
+              Deploy in a controlled environment. Not company-wide — a defined subset. One team, one region, one process flow. Collect data weekly. Resist the urge to declare success or failure early. Let the data accumulate.
+            </div>
+            <div class="example-item">
+              <strong>Days 46–75: Measure</strong>
+              Compare against baseline. Calculate actual vs. projected improvement. Identify the friction points — what's working, what isn't, what would need to change to scale. Document everything, including the failures.
+            </div>
+            <div class="example-item">
+              <strong>Days 76–90: Decide</strong>
+              Prepare a clean go/no-go recommendation with data. If it worked: propose Phase 2 with specific scope and budget. If it didn't: document why and propose the prerequisite work. Both outcomes are valuable.
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="callout-label">On Measuring the Baseline</div>
+          <p>Most organizations skip baseline measurement because it's tedious. This is a fatal mistake. Without a clear before picture, you can't prove the after. Spend days 1–5 doing nothing but documenting the current state of the process you're improving. Time it. Count it. Cost it out. That data is worth more than the AI tool itself.</p>
+        </div>
+
+        <h3>Managing <em>People</em> During the Pilot</h3>
+        <p>Technical failure is rare. People failure is common. The employees whose workflow is changing have real concerns — about their jobs, about being evaluated, about learning something new. Ignoring these concerns is the fastest way to kill a pilot that would otherwise have succeeded.</p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num">70%</div>
+            <div class="stat-label">of AI pilots that fail cite employee resistance as a primary factor</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">3×</div>
+            <div class="stat-label">higher success rate when employees are involved in tool selection</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">Day 1</div>
+            <div class="stat-label">is when you should address job security concerns — not after they surface</div>
+          </div>
+        </div>
+
+        <p>Before you launch the pilot, have a direct conversation with the team: "This tool is here to handle the repetitive parts of your job so you can focus on the work that actually requires your judgment. We're not replacing anyone — we're upgrading how the team operates." Say it once, clearly, and mean it.</p>
+
+        <h3>The <em>Weekly Check-In</em> Rhythm</h3>
+        <p>A 15-minute weekly check-in with the pilot owner prevents small problems from becoming pilot-killers. Ask three questions every week: What's working? What's not? What do you need to keep going? That's it. Keep it lightweight enough that people don't dread it.</p>
+
+        <div class="callout">
+          <div class="callout-label">What to Do When It's Not Working</div>
+          <p>If the pilot isn't producing results by day 45, don't wait until day 90 to acknowledge it. Diagnose early: is the tool wrong, or is the process wrong? Often the process needs to be cleaned up before AI can work on it. A messy process fed into AI produces messy outputs faster. Fix the process, then rerun the pilot.</p>
+        </div>
+
+        <p>In the final lesson, we'll cover how to measure results, build the ROI case, and present the go/no-go recommendation in a way that gets leadership to say yes to scaling.</p>
+      </div>
+      <div class="lesson-nav">
+        <button class="btn-nav" onclick="showPage('lesson1')">← Previous</button>
+        <button class="btn-nav-primary" onclick="showPage('lesson3')">Next Lesson →</button>
+      </div>
+    </div>
+
+    <!-- LESSON 3 -->
+    <div class="page" id="page-lesson3">
+      <div class="lesson-eyebrow">// MODULE 03 OF 03</div>
+      <h1 class="lesson-title">Measuring Results &amp;<br><em>Making the Case</em> to Scale</h1>
+      <div class="lesson-meta">
+        <span>⏱ 8 min read</span>
+        <span>◈ From Pilot to Proof</span>
+      </div>
+      <div class="lesson-body">
+        <p>The pilot is done. You have data. Now you need to turn that data into a decision — and present it in a way that gets the right answer from leadership. This lesson is about measurement, storytelling, and the specific structure of a go/no-go recommendation that actually moves people.</p>
+
+        <h3>The <em>Four Numbers</em> That Matter</h3>
+        <p>You don't need a 40-slide deck. You need four numbers, clearly stated, with the math behind each one.</p>
+
+        <div class="example-box">
+          <div class="example-label">The ROI Calculation Framework</div>
+          <div class="example-grid">
+            <div class="example-item">
+              <strong>1. Time Saved</strong>
+              Hours per week × average fully-loaded hourly cost × 52 weeks. This is your annual productivity value. Example: 10 hours/week × $45/hour × 52 = $23,400/year per employee affected.
+            </div>
+            <div class="example-item">
+              <strong>2. Error Reduction</strong>
+              Cost per error × errors per month × reduction percentage × 12. Even a 30% reduction in rework cost justifies most pilots. Errors are almost always more expensive than people think.
+            </div>
+            <div class="example-item">
+              <strong>3. Revenue Impact</strong>
+              Harder to measure but most compelling to leadership. Did faster response times increase conversion? Did better data quality improve forecasting? Quantify conservatively and state your assumptions.
+            </div>
+            <div class="example-item">
+              <strong>4. Pilot Cost</strong>
+              Tool cost + implementation time + training time. Be honest. Understating costs destroys credibility. Overstating them makes the ROI even more impressive when actuals come in lower.
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="callout-label">The 10× Rule</div>
+          <p>A pilot needs to show at least 10× projected ROI to justify scaling investment. If your pilot cost $5,000 (tool + time) and it's producing $50,000 in annual value — that's your case. Anything below 5× is a marginal result that will struggle to get budget approval in most organizations.</p>
+        </div>
+
+        <h3>Structuring the <em>Go/No-Go</em> Recommendation</h3>
+        <p>The most effective recommendation follows a simple structure — one page, four sections. Leadership doesn't read long documents. They read executive summaries and ask questions. Give them the summary and be ready for the questions.</p>
+
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>What to Include</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>What We Tested</strong></td>
+              <td>One sentence. The tool, the process, the timeframe.</td>
+            </tr>
+            <tr>
+              <td><strong>What We Found</strong></td>
+              <td>The four numbers. Baseline vs. result. Clean and simple.</td>
+            </tr>
+            <tr>
+              <td><strong>The Recommendation</strong></td>
+              <td>Go or no-go. If go: proposed scope, cost, and timeline for Phase 2. If no-go: why, and what needs to change first.</td>
+            </tr>
+            <tr>
+              <td><strong>The Ask</strong></td>
+              <td>One specific decision. A budget approval, a headcount allocation, a timeline commitment. Make it easy to say yes.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>When to <em>Scale</em> vs. When to Pause</h3>
+
+        <div class="example-box">
+          <div class="example-label">Scale vs. Pause Decision Framework</div>
+          <div class="example-grid">
+            <div class="example-item">
+              <strong>Scale When:</strong>
+              Results exceeded baseline by 20%+ · ROI is 10× or better · The team using it wants to keep using it · The process it supports is stable · You have a named owner ready to lead Phase 2
+            </div>
+            <div class="example-item">
+              <strong>Pause When:</strong>
+              Results are mixed or inconsistent · The underlying process is chaotic · Key personnel are resistant · The tool requires more customization than anticipated · Budget or leadership alignment is unclear
+            </div>
+          </div>
+        </div>
+
+        <p>Pausing is not failure. A well-documented pause that identifies what needs to change first is more valuable than a forced scale that produces mediocre results across the organization. The goal is not to prove AI works — it's to make AI work for your specific situation.</p>
+
+        <div class="callout">
+          <div class="callout-label">What Comes Next</div>
+          <p>Track 3 — Governance and Growth — covers what happens after the pilot succeeds. Data strategy, vendor evaluation at scale, change management across teams, and building the internal AI capability that makes each subsequent initiative faster and cheaper than the last.</p>
+        </div>
+      </div>
+      <div class="lesson-nav">
+        <button class="btn-nav" onclick="showPage('lesson2')">← Previous</button>
+        <button class="btn-nav-primary" onclick="showPage('quiz')">Take the Quiz →</button>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="page" id="page-quiz">
+      <div class="lesson-eyebrow">// MODULE QUIZ</div>
+      <h1 class="lesson-title">Check Your <em>Understanding</em></h1>
+      <div class="lesson-meta"><span>⏱ 5 min</span><span>◈ 5 questions</span></div>
+      <div id="quiz-body"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="page" id="page-chat">
+      <div class="lesson-eyebrow">// AI COACH</div>
+      <h1 class="lesson-title">Ask Your <em>AI Coach</em></h1>
+      <p style="font-size:14px;color:#FFFFFF;margin-top:8px;line-height:1.6;margin-bottom:32px">Your AI coach knows your score, your track, and everything in Track 2. Ask anything about running your pilot, measuring results, or making the case to scale.</p>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask your AI coach anything..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="chat-send" id="chat-send" onclick="sendMessage()">→</button>
+        </div>
+      </div>
+      <div class="suggested-qs">
+        <div class="sq-label">Suggested questions</div>
+        <div class="sq-grid">
+          <button class="sq-btn" onclick="askSuggested(this)">How do I pick my first AI project?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">What does a good baseline measurement look like?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">How do I handle employee resistance to AI?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">What's a realistic ROI for a first pilot?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">How do I present results to leadership?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">When should I pause vs. scale a pilot?</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="page" id="page-complete">
+      <div class="complete-wrap">
+        <div class="complete-icon">★</div>
+        <h1 class="complete-title">Track 2 <em>Complete</em></h1>
+        <p class="complete-body">You now know how to select, run, measure, and present an AI pilot. You have the framework, the metrics, and the language to get leadership to say yes to scaling.</p>
+        <div class="next-tracks">
+          <div class="track-card">
+            <div class="track-level">Track 1</div>
+            <div class="track-title">AI Foundations</div>
+            <div class="track-desc">What AI is, where it creates value, how to build the internal case.</div>
+          </div>
+          <div class="track-card locked">
+            <div class="track-lock">🔒</div>
+            <div class="track-level">Track 3</div>
+            <div class="track-title">Governance & Growth</div>
+            <div class="track-desc">Data strategy, vendor evaluation, change management, and scaling AI across teams.</div>
+          </div>
+          <div class="track-card locked">
+            <div class="track-lock">🔒</div>
+            <div class="track-level">Track 4</div>
+            <div class="track-title">Competitive Edge</div>
+            <div class="track-desc">Advanced AI strategy, building AI culture, and sustaining transformation at scale.</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="alert('Track 3 coming soon. You will be notified at your registered email.')">Continue to Track 3 →</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const QUIZ = [
+  {
+    q: "Which of the following is NOT one of the three criteria for a good first AI pilot project?",
+    opts: ["High repetition — the task happens frequently","Measurable outcome — success can be defined in a number","Low failure risk — consequences of errors are manageable","High complexity — the task requires significant human expertise"],
+    correct: 3,
+    feedback: "Correct. High complexity is actually a warning sign for a first pilot, not a criterion. The best first projects are high repetition, measurable, and low risk if the AI makes a mistake. Complex, high-stakes tasks come after you have proven the approach."
+  },
+  {
+    q: "What is the primary purpose of the baseline measurement phase (Days 1–15) of a 90-day pilot?",
+    opts: ["To train employees on the new AI tool","To document the current state so you can calculate ROI after the pilot","To get leadership buy-in before the pilot begins","To identify which vendor to use for the implementation"],
+    correct: 1,
+    feedback: "Correct. Without a clear before picture, you cannot prove the after. The baseline measurement is the foundation of your entire ROI calculation and business case. Organizations that skip this step consistently struggle to justify scaling their pilots."
+  },
+  {
+    q: "According to the prioritization matrix, which type of project should be your first pilot?",
+    opts: ["High value, hard to implement — worth the effort","High value, easy to implement — best ROI for least risk","Medium value, easy to implement — build confidence first","Very high value, very hard to implement — maximize impact"],
+    correct: 1,
+    feedback: "Correct. High value and easy to implement is the top-right quadrant of the matrix — these projects deliver meaningful ROI without requiring extensive technical work. Custom builds and complex implementations belong in later phases, after you have established proof of concept."
+  },
+  {
+    q: "What is the 10× Rule as described in this module?",
+    opts: ["You need 10 successful pilots before scaling company-wide","A pilot needs to show at least 10× projected ROI to justify scaling investment","You should test 10 different tools before committing to one","The pilot should run for 10 weeks minimum before drawing conclusions"],
+    correct: 1,
+    feedback: "Correct. A pilot that cost $5,000 in time and tools should be producing $50,000 or more in annual value to justify scaling investment. Anything below 5× is a marginal result that will struggle to get budget approval. The math needs to be compelling, not just positive."
+  },
+  {
+    q: "When should you pause rather than scale a pilot?",
+    opts: ["When results exceeded baseline by only 15% instead of 20%","When the underlying process is chaotic and the team is resistant","When the pilot took longer than 90 days to complete","When leadership asks too many questions about the methodology"],
+    correct: 1,
+    feedback: "Correct. A chaotic process fed into AI produces chaotic outputs faster. If the underlying process needs fixing or the team is resistant, scaling will amplify those problems, not solve them. A well-documented pause that identifies what needs to change first is more valuable than a forced scale."
+  }
+];
+
+const MATURITY = [
+  { min:0,  max:20,  level:1, name:"Unaware",      color:"#FF5555" },
+  { min:21, max:40,  level:2, name:"Aware",          color:"#FF8C00" },
+  { min:41, max:60,  level:3, name:"Experimenting",  color:"#FD6B2B" },
+  { min:61, max:80,  level:4, name:"Scaling",        color:"#5BE0A0" },
+  { min:81, max:100, level:5, name:"Transforming",   color:"#1DC6C2" }
+];
+
+let userScore = 50;
+let userLevel = "Experimenting";
+let userName = "";
+let userEmail = "";
+let chatHistory = [];
+let quizState = { current: 0, answers: [], complete: false };
+let domainScores = {};
+let animating = false;
+
+window.onload = () => {
+  const params = new URLSearchParams(window.location.search);
+  const s = parseInt(params.get("score"));
+  if (!isNaN(s) && s >= 0 && s <= 100) userScore = s;
+  const domainIds = ["data","strategy","talent","current","governance"];
+  domainIds.forEach(id => {
+    const v = parseInt(params.get(id));
+    if (!isNaN(v)) domainScores[id] = v;
+  });
+  const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[2];
+  userLevel = m.name;
+};
+
+async function unlockTraining() {
+  const fullName = document.getElementById("gate-name").value.trim();
+  const e = document.getElementById("gate-email").value.trim();
+  const errEl = document.getElementById("gate-error");
+  const btn = document.getElementById("gate-btn");
+  errEl.style.display = "none";
+  if (!fullName) { errEl.textContent = "Please enter your name."; errEl.style.display = "block"; return; }
+  if (!e || !e.includes("@")) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; return; }
+  const nameParts = fullName.split(" ");
+  userName = fullName;
+  userEmail = e;
+  btn.textContent = "Unlocking...";
+  btn.disabled = true;
+  const WORKER_URL = "https://cc-leads.wewearsmiles.workers.dev";
+  try {
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: nameParts[0],
+        lastName: nameParts.slice(1).join(" ") || "",
+        email: e,
+        score: userScore,
+        level: userLevel,
+        track: "Track 2 — From Pilot to Proof",
+        domainScores
+      })
+    });
+  } catch(err) { console.warn("Lead capture failed:", err); }
+  btn.textContent = "Unlock Track 2 →";
+  btn.disabled = false;
+  const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[2];
+  document.getElementById("sb-level").textContent = "Level " + m.level + ": " + m.name;
+  document.getElementById("sb-user-name").textContent = fullName;
+  document.getElementById("sb-user-email").textContent = e;
+  const gate = document.getElementById("gate");
+  gate.classList.add("hidden");
+  setTimeout(() => gate.style.display = "none", 400);
+  document.getElementById("app-shell").style.display = "grid";
+  initChat();
+  renderQuiz();
+}
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.getElementById("page-" + id).classList.add("active");
+  const nav = document.getElementById("nav-" + id);
+  if (nav) nav.classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function renderQuiz() {
+  const body = document.getElementById("quiz-body");
+  if (quizState.complete) { renderQuizComplete(); return; }
+  const q = QUIZ[quizState.current];
+  const letters = ["A","B","C","D"];
+  body.innerHTML = `
+    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div>
+    <div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o,i) => `<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join("")}
+    </div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div id="quiz-next-btn"></div>`;
+}
+
+function selectAnswer(i) {
+  const q = QUIZ[quizState.current];
+  const opts = document.querySelectorAll(".quiz-option");
+  opts.forEach(o => o.style.pointerEvents = "none");
+  opts[i].classList.add(i === q.correct ? "correct" : "wrong");
+  if (i !== q.correct) opts[q.correct].classList.add("correct");
+  quizState.answers.push(i);
+  const fb = document.getElementById("quiz-feedback");
+  fb.className = "quiz-feedback show " + (i === q.correct ? "correct" : "wrong");
+  fb.textContent = (i === q.correct ? "✓ " : "✗ ") + q.feedback;
+  document.getElementById("quiz-next-btn").innerHTML = `<button class="btn-nav-primary" style="margin-top:8px" onclick="nextQuestion()">${quizState.current < QUIZ.length-1 ? "Next Question →" : "See Results →"}</button>`;
+}
+
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= QUIZ.length) { quizState.complete = true; renderQuizComplete(); }
+  else renderQuiz();
+}
+
+function renderQuizComplete() {
+  const correct = quizState.answers.filter((a,i) => a === QUIZ[i].correct).length;
+  const pct = Math.round((correct/QUIZ.length)*100);
+  const msg = pct >= 80 ? "Strong understanding. You are ready for the AI Coach." : pct >= 60 ? "Good foundation. Review any missed questions before continuing." : "Consider re-reading the lessons. The AI Coach can help clarify concepts.";
+  document.getElementById("quiz-body").innerHTML = `
+    <div class="quiz-score-final">
+      <div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div>
+      <div class="quiz-result-title">${pct >= 80 ? "Excellent Work" : pct >= 60 ? "Good Work" : "Keep Going"}</div>
+      <p class="quiz-result-body">${msg}</p>
+      <button class="btn-nav-primary" onclick="showPage('chat')">Continue to AI Coach →</button>
+    </div>`;
+  const nav = document.getElementById("nav-quiz");
+  if (nav && !nav.querySelector(".nav-check")) nav.innerHTML += '<span class="nav-check">✓</span>';
+}
+
+function initChat() {
+  const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[2];
+  addMessage("ai", `Hi ${userName} — I'm your AI coach for Track 2. Your assessment score is ${userScore}/100, placing you at the ${m.name} level.\n\nYou've just completed From Pilot to Proof. I'm here to help you apply these concepts — whether that's picking your first project, structuring the pilot, or building the ROI case for leadership. What's on your mind?`);
+}
+
+function addMessage(role, text) {
+  chatHistory.push({ role: role === "ai" ? "assistant" : "user", content: text });
+  const container = document.getElementById("chat-messages");
+  const div = document.createElement("div");
+  div.className = "msg " + role;
+  div.innerHTML = `
+    <div class="msg-avatar ${role}">${role === "ai" ? "AI" : "ME"}</div>
+    <div class="msg-bubble">
+      <div class="msg-name">${role === "ai" ? "AI Coach" : userName || "You"}</div>
+      <div class="msg-text"><p>${text.replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br/>")}</p></div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function addTyping() {
+  const container = document.getElementById("chat-messages");
+  const div = document.createElement("div");
+  div.className = "msg ai"; div.id = "typing-indicator";
+  div.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById("typing-indicator");
+  if (t) t.remove();
+}
+
+async function sendMessage(text) {
+  const input = document.getElementById("chat-input");
+  const msg = text || input.value.trim();
+  if (!msg) return;
+  input.value = "";
+  autoResize(input);
+  document.getElementById("chat-send").disabled = true;
+  addMessage("user", msg);
+  addTyping();
+
+  const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[2];
+  const domainSummary = Object.keys(domainScores).length
+    ? " Domain scores: Data " + (domainScores.data ?? "N/A") + "/100, Strategy " + (domainScores.strategy ?? "N/A") + "/100, Talent " + (domainScores.talent ?? "N/A") + "/100, Current AI Use " + (domainScores.current ?? "N/A") + "/100, Governance " + (domainScores.governance ?? "N/A") + "/100."
+    : "";
+
+  const systemPrompt = `You are an AI readiness coach on the JSN Made platform helping ${userName} (${userEmail}).
+
+Their AIQ assessment score is ${userScore}/100 — Level ${m.level}: ${m.name}.${domainSummary}
+
+They have completed Track 2: From Pilot to Proof, which covered:
+1. How to pick the right first AI project — the three criteria (high repetition, measurable outcome, low failure risk), the prioritization matrix, and common mistakes
+2. Running the 90-day pilot — the four phases (setup, run, measure, decide), managing people, the weekly check-in rhythm
+3. Measuring results and making the case to scale — the four numbers that matter, the 10× rule, structuring the go/no-go recommendation, scale vs. pause framework
+
+Your role:
+- Help them apply Track 2 concepts to their specific business situation
+- Reference their domain scores when relevant — low Data scores mean prioritize data-ready projects; low Talent scores mean address people management carefully
+- Give direct, actionable advice — not generic platitudes
+- Ask follow-up questions to understand their specific context before recommending
+- Be honest — if they're not ready to scale yet, say so clearly and explain what needs to change first
+- Keep responses to 3–5 sentences unless they ask for more
+- Respond in plain conversational prose — no bullet points or markdown
+- Do not repeat back what they said before answering
+
+You are direct, practical, and focused on helping them make real progress.`;
+
+  const ANTHROPIC_WORKER = "https://jsn-aiq-coach.wewearsmiles.workers.dev";
+  try {
+    const res = await fetch(ANTHROPIC_WORKER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1000, system: systemPrompt, messages: chatHistory })
+    });
+    const data = await res.json();
+    removeTyping();
+    const reply = data?.content?.[0]?.text || "I'm having trouble connecting right now. Please try again.";
+    addMessage("ai", reply);
+  } catch(e) {
+    removeTyping();
+    addMessage("ai", "I'm having trouble connecting right now. Please try again in a moment.");
+  }
+  document.getElementById("chat-send").disabled = false;
+}
+
+function handleChatKey(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight,120) + "px"; }
+function askSuggested(btn) { sendMessage(btn.textContent); }
+</script>
+</body>
+</html>

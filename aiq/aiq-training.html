@@ -590,7 +590,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
             <div class="track-desc">Advanced AI strategy, building AI culture, and sustaining transformation at scale.</div>
           </div>
         </div>
-        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="alert('Track 2 coming soon. You will be notified at your registered email.')">Continue to Track 2 →</button>
+        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="goToTrack2()">Continue to Track 2 →</button>
       </div>
     </div>
 
@@ -930,6 +930,13 @@ function autoResize(el) {
 
 function askSuggested(btn) {
   sendMessage(btn.textContent);
+}
+
+function goToTrack2() {
+  const params = new URLSearchParams();
+  params.set("score", userScore);
+  Object.keys(domainScores).forEach(k => params.set(k, domainScores[k]));
+  window.location.href = "aiq-training-track2.html?" + params.toString();
 }
 </script>
 </body>
