@@ -8,20 +8,8 @@
 export default {
   async fetch(request, env) {
 
-    const allowedOrigins = [
-      "https://jsnmade.com",
-      "https://jsnmade.pages.dev",
-      "http://localhost",
-      "http://127.0.0.1"
-    ];
-
-    const origin = request.headers.get("Origin") || "";
-    const corsOrigin = allowedOrigins.some(o => origin.startsWith(o))
-      ? origin
-      : allowedOrigins[0];
-
     const corsHeaders = {
-      "Access-Control-Allow-Origin": corsOrigin,
+      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     };
@@ -53,7 +41,7 @@ export default {
           "anthropic-version": "2023-06-01"
         },
         body: JSON.stringify({
-          model: body.model || "claude-sonnet-4-20250514",
+          model: "claude-haiku-4-5-20251001",
           max_tokens: body.max_tokens || 1000,
           system: body.system || "",
           messages: body.messages || []
