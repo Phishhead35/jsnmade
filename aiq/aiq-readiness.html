@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JSN AIQ Readiness Assessment</title>
+<meta name="description" content="JSN AIQ Readiness Assessment — Find out where your business stands on AI adoption. 25 questions, 5 minutes, a prioritized action plan." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0B1121;
+    --surface: #121C2F;
+    --card: #151F33;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(29,198,194,0.25);
+    --text: #FFFFFF;
+    --muted: rgba(255,255,255,0.5);
+    --dim: rgba(255,255,255,0.2);
+    --accent: #1DC6C2;
+    --orange: #FD6B2B;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'EB Garamond', Georgia, serif;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: linear-gradient(rgba(29,198,194,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(29,198,194,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap { position: relative; z-index: 1; width: 100%; max-width: 680px; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #FFFFFF; text-decoration: none; margin-bottom: 20px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--text); }
+  .card {
+    background: var(--surface);
+    border: 1px solid rgba(29,198,194,0.15);
+    padding: 52px 44px;
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #1DC6C2, transparent);
+    opacity: 0.6;
+  }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  h1 { font-family: var(--serif); font-size: clamp(30px,5vw,50px); font-weight: 400; line-height: 1.1; margin-bottom: 20px; }
+  h1 em { color: var(--accent); font-style: italic; }
+  .lead { font-size: 14px; line-height: 1.75; color: #FFFFFF; margin-bottom: 36px; }
+  .domain-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+  .pill { font-size: 10px; letter-spacing: 0.1em; padding: 5px 12px; border: 1px solid var(--border); color: #FFFFFF; display: flex; align-items: center; gap: 6px; }
+  .pill-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .btn { background: var(--orange); color: #FFFFFF; border: none; padding: 15px 36px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; }
+  .btn:hover { opacity: 0.88; }
+  .btn-ghost { background: transparent; color: #FFFFFF; border: 1px solid var(--border); padding: 12px 24px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .btn-ghost:hover { border-color: #1DC6C2; color: #1DC6C2; }
+  .progress-bar { height: 1px; background: var(--border); margin-bottom: 44px; position: relative; }
+  .progress-fill { height: 100%; background: #1DC6C2; transition: width 0.4s ease; }
+  .progress-label { position: absolute; right: 0; top: 6px; font-size: 10px; color: #FFFFFF; }
+  .domain-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1px solid; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 28px; }
+  .question-text { font-family: var(--serif); font-size: clamp(17px,3vw,24px); line-height: 1.55; margin-bottom: 36px; min-height: 80px; transition: opacity 0.2s, transform 0.2s; }
+  .question-text.fade { opacity: 0; transform: translateY(6px); }
+  .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 36px; transition: opacity 0.2s; }
+  .answer-grid.fade { opacity: 0; }
+  .answer-btn { background: var(--surface); border: 1px solid var(--border); color: #FFFFFF; padding: 18px 16px; cursor: pointer; text-align: left; font-family: var(--mono); transition: background 0.12s, border-color 0.12s; }
+  .answer-btn:hover { background: rgba(29,198,194,0.05); border-color: rgba(29,198,194,0.3); }
+  .answer-btn.selected { background: rgba(29,198,194,0.1); border-color: #1DC6C2; }
+  .answer-num { font-size: 22px; font-weight: 700; color: #1DC6C2; display: block; margin-bottom: 4px; }
+  .answer-label { font-size: 12px; display: block; margin-bottom: 2px; color: #FFFFFF; }
+  .answer-sub { font-size: 10px; color: rgba(255,255,255,0.7); display: block; }
+  .domain-track { display: flex; gap: 6px; margin-top: 32px; }
+  .domain-pip { flex: 1; height: 2px; background: var(--border); transition: background 0.3s; }
+  .score-display { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .score-num { font-family: var(--serif); font-size: 80px; line-height: 1; font-weight: 400; }
+  .score-denom { font-size: 14px; color: #FFFFFF; }
+  .level-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1px solid; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; }
+  .maturity-desc { font-size: 14px; line-height: 1.7; color: #FFFFFF; margin-bottom: 40px; padding-left: 16px; border-left: 2px solid rgba(255,255,255,0.3); }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; align-items: center; }
+  .radar-wrap { display: flex; justify-content: center; }
+  .domain-bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .bar-name { font-size: 10px; color: #FFFFFF; letter-spacing: 0.06em; }
+  .bar-score { font-size: 11px; font-weight: 700; }
+  .bar-track { height: 2px; background: var(--border); }
+  .bar-fill { height: 100%; transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
+  .section-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #FFFFFF; margin-bottom: 20px; }
+  .gap-item { border-left: 2px solid; padding-left: 20px; margin-bottom: 24px; }
+  .gap-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .gap-name { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #FFFFFF; }
+  .gap-score { font-size: 11px; font-weight: 700; margin-left: auto; }
+  .gap-action { font-size: 12px; color: #FFFFFF; display: flex; gap: 12px; line-height: 1.5; margin-bottom: 6px; }
+  .gap-arrow { color: rgba(255,255,255,0.5); flex-shrink: 0; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .footer { margin-top: 28px; text-align: center; font-size: 10px; letter-spacing: 0.1em; color: #FFFFFF; }
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+  @media (max-width: 560px) {
+    .card { padding: 32px 20px; }
+    .results-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/" class="back-link" style="display:flex;align-items:center;gap:10px"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACQAjADASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAcIBQYJBAIDAf/EAFoQAAEDAgMDBgcJBw8MAwAAAAEAAgMEBQYHEQgSIRMxQVFhgRQ2cXR1kbMJFRgiMjexssIWFyM1YnOhJDM4QlNVgpOUoqXB0dPhQ1JUY2ZncoOSlePko9LU/8QAHAEBAAEFAQEAAAAAAAAAAAAAAAQCAwUGBwEI/8QAPREAAQIDAwYMBQQDAAMAAAAAAQACAwQRBSExBhJBUXGxExZhY3KBkaGiweLwIjI0NdEzgrLhFBVCBySS/9oADAMBAAIRAxEAPwCmSL96Ckqa+sho6OCSeomeGRxsGrnOPMAp+y/yTttHBHW4rPhtWQHeCMeRFH2OI4vPqHl51jrQtSXkG50U3nADErJWdZMzaL82CLhiTgFXpFdm22i1WyIRW620dGwcwhhaz6Avctadlk2vwwfF/S2huRLiPijX9H+1RhFedF5xy5nxelVcSef8PqVGEV50TjlzPi9KcSef8PqVGEV50TjlzPi9KcSef8PqVGEV50TjlzPi9KcSef8AD6lRhFedY67WSzXaExXO10dYwj/LQtcR5CRqO5VNyxaT8UG7pf0FS/IlwHwxqno08yqUop1zIyUibBLcsH74c0Fz7e929vD/AFbjx17Drr0HoUGSMfFI6ORjmPYS1zXDQgjnBC2eQtGBPMz4J2jSNq1S0LMmLPiZkYbDoOxfKIinKAiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIrC7N+D4qOznFdbEHVdXvMpN4frcQOhcO1xB7h2lTEvDYaGO2WOht0QAZS08cIA/JaB/UvcuPWjOOnJl8VxxN2zQu02ZJMkpVkFowF/KdKIiKEp6IiIiIiIiIiIiIiIiIiIiKCdo/BUUTRjC2whm88R3BjRwJPBsnr4HyjtU7LG4otsd4w5cbXK0ObVUz4+PQSDoe46HuWQsuedJTLYoN2nZpWNtaQZPSroThfiOQ6FSpERdeXGURERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERERFedERcRXeERERERERERF9RRySyCOJjnvdzNaNSe5AK3BCaL5Rev3suX731f8S7+xflUUlXTtDqilnhaToC+MtBPeqjDeBUhUCIwmgIX4oiKlVoiIiIiIiKjCIi7cuDoiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiK86Ii4iu8IiIiIiIiItjyy8fLT+e+yVri2PLLx8tP577JU6y/rYPSbvCh2j9JF6LtxVjlG2f8A4vW/zv7BUkqNs/8Axet/nf2CujZRfbYvV/ILlmT33KFt8ioXREXK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" alt="JSN Made" style="height:28px;display:block"/></a>
+  <div class="card" id="app"></div>
+  <div class="footer"><a href="/" style="color:var(--accent);text-decoration:none">JSN Made</a> &nbsp;·&nbsp; JSN AIQ Readiness Assessment</div>
+</div>
+
+<script>
+const DOMAINS = [
+  {
+    id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
+    questions: [
+      "Our data is centralized and accessible across teams rather than siloed in spreadsheets or separate systems.",
+      "We can reliably track and report on key operational metrics without significant manual effort.",
+      "Our data is consistently formatted, labeled, and clean enough to analyze without major cleanup.",
+      "We have cloud infrastructure or modern software systems in place for core business operations.",
+      "We retain historical operational data (12+ months) that could be used to identify patterns or train models."
+    ]
+  },
+  {
+    id: "strategy", label: "Strategy & Leadership", weight: 0.20, color: "#1DC6C2", icon: "◉",
+    questions: [
+      "Senior leadership has explicitly discussed AI as part of the company's future strategy.",
+      "We have allocated or are willing to allocate budget specifically for AI tools or initiatives.",
+      "There is a designated person or team responsible for evaluating new technology and AI tools.",
+      "We have a documented roadmap or plan for how technology should evolve over the next 2 to 3 years.",
+      "Leadership regularly reviews operational inefficiencies with an eye toward process improvement."
+    ]
+  },
+  {
+    id: "talent", label: "Talent & Culture", weight: 0.20, color: "#8BE08B", icon: "◎",
+    questions: [
+      "Employees are generally open to adopting new tools and changing how they work.",
+      "We have at least one person internally who is comfortable experimenting with AI tools.",
+      "We invest in training and upskilling employees when new systems or tools are introduced.",
+      "Teams feel safe raising ideas about process improvement without fear of job security concerns.",
+      "We have hired or considered hiring people with data, analytics, or technology backgrounds recently."
+    ]
+  },
+  {
+    id: "current", label: "Current AI Use", weight: 0.20, color: "#FF8C42", icon: "◆",
+    questions: [
+      "We already use some form of automation or software-driven workflows in our operations.",
+      "Employees actively use AI tools like ChatGPT, Copilot, or similar in their daily work.",
+      "We have at least one process where AI or machine learning is producing measurable results.",
+      "We evaluate software vendors on their AI capabilities as part of purchasing decisions.",
+      "We track ROI or efficiency gains from any technology or automation already in place."
+    ]
+  },
+  {
+    id: "governance", label: "Governance & Risk", weight: 0.15, color: "#BF80FF", icon: "◇",
+    questions: [
+      "We have policies or guidelines around data privacy and how customer or employee data is handled.",
+      "Leadership understands the risks of AI systems making incorrect or biased decisions.",
+      "We have a process for vetting third-party tools before deploying them across the organization.",
+      "Employees understand what types of company data should not be shared with external AI tools.",
+      "We are aware of relevant regulations (GDPR, CCPA, industry-specific rules) that apply to our data."
+    ]
+  }
+];
+
+const ANSWERS = [
+  { value: 1, label: "Not at all",   sub: "No progress here" },
+  { value: 2, label: "Early stages", sub: "Informal or minimal" },
+  { value: 3, label: "Established",  sub: "Exists but inconsistent" },
+  { value: 4, label: "Mature",       sub: "Consistent and working" }
+];
+
+const MATURITY = [
+  { min: 0,   max: 20,  level: 1, name: "Unaware",      color: "#FF5555", desc: "AI is not on the radar. Focus on education, awareness, and identifying quick wins with basic automation." },
+  { min: 21,  max: 40,  level: 2, name: "Aware",         color: "#FF8C00", desc: "Leadership knows AI matters but nothing formal is underway. Identify a champion, set a small budget, and run one focused pilot." },
+  { min: 41,  max: 60,  level: 3, name: "Experimenting", color: "#FD6B2B", desc: "Tools are being tried but results are not consistent or scaled. Pick the highest-ROI pilot, measure it rigorously, and build internal confidence." },
+  { min: 61,  max: 80,  level: 4, name: "Scaling",       color: "#8BE08B", desc: "AI is working in pockets. Shift focus to governance, cross-team integration, and data pipelines that let AI improve over time." },
+  { min: 81,  max: 100, level: 5, name: "Transforming",  color: "#00C4EE", desc: "AI is a core business driver. Focus on continuous learning loops, competitive differentiation, and responsible scaling." }
+];
+
+const USE_CASES = {
+  data:       ["Implement a centralized data warehouse (Snowflake, BigQuery, or similar)", "Automate reporting pipelines to eliminate manual spreadsheet work", "Deploy data quality monitoring to catch issues before they propagate", "Build a single source of truth dashboard for operational KPIs"],
+  strategy:   ["Run a structured AI opportunity mapping session with leadership", "Define a 90-day AI pilot with a clear success metric and owner", "Benchmark competitors on AI adoption to build internal urgency", "Assign an AI lead or taskforce with explicit mandate and budget"],
+  talent:     ["Launch a company-wide AI literacy program (even 4 hours can shift culture)", "Identify internal AI champions and give them dedicated time to experiment", "Create a safe sandbox for employees to test tools without risk", "Build job descriptions that explicitly value data and AI fluency"],
+  current:    ["Audit current tools for AI features you are already paying for but not using", "Automate your highest-volume, lowest-complexity repetitive tasks first", "Integrate an AI assistant into customer-facing workflows for a 30-day test", "Establish a formal ROI tracking process for any AI or automation investment"],
+  governance: ["Draft an AI acceptable use policy covering data privacy and tool vetting", "Train employees on what company data should never enter public AI tools", "Map your regulatory exposure to AI risk scenarios (GDPR, CCPA, industry rules)", "Create a lightweight vendor AI assessment checklist for procurement"]
+};
+
+let screen = "intro";
+let answers = {};
+let domainIndex = 0;
+let qIndex = 0;
+let results = null;
+let animating = false;
+
+const totalQ = DOMAINS.reduce((s, d) => s + d.questions.length, 0);
+function answeredCount() { return Object.keys(answers).length; }
+function akey(dId, qi) { return dId + "_" + qi; }
+
+function calcResults() {
+  const domainScores = {};
+  DOMAINS.forEach(d => {
+    const vals = d.questions.map((_, i) => answers[akey(d.id, i)] || 1);
+    const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
+    domainScores[d.id] = Math.round(((avg - 1) / 3) * 100);
+  });
+  const composite = Math.round(DOMAINS.reduce((s, d) => s + domainScores[d.id] * d.weight, 0));
+  const maturity = MATURITY.find(m => composite >= m.min && composite <= m.max) || MATURITY[0];
+  const gaps = DOMAINS.filter(d => domainScores[d.id] < 50).sort((a, b) => domainScores[a.id] - domainScores[b.id]);
+  return { domainScores, composite, maturity, gaps };
+}
+
+function radarSVG(domainScores) {
+  const cx = 130, cy = 130, r = 95, n = DOMAINS.length;
+  let out = "";
+  [0.25, 0.5, 0.75, 1].forEach(pct => {
+    const pts = DOMAINS.map((_, i) => {
+      const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+      return (cx + r * pct * Math.cos(a)) + "," + (cy + r * pct * Math.sin(a));
+    }).join(" ");
+    out += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>`;
+  });
+  DOMAINS.forEach((_, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    out += `<line x1="${cx}" y1="${cy}" x2="${cx + r * Math.cos(a)}" y2="${cy + r * Math.sin(a)}" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>`;
+  });
+  const pts = DOMAINS.map((d, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    const pct = (domainScores[d.id] || 0) / 100;
+    return { x: cx + r * pct * Math.cos(a), y: cy + r * pct * Math.sin(a), color: d.color };
+  });
+  out += `<polygon points="${pts.map(p => p.x + "," + p.y).join(" ")}" fill="rgba(29,198,194,0.08)" stroke="#1DC6C2" stroke-width="1.5"/>`;
+  pts.forEach((p, i) => { out += `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="${DOMAINS[i].color}"/>`; });
+  DOMAINS.forEach((d, i) => {
+    const a = (i / n) * 2 * Math.PI - Math.PI / 2;
+    out += `<text x="${cx + (r + 22) * Math.cos(a)}" y="${cy + (r + 22) * Math.sin(a)}" text-anchor="middle" dominant-baseline="middle" font-size="11" fill="rgba(255,255,255,0.45)" font-family="monospace">${d.icon}</text>`;
+  });
+  return `<svg viewBox="0 0 260 260" style="width:100%;max-width:260px">${out}</svg>`;
+}
+
+function render() {
+  const app = document.getElementById("app");
+
+  if (screen === "intro") {
+    app.innerHTML = `
+      <div class="eyebrow">// JSN AIQ &nbsp;·&nbsp; READINESS ASSESSMENT</div>
+      <h1>Is your business<br><em>ready for AI?</em></h1>
+      <p class="lead">25 questions across 5 domains. Takes about 5 minutes. You get a maturity score, a domain breakdown, and a prioritized list of what to do next.</p>
+      <div class="domain-pills">${DOMAINS.map(d => `<div class="pill"><span class="pill-dot" style="background:${d.color}"></span>${d.label}</div>`).join("")}</div>
+      <button class="btn" onclick="startAssessment()">Begin Assessment →</button>
+    `;
+    return;
+  }
+
+  if (screen === "assessment") {
+    const d = DOMAINS[domainIndex];
+    const pct = (answeredCount() / totalQ) * 100;
+    const selected = answers[akey(d.id, qIndex)];
+    app.innerHTML = `
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:${pct}%"></div>
+        <div class="progress-label">${answeredCount() + 1} / ${totalQ}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+        <div class="domain-tag" style="border-color:${d.color};color:${d.color}">${d.icon}&nbsp;&nbsp;${d.label}</div>
+        <div style="font-size:10px;color:#FFFFFF">Q${qIndex + 1} of ${d.questions.length}</div>
+      </div>
+      <div class="question-text" id="qtext">${d.questions[qIndex]}</div>
+      <div class="answer-grid" id="agrid">
+        ${ANSWERS.map(a => `
+          <button class="answer-btn ${selected === a.value ? 'selected' : ''}" onclick="handleAnswer(${a.value})">
+            <span class="answer-num">${a.value}</span>
+            <span class="answer-label">${a.label}</span>
+            <span class="answer-sub">${a.sub}</span>
+          </button>`).join("")}
+      </div>
+      <div class="domain-track">
+        ${DOMAINS.map((dom, i) => `<div class="domain-pip" style="background:${i < domainIndex ? dom.color : i === domainIndex ? dom.color + '55' : 'rgba(255,255,255,0.08)'}"></div>`).join("")}
+      </div>
+    `;
+    return;
+  }
+
+  if (screen === "results" && results) {
+    const { domainScores, composite, maturity, gaps } = results;
+    const gapHTML = gaps.length
+      ? gaps.map(d => `
+          <div class="gap-item" style="border-color:${d.color}">
+            <div class="gap-header">
+              <span style="color:${d.color}">${d.icon}</span>
+              <span class="gap-name">${d.label}</span>
+              <span class="gap-score" style="color:${d.color}">${domainScores[d.id]} / 100</span>
+            </div>
+            ${USE_CASES[d.id].slice(0, 3).map(uc => `<div class="gap-action"><span class="gap-arrow" style="color:rgba(255,255,255,0.6)">→</span><span style="color:#FFFFFF">${uc}</span></div>`).join("")}
+          </div>`).join("")
+      : `<p style="font-size:13px;color:#FFFFFF">No critical gaps. Focus on sustaining and scaling what is working.</p>`;
+
+    app.innerHTML = `
+      <div class="eyebrow">// ASSESSMENT COMPLETE</div>
+      <div class="level-badge" style="border-color:${maturity.color};color:${maturity.color}">Level ${maturity.level} &nbsp;·&nbsp; ${maturity.name}</div>
+      <div class="score-display">
+        <div class="score-num" style="color:${maturity.color}">${composite}</div>
+        <div class="score-denom">/ 100</div>
+      </div>
+      <p class="maturity-desc">${maturity.desc}</p>
+      <div class="results-grid">
+        <div class="radar-wrap">${radarSVG(domainScores)}</div>
+        <div class="domain-bars">
+          ${DOMAINS.map(d => `
+            <div>
+              <div class="bar-header">
+                <span class="bar-name" style="color:#FFFFFF">${d.icon} ${d.label}</span>
+                <span class="bar-score" style="color:${d.color}">${domainScores[d.id]}</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" id="bar-${d.id}" style="width:0%;background:${d.color}"></div></div>
+            </div>`).join("")}
+        </div>
+      </div>
+      ${gaps.length ? '<div class="section-label">Priority Gaps — Domains Below 50</div>' : ""}
+      ${gapHTML}
+      <hr class="divider"/>
+
+      <!-- AUDIT CTA -->
+      <div id="audit-cta" style="margin-bottom:24px">
+        <div style="background:rgba(212,168,67,0.04);border:1px solid rgba(212,168,67,0.25);padding:32px;margin-bottom:16px;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent)"></div>
+          <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;font-family:var(--mono)">JSN AIQ Audit — Professional Service</div>
+          <div style="font-family:'EB Garamond',serif;font-size:clamp(20px,3vw,28px);line-height:1.2;margin-bottom:12px" id="audit-headline">Get a full AI roadmap built for your business</div>
+          <div style="font-size:13px;color:#FFFFFF;line-height:1.7;margin-bottom:24px" id="audit-body">Loading...</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+            <div style="font-size:12px;color:#FFFFFF;display:flex;align-items:center;gap:6px"><span style="color:var(--accent)">✓</span> Deep-dive audit session</div>
+            <div style="font-size:12px;color:#FFFFFF;display:flex;align-items:center;gap:6px"><span style="color:var(--accent)">✓</span> Written AI roadmap</div>
+            <div style="font-size:12px;color:#FFFFFF;display:flex;align-items:center;gap:6px"><span style="color:var(--accent)">✓</span> Prioritized action plan</div>
+            <div style="font-size:12px;color:#FFFFFF;display:flex;align-items:center;gap:6px"><span style="color:var(--accent)">✓</span> Implementation guidance</div>
+          </div>
+          <div style="font-size:11px;color:#FFFFFF;font-family:var(--mono);margin-bottom:24px">Starting at $1,000 &nbsp;·&nbsp; Limited availability</div>
+          <button class="btn" onclick="showAuditForm()">Request Your AIQ Audit →</button>
+        </div>
+
+        <!-- INQUIRY FORM -->
+        <div id="audit-form" style="display:none;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);padding:32px">
+          <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;font-family:var(--mono)">Tell Us About Your Business</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <input id="aq-name" placeholder="Your name" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#FFFFFF;padding:12px 14px;font-family:var(--mono);font-size:12px;outline:none;width:100%" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            <input id="aq-email" placeholder="Work email" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#FFFFFF;padding:12px 14px;font-family:var(--mono);font-size:12px;outline:none;width:100%" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+          </div>
+          <input id="aq-company" placeholder="Company name" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#FFFFFF;padding:12px 14px;font-family:var(--mono);font-size:12px;outline:none;width:100%;margin-bottom:12px"/>
+          <textarea id="aq-challenge" placeholder="What is your biggest operational challenge right now?" rows="3" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#FFFFFF;padding:12px 14px;font-family:var(--mono);font-size:12px;outline:none;width:100%;resize:vertical;margin-bottom:20px"></textarea>
+          <div id="aq-error" style="display:none;color:#FF6B6B;font-size:11px;font-family:var(--mono);margin-bottom:12px"></div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn" id="aq-submit-btn" onclick="submitAuditInquiry()">Submit Inquiry →</button>
+            <button class="btn-ghost" onclick="hideAuditForm()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- CONFIRMATION + BOOK CALL -->
+        <div id="audit-confirm" style="display:none;background:rgba(91,224,160,0.04);border:1px solid rgba(91,224,160,0.2);padding:32px;text-align:center">
+          <div style="font-size:24px;margin-bottom:16px">✓</div>
+          <div style="font-family:'EB Garamond',serif;font-size:24px;margin-bottom:10px">Inquiry received</div>
+          <div style="font-size:13px;color:#FFFFFF;line-height:1.7;margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto">We'll review your assessment results and be in touch within 24 hours. In the meantime, book a time directly so we can hit the ground running.</div>
+          <a id="calendly-link" href="https://calendly.com/YOUR-LINK" title="Add your Calendly link here" target="_blank" style="display:inline-block;background:var(--accent);color:#07080F;padding:14px 32px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;margin-bottom:16px">Book Your Discovery Call →</a>
+          <div style="font-size:10px;color:#FFFFFF;font-family:var(--mono)">30 minutes &nbsp;·&nbsp; No obligation &nbsp;·&nbsp; Come as you are</div>
+        </div>
+      </div>
+
+      <!-- TRAINING CTA -->
+      <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);padding:24px;margin-bottom:24px">
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:8px;font-family:var(--mono)">Prefer to start yourself?</div>
+        <div style="font-family:'EB Garamond',serif;font-size:18px;margin-bottom:8px">Access your free AI training curriculum</div>
+        <div style="font-size:13px;color:#FFFFFF;line-height:1.6;margin-bottom:16px">Lessons, quizzes, and a live AI coach matched to your maturity level.</div>
+        <button class="btn-ghost" onclick="goToTraining()">Start My Training →</button>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="restart()">Retake Assessment</button>
+        <button class="btn-ghost" onclick="copyResults()">Copy Results</button>
+      </div>
+    `;
+    setTimeout(() => {
+      DOMAINS.forEach(d => {
+        const el = document.getElementById("bar-" + d.id);
+        if (el) el.style.width = domainScores[d.id] + "%";
+      });
+      // Set score-aware audit copy
+      setAuditCopy(maturity.level);
+    }, 80);
+  }
+}
+
+function startAssessment() { screen = "assessment"; domainIndex = 0; qIndex = 0; render(); }
+
+function handleAnswer(val) {
+  if (animating) return;
+  answers[akey(DOMAINS[domainIndex].id, qIndex)] = val;
+  animating = true;
+  const qt = document.getElementById("qtext");
+  const ag = document.getElementById("agrid");
+  if (qt) qt.classList.add("fade");
+  if (ag) ag.classList.add("fade");
+  setTimeout(() => {
+    if (qIndex < DOMAINS[domainIndex].questions.length - 1) { qIndex++; }
+    else if (domainIndex < DOMAINS.length - 1) { domainIndex++; qIndex = 0; }
+    else { results = calcResults(); screen = "results"; }
+    animating = false;
+    render();
+  }, 220);
+}
+
+function restart() { answers = {}; domainIndex = 0; qIndex = 0; results = null; screen = "intro"; render(); }
+
+// ── AUDIT CTA ─────────────────────────────────────────────────────────────
+const AUDIT_COPY = {
+  1: { headline: "Your business needs an AI foundation — we'll build the roadmap with you.", body: "Your assessment shows you're at the early stages of AI readiness. The gap between where you are and where your competitors are heading is closing fast. A JSN AIQ Audit gives you a concrete, prioritized roadmap so you know exactly what to do first — without wasting time or money on the wrong tools." },
+  2: { headline: "You know AI matters. Now it's time to build a plan that actually works.", body: "Your assessment shows awareness but no formal strategy yet. That's the most dangerous position — you know enough to know you're behind, but not enough to know where to start. A JSN AIQ Audit turns that uncertainty into a clear 90-day action plan tailored to your business." },
+  3: { headline: "You're experimenting with AI. Let's turn pilots into real results.", body: "Your assessment shows active experimentation — which means you're ahead of most. But pilots without a scaling strategy stay pilots. A JSN AIQ Audit identifies which of your current efforts have the highest ROI potential and builds the infrastructure to scale them." },
+  4: { headline: "You're scaling AI. Let's make sure you're building on the right foundation.", body: "Your assessment shows strong AI adoption across your organization. The risk at this stage is scaling the wrong things or missing governance gaps that become expensive later. A JSN AIQ Audit gives you an independent validation of your strategy and identifies the highest-leverage next moves." },
+  5: { headline: "You're transforming. Let's make sure AI stays a competitive advantage.", body: "Your assessment shows exceptional AI maturity. At this level, the work shifts to sustaining competitive differentiation and building the culture and governance that keep AI working for you as the landscape evolves. A JSN AIQ Audit ensures your strategy stays ahead of the curve." }
+};
+
+function setAuditCopy(level) {
+  const copy = AUDIT_COPY[level] || AUDIT_COPY[2];
+  const el = document.getElementById("audit-headline");
+  const body = document.getElementById("audit-body");
+  if (el) el.textContent = copy.headline;
+  if (body) body.textContent = copy.body;
+}
+
+function showAuditForm() {
+  document.getElementById("audit-form").style.display = "block";
+  document.getElementById("audit-form").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function hideAuditForm() {
+  document.getElementById("audit-form").style.display = "none";
+}
+
+async function submitAuditInquiry() {
+  const name = document.getElementById("aq-name").value.trim();
+  const email = document.getElementById("aq-email").value.trim();
+  const company = document.getElementById("aq-company").value.trim();
+  const challenge = document.getElementById("aq-challenge").value.trim();
+  const errEl = document.getElementById("aq-error");
+  const btn = document.getElementById("aq-submit-btn");
+
+  errEl.style.display = "none";
+  if (!name) { errEl.textContent = "Please enter your name."; errEl.style.display = "block"; return; }
+  if (!email || !email.includes("@")) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; return; }
+  if (!company) { errEl.textContent = "Please enter your company name."; errEl.style.display = "block"; return; }
+
+  btn.textContent = "Submitting...";
+  btn.disabled = true;
+
+  // Send to Constant Contact worker — same endpoint, tagged as audit inquiry
+  const WORKER_URL = "https://cc-leads.YOUR-SUBDOMAIN.workers.dev";
+  const nameParts = name.split(" ");
+
+  try {
+    await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstName: nameParts[0],
+        lastName: nameParts.slice(1).join(" ") || "",
+        email,
+        score: results ? results.composite : 0,
+        level: results ? results.maturity.name : "",
+        track: "Audit Inquiry — " + (company || "Unknown"),
+        domainScores: results ? results.domainScores : {}
+      })
+    });
+  } catch(e) {
+    console.warn("Lead capture failed silently:", e);
+  }
+
+  // Always show confirmation
+  btn.textContent = "Submit Inquiry →";
+  btn.disabled = false;
+  document.getElementById("audit-form").style.display = "none";
+  document.getElementById("audit-confirm").style.display = "block";
+  document.getElementById("audit-confirm").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function goToTraining() {
+  if (!results) return;
+  const { composite, domainScores } = results;
+  const params = new URLSearchParams();
+  params.set("score", composite);
+  DOMAINS.forEach(d => params.set(d.id, domainScores[d.id]));
+  window.location.href = "aiq-training.html?" + params.toString();
+}
+
+function copyResults() {
+  if (!results) return;
+  const { domainScores, composite, maturity } = results;
+  const text = "AI Readiness Score: " + composite + "/100 — " + maturity.name + " (Level " + maturity.level + ")\n\nDomain Scores:\n" +
+    DOMAINS.map(d => "  " + d.label + ": " + domainScores[d.id] + "/100").join("\n") +
+    "\n\nGenerated by JSN Made — jsnmade.com";
+  navigator.clipboard.writeText(text).then(() => alert("Results copied to clipboard."));
+}
+
+render();
+</script>
+</body>
+</html>
