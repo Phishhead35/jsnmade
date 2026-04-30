@@ -723,6 +723,26 @@ async function unlockTraining() {
     console.warn("Lead capture error:", err);
   }
 
+  // Update KV record with name and email
+  const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
+  try {
+    await fetch(KV_WORKER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: fullName,
+        email: e,
+        score: userScore,
+        level: m.name,
+        track: m.track,
+        domainScores,
+        timestamp: new Date().toISOString()
+      })
+    });
+  } catch(err) {
+    console.warn("KV update failed silently:", err);
+  }
+
   // Always unlock training regardless of API result
   btn.textContent = "Unlock My Training →";
   btn.disabled = false;

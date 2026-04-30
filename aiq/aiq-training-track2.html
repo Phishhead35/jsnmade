@@ -736,6 +736,26 @@ async function unlockTraining() {
       })
     });
   } catch(err) { console.warn("Lead capture failed:", err); }
+  // Update KV record with name and email
+  const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
+  try {
+    await fetch(KV_WORKER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: fullName,
+        email: e,
+        score: userScore,
+        level: userLevel,
+        track: "Track 2 — From Pilot to Proof",
+        domainScores,
+        timestamp: new Date().toISOString()
+      })
+    });
+  } catch(err) {
+    console.warn("KV update failed silently:", err);
+  }
+
   btn.textContent = "Unlock Track 2 →";
   btn.disabled = false;
   const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[2];

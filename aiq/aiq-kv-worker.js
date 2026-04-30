@@ -36,9 +36,8 @@ export default {
 
       const { name, email, score, level, domainScores, industry, timestamp } = body;
 
-      if (!email || !email.includes("@")) {
-        return json({ error: "Invalid email" }, 400);
-      }
+      // Email is optional — assessment completes anonymously
+      // Name and email are added later when user goes through training gate
 
       const key = `lead:${Date.now()}:${email.replace(/[^a-zA-Z0-9@._-]/g, "")}`;
 
