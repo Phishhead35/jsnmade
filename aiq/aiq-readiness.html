@@ -168,61 +168,71 @@ const DOMAINS = [
   {
     id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
     questions: [
-      "If a customer called right now and asked about their last order or appointment, could someone on your team pull that up in under a minute without digging through emails or paper?",
-      "If you wanted to know how much revenue you did last month compared to the month before, could you get that answer today without manually adding anything up?",
-      "If a key employee left tomorrow, would the information they carry in their head or on their personal device be lost to the business?",
-      "If you needed to find every customer who bought a specific product or service in the last six months, could you do that without going through records one by one?",
-      "If someone asked you to show them a trend in your business over the last year — sales, appointments, calls, anything — could you pull that data up and show it clearly?"
+      { text: "If a customer called right now and asked about their account history, could someone on your team pull that up in under 60 seconds?", type: "readiness" },
+      { text: "How often does your team waste time hunting through emails, texts, or paper records to find information that should be easy to access?", type: "pain" },
+      { text: "If a key employee left tomorrow, how much critical business information would walk out the door with them?", type: "pain" },
+      { text: "If an AI tool needed to connect to your business data to start working for you, how ready is that data right now?", type: "readiness" },
+      { text: "When you need to spot a trend in your business — sales, customers, inventory — how quickly and confidently can you pull that picture together?", type: "readiness" }
     ]
   },
   {
     id: "strategy", label: "Strategy & Leadership", weight: 0.20, color: "#1DC6C2", icon: "◉",
     questions: [
-      "When was the last time you or your leadership team sat down specifically to talk about how to run the business more efficiently?",
-      "Has anyone in your business brought up AI or automation in the last six months as something worth looking into?",
-      "If a vendor called tomorrow and said they had an AI tool that could save your team 5 hours a week, who in your organization would evaluate whether to buy it?",
-      "Do you have a written plan — even a rough one — for where you want the business to be in two years and what technology investments you need to get there?",
-      "Have you specifically budgeted any money this year to test or adopt new technology tools?"
+      { text: "How often do you and your leadership team sit down specifically to talk about making the business run more efficiently?", type: "pain" },
+      { text: "Has AI or automation come up in a real business conversation in your organization in the last six months?", type: "readiness" },
+      { text: "If a vendor called tomorrow with an AI tool that could save your team five hours a week, who in your organization would evaluate whether to buy it?", type: "readiness" },
+      { text: "How clearly defined is your technology roadmap for the next two years?", type: "readiness" },
+      { text: "How much of your current operational pain comes from doing things manually that you know should be automated but have never gotten around to fixing?", type: "pain" }
     ]
   },
   {
     id: "talent", label: "Talent & Culture", weight: 0.20, color: "#8BE08B", icon: "◎",
     questions: [
-      "If you introduced a new tool to your team next week that changed how they do a core part of their job, what would their reaction look like?",
-      "Do your employees ever come to you with ideas for how to do things better, or do they mostly just do what they are told?",
-      "The last time you brought in a new system or process, did you train your team on it properly or did you mostly figure it out as you went?",
-      "Is there anyone on your team who has opened ChatGPT, Claude, or any AI tool out of curiosity and actually used it for something work-related?",
-      "When you hire, do you actively look for people who are comfortable with technology, or is it something you think about after the fact?"
+      { text: "When you introduce a new tool or process, how much pushback or friction do you typically get from your team?", type: "pain" },
+      { text: "How often do your employees come to you with ideas for how to do things better, without being asked?", type: "readiness" },
+      { text: "The last time you brought in a new system, how well did the training and adoption actually go?", type: "readiness" },
+      { text: "Is there anyone on your team who has used ChatGPT, Claude, or a similar AI tool for actual work — not just out of curiosity?", type: "readiness" },
+      { text: "How much does a lack of technology skills in your team slow down your ability to grow or improve the business?", type: "pain" }
     ]
   },
   {
     id: "current", label: "Current AI Use", weight: 0.20, color: "#FF8C42", icon: "◆",
     questions: [
-      "Is there anything in your business right now that happens automatically without someone having to manually do it every time — like a confirmation email, a reminder, or a report?",
-      "Has anyone on your team used an AI tool — ChatGPT, Copilot, Siri, Alexa, or anything similar — to help them get work done in the last 30 days?",
-      "Have you personally tried using AI for anything in your business in the last year, even just once to see what it could do?",
-      "When you last chose a new software tool or platform, did you consider whether it had AI or automation built in, or was that not part of the decision?",
-      "Can you point to a specific tool or process you have adopted in the last two years and say with confidence that it has saved you time or money?"
+      { text: "How much of your team's week is eaten up by tasks that feel repetitive and manual — things a system should probably be handling?", type: "pain" },
+      { text: "Has anyone on your team used an AI tool to get actual work done in the last 30 days?", type: "readiness" },
+      { text: "Have you personally tried using AI for anything in your business in the last year, even just once?", type: "readiness" },
+      { text: "How much money or time have you invested in technology in the last two years that you can confidently say paid off?", type: "readiness" },
+      { text: "How often do you make important business decisions based on gut instinct because the data you need is not easily available?", type: "pain" }
     ]
   },
   {
     id: "governance", label: "Governance & Risk", weight: 0.15, color: "#BF80FF", icon: "◇",
     questions: [
-      "Do you know off the top of your head what customer or employee information your business collects and where it is stored?",
-      "If an employee wanted to use a free AI tool for a work task, would they know whether it is okay to put company or customer information into it?",
-      "When you bring on a new software vendor or app, do you have any kind of process for checking whether they are trustworthy with your data, or do you mostly just sign up and go?",
-      "Has anyone in leadership had a conversation about what could go wrong if an AI tool gave you bad information and you acted on it?",
-      "Are you aware of any privacy laws or industry regulations that affect how you collect, store, or use customer data in your business?"
+      { text: "How clearly does your team understand what customer or employee data your business collects and where it lives?", type: "readiness" },
+      { text: "If an employee used a free AI tool for a work task today, how confident are you that they would know not to put sensitive company or customer information into it?", type: "readiness" },
+      { text: "How much does the risk of a data breach, privacy complaint, or compliance issue keep you up at night?", type: "pain" },
+      { text: "When you bring on a new software vendor, how rigorous is your process for checking whether they handle your data responsibly?", type: "readiness" },
+      { text: "How prepared is your business right now if a customer asked exactly what data you hold on them and how it is used?", type: "readiness" }
     ]
   }
 ];
 
-const ANSWERS = [
-  { value: 1, label: "Not at all",   sub: "No progress here" },
-  { value: 2, label: "Early stages", sub: "Informal or minimal" },
-  { value: 3, label: "Established",  sub: "Exists but inconsistent" },
-  { value: 4, label: "Mature",       sub: "Consistent and working" }
-];
+
+
+const ANSWERS = {
+  readiness: [
+    { value: 1, label: "Not at all",   sub: "We are not there yet" },
+    { value: 2, label: "Just starting", sub: "Early and inconsistent" },
+    { value: 3, label: "Getting there", sub: "Mostly but not fully" },
+    { value: 4, label: "Absolutely",    sub: "Solid and consistent" }
+  ],
+  pain: [
+    { value: 1, label: "All the time",     sub: "This is a real problem" },
+    { value: 2, label: "Pretty often",     sub: "Happens more than it should" },
+    { value: 3, label: "Sometimes",        sub: "Occasional but manageable" },
+    { value: 4, label: "Rarely or never",  sub: "Not really an issue for us" }
+  ]
+};
 
 const MATURITY = [
   { min: 0,   max: 20,  level: 1, name: "Unaware",      color: "#FF5555", desc: "AI is not on the radar. Focus on education, awareness, and identifying quick wins with basic automation." },
@@ -254,7 +264,11 @@ function akey(dId, qi) { return dId + "_" + qi; }
 function calcResults() {
   const domainScores = {};
   DOMAINS.forEach(d => {
-    const vals = d.questions.map((_, i) => answers[akey(d.id, i)] || 1);
+    const vals = d.questions.map((q, i) => {
+      const raw = answers[akey(d.id, i)] || 1;
+      // Invert pain questions: 1->4, 2->3, 3->2, 4->1
+      return q.type === "pain" ? (5 - raw) : raw;
+    });
     const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
     domainScores[d.id] = Math.round(((avg - 1) / 3) * 100);
   });
@@ -319,9 +333,9 @@ function render() {
         <div class="domain-tag" style="border-color:${d.color};color:${d.color}">${d.icon}&nbsp;&nbsp;${d.label}</div>
         <div style="font-size:10px;color:#FFFFFF">Q${qIndex + 1} of ${d.questions.length}</div>
       </div>
-      <div class="question-text" id="qtext">${d.questions[qIndex]}</div>
+      <div class="question-text" id="qtext">${d.questions[qIndex].text}</div>
       <div class="answer-grid" id="agrid">
-        ${ANSWERS.map(a => `
+        ${(ANSWERS[d.questions[qIndex].type] || ANSWERS.readiness).map(a => `
           <button class="answer-btn ${selected === a.value ? 'selected' : ''}" onclick="handleAnswer(${a.value})">
             <span class="answer-num">${a.value}</span>
             <span class="answer-label">${a.label}</span>
