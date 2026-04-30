@@ -168,51 +168,51 @@ const DOMAINS = [
   {
     id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
     questions: [
-      { text: "If a customer called right now and asked about their account history, could someone on your team pull that up in under 60 seconds?", type: "readiness" },
-      { text: "How often does your team waste time hunting through emails, texts, or paper records to find information that should be easy to access?", type: "pain" },
-      { text: "If a key employee left tomorrow, how much critical business information would walk out the door with them?", type: "pain" },
-      { text: "If an AI tool needed to connect to your business data to start working for you, how ready is that data right now?", type: "readiness" },
-      { text: "When you need to spot a trend in your business — sales, customers, inventory — how quickly and confidently can you pull that picture together?", type: "readiness" }
+      { text: "How quickly can someone on your team pull up a specific customer's full history if they called right now?", type: "readiness" },
+      { text: "How often does your team waste time hunting through emails, paper records, or personal devices to find information that should be easy to access?", type: "pain" },
+      { text: "How much critical business knowledge lives only in one person's head or on their personal device rather than somewhere the whole team can access?", type: "pain" },
+      { text: "If an AI tool needed to connect to your business data to start working for you today, how ready is that data?", type: "readiness" },
+      { text: "When you want to spot a trend in your business over the last year, how quickly and confidently can you pull that picture together?", type: "readiness" }
     ]
   },
   {
     id: "strategy", label: "Strategy & Leadership", weight: 0.20, color: "#1DC6C2", icon: "◉",
     questions: [
-      { text: "How often do you and your leadership team sit down specifically to talk about making the business run more efficiently?", type: "pain" },
-      { text: "Has AI or automation come up in a real business conversation in your organization in the last six months?", type: "readiness" },
-      { text: "If a vendor called tomorrow with an AI tool that could save your team five hours a week, who in your organization would evaluate whether to buy it?", type: "readiness" },
-      { text: "How clearly defined is your technology roadmap for the next two years?", type: "readiness" },
-      { text: "How much of your current operational pain comes from doing things manually that you know should be automated but have never gotten around to fixing?", type: "pain" }
+      { text: "How regularly do you and your leadership team sit down specifically to talk about making the business run more efficiently?", type: "readiness" },
+      { text: "How seriously is AI or automation being considered as a real business priority in your organization right now?", type: "readiness" },
+      { text: "How prepared is your organization to evaluate and adopt a new AI tool if the right one appeared tomorrow?", type: "readiness" },
+      { text: "How clearly defined is your plan for where the business needs to be in two years and what technology investments will get you there?", type: "readiness" },
+      { text: "How much of your current operational pain comes from manual work you know should be automated but have never gotten around to fixing?", type: "pain" }
     ]
   },
   {
     id: "talent", label: "Talent & Culture", weight: 0.20, color: "#8BE08B", icon: "◎",
     questions: [
-      { text: "When you introduce a new tool or process, how much pushback or friction do you typically get from your team?", type: "pain" },
-      { text: "How often do your employees come to you with ideas for how to do things better, without being asked?", type: "readiness" },
-      { text: "The last time you brought in a new system, how well did the training and adoption actually go?", type: "readiness" },
-      { text: "Is there anyone on your team who has used ChatGPT, Claude, or a similar AI tool for actual work — not just out of curiosity?", type: "readiness" },
-      { text: "How much does a lack of technology skills in your team slow down your ability to grow or improve the business?", type: "pain" }
+      { text: "When you introduce a new tool or process, how much resistance or friction do you typically get from your team?", type: "pain" },
+      { text: "How often do your employees bring you ideas for doing things better without being asked?", type: "readiness" },
+      { text: "When you bring in a new system, how well does training and adoption actually go in your organization?", type: "readiness" },
+      { text: "How actively is your team already experimenting with AI tools like ChatGPT or Claude in their day-to-day work?", type: "readiness" },
+      { text: "How much does a lack of technology comfort in your team slow down your ability to grow or improve the business?", type: "pain" }
     ]
   },
   {
     id: "current", label: "Current AI Use", weight: 0.20, color: "#FF8C42", icon: "◆",
     questions: [
-      { text: "How much of your team's week is eaten up by tasks that feel repetitive and manual — things a system should probably be handling?", type: "pain" },
-      { text: "Has anyone on your team used an AI tool to get actual work done in the last 30 days?", type: "readiness" },
-      { text: "Have you personally tried using AI for anything in your business in the last year, even just once?", type: "readiness" },
-      { text: "How much money or time have you invested in technology in the last two years that you can confidently say paid off?", type: "readiness" },
-      { text: "How often do you make important business decisions based on gut instinct because the data you need is not easily available?", type: "pain" }
+      { text: "How much of your team's week is consumed by repetitive manual tasks that a system should probably be handling?", type: "pain" },
+      { text: "How actively is your team using AI tools to get real work done right now?", type: "readiness" },
+      { text: "How far along are you personally in experimenting with AI tools for your own business?", type: "readiness" },
+      { text: "How confidently can you point to technology investments you have made in the last two years and say they paid off?", type: "readiness" },
+      { text: "How often do you make important business decisions on gut instinct because the data you need is not easily available?", type: "pain" }
     ]
   },
   {
     id: "governance", label: "Governance & Risk", weight: 0.15, color: "#BF80FF", icon: "◇",
     questions: [
-      { text: "How clearly does your team understand what customer or employee data your business collects and where it lives?", type: "readiness" },
-      { text: "If an employee used a free AI tool for a work task today, how confident are you that they would know not to put sensitive company or customer information into it?", type: "readiness" },
-      { text: "How much does the risk of a data breach, privacy complaint, or compliance issue keep you up at night?", type: "pain" },
-      { text: "When you bring on a new software vendor, how rigorous is your process for checking whether they handle your data responsibly?", type: "readiness" },
-      { text: "How prepared is your business right now if a customer asked exactly what data you hold on them and how it is used?", type: "readiness" }
+      { text: "How clearly does your team understand what customer or employee data your business collects and where it is stored?", type: "readiness" },
+      { text: "How confident are you that your team knows what company or customer information should never go into a public AI tool?", type: "readiness" },
+      { text: "How much does the risk of a data breach, privacy complaint, or compliance issue concern you right now?", type: "pain" },
+      { text: "How thorough is your process for vetting a new software vendor before trusting them with your business data?", type: "readiness" },
+      { text: "How prepared is your business if a customer asked right now exactly what data you hold on them and how it is used?", type: "readiness" }
     ]
   }
 ];
