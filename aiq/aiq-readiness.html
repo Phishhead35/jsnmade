@@ -313,9 +313,9 @@ function render() {
 
   if (screen === "intro") {
     app.innerHTML = `
-      <div class="eyebrow">// JSN AIQ &nbsp;·&nbsp; READINESS ASSESSMENT</div>
+      <div class="eyebrow">// JSN AIQ &nbsp;·&nbsp; FOR THE COMPANIES THE BIG GUYS FORGET</div>
       <h1>Is your business<br><em>ready for AI?</em></h1>
-      <p class="lead">25 questions across 5 domains. Takes about 5 minutes. You get a maturity score, a domain breakdown, and a prioritized list of what to do next.</p>
+      <p class="lead">25 questions. 5 minutes. You get an honest score, a breakdown of where your business actually stands, and straight advice on the simplest fixes, not the most expensive ones.</p>
       <div class="domain-pills">${DOMAINS.map(d => `<div class="pill"><span class="pill-dot" style="background:${d.color}"></span>${d.label}</div>`).join("")}</div>
       <button class="btn" onclick="startAssessment()">Begin Assessment →</button>
     `;
