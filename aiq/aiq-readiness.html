@@ -460,6 +460,23 @@ function handleAnswer(val) {
   }, 220);
 }
 
+function submitToKV(res) {
+  const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
+  const payload = {
+    name: "",
+    email: "",
+    score: res.composite,
+    level: res.maturity.name,
+    domainScores: res.domainScores,
+    timestamp: new Date().toISOString()
+  };
+  fetch(KV_WORKER, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  }).catch(err => console.warn("KV submit failed silently:", err));
+}
+
 function restart() { answers = {}; domainIndex = 0; qIndex = 0; results = null; screen = "intro"; render(); }
 
 // ── AUDIT CTA ─────────────────────────────────────────────────────────────
