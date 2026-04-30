@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JSN AIQ Admin</title>
+<title>AIQ Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -128,7 +128,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 <!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-card">
-    <div class="login-eyebrow">// JSN AIQ Admin</div>
+    <div class="login-eyebrow">// AIQ Admin</div>
     <div class="login-title">Dashboard Access</div>
     <div class="login-sub">Enter your admin password to view assessment submissions.</div>
     <input class="login-input" type="password" id="login-password" placeholder="Admin password" onkeydown="if(event.key==='Enter')login()"/>
@@ -140,7 +140,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 <!-- APP -->
 <div class="app" id="app">
   <div class="header">
-    <div class="header-brand">// JSN AIQ &nbsp;·&nbsp; Admin Dashboard</div>
+    <div class="header-brand">// AIQ &nbsp;·&nbsp; Admin Dashboard</div>
     <div class="header-right">
       <div class="header-stat">Total Submissions: <span id="stat-total">0</span></div>
       <div class="header-stat">Avg Score: <span id="stat-avg">0</span></div>
@@ -295,7 +295,7 @@ function renderLeads() {
     }).join("");
 
     const summaryText = [
-      "JSN AIQ Assessment Summary",
+      "AIQ Assessment Summary",
       "Name: " + (lead.name || "Unknown"),
       "Email: " + (lead.email || "Unknown"),
       "Score: " + (lead.score || 0) + "/100",
