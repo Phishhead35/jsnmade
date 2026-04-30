@@ -168,117 +168,279 @@ const DOMAINS = [
   {
     id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
     questions: [
-      { text: "How well does your business track customer history — what they bought, how much they spent, and when they last did business with you?", type: "readiness" },
-      { text: "How often does messy, outdated, or hard-to-find customer information slow your team down or cause mistakes?", type: "pain" },
-      { text: "How often do important customer details get lost because they live in someone's personal phone or inbox instead of a shared system?", type: "pain" },
-      { text: "How well could your business identify customers who have not come back in the last 90 days — without manually going through records one by one?", type: "readiness" },
-      { text: "How organized and ready is your customer and business data if a tool needed to connect to it and start working for you today?", type: "readiness" }
+      {
+        text: "How well does your business track customer history — what they bought, how much they spent, and when they last did business with you?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "We do not track it", sub: "No real system exists" },
+          { value: 2, label: "Bits and pieces", sub: "Some info but scattered" },
+          { value: 3, label: "Most of it", sub: "Takes effort to pull up" },
+          { value: 4, label: "All of it, easily", sub: "Organized and accessible" }
+        ]
+      },
+      {
+        text: "How often does messy, outdated, or hard-to-find customer information slow your team down or cause mistakes?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "All the time", sub: "It is a constant problem" },
+          { value: 2, label: "Pretty often", sub: "Happens more than it should" },
+          { value: 3, label: "Sometimes", sub: "Occasional but manageable" },
+          { value: 4, label: "Rarely or never", sub: "Our info is clean and easy to use" }
+        ]
+      },
+      {
+        text: "How often do important customer details get lost because they live in someone's personal phone or inbox instead of a shared system?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "All the time", sub: "This is a real problem for us" },
+          { value: 2, label: "Pretty often", sub: "Happens more than it should" },
+          { value: 3, label: "Sometimes", sub: "We usually catch it" },
+          { value: 4, label: "Rarely or never", sub: "Everything is in a shared system" }
+        ]
+      },
+      {
+        text: "How well could your business identify customers who have not come back in the last 90 days — without manually going through records one by one?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "We could not", sub: "Would have to do it by hand" },
+          { value: 2, label: "With a lot of effort", sub: "It would take a while" },
+          { value: 3, label: "With some effort", sub: "We have a way but it is not perfect" },
+          { value: 4, label: "Quickly and easily", sub: "We can pull that list anytime" }
+        ]
+      },
+      {
+        text: "How organized and ready is your customer and business data if a tool needed to connect to it and start working for you today?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Not ready at all", sub: "Scattered and needs a lot of cleanup" },
+          { value: 2, label: "Partially ready", sub: "Some usable, a lot is not" },
+          { value: 3, label: "Mostly ready", sub: "In decent shape but not perfect" },
+          { value: 4, label: "Ready to go", sub: "Clean, organized, and accessible" }
+        ]
+      }
     ]
   },
   {
     id: "strategy", label: "Strategy & Leadership", weight: 0.20, color: "#1DC6C2", icon: "◉",
     questions: [
-      { text: "How well do you understand what AI could actually do for a business your size — beyond just using ChatGPT like a search engine?", type: "readiness" },
-      { text: "How often do you find yourself saying 'we really need to fix that' about the same recurring problem — and then not fixing it because something more urgent always comes up?", type: "pain" },
-      { text: "How clearly can you name the single biggest time-waster in your business every week — and estimate what it would be worth to fix it?", type: "readiness" },
-      { text: "How ready is your business to commit to testing one AI tool for 90 days — with time set aside, a real budget, and one person responsible for making it work?", type: "readiness" },
-      { text: "Be honest: are you exploring AI because it will solve a real, specific problem — or mostly because everyone is talking about it and you do not want to be left behind?", type: "readiness" }
+      {
+        text: "How well do you understand what AI could actually do for a business your size — beyond just using ChatGPT like a search engine?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "It still feels unclear", sub: "AI feels out of reach for us" },
+          { value: 2, label: "Basic idea only", sub: "A lot is still foggy" },
+          { value: 3, label: "General concepts", sub: "But not the specifics for my business" },
+          { value: 4, label: "Clear picture", sub: "I know what AI could do for us" }
+        ]
+      },
+      {
+        text: "How often do you find yourself saying 'we really need to fix that' about the same recurring problem — and then not fixing it because something more urgent always comes up?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "All the time", sub: "We have a long list we never get to" },
+          { value: 2, label: "Pretty often", sub: "It happens regularly" },
+          { value: 3, label: "Sometimes", sub: "We let some things slide" },
+          { value: 4, label: "Rarely", sub: "We are good at fixing problems" }
+        ]
+      },
+      {
+        text: "How clearly can you name the single biggest time-waster in your business every week — and estimate what it would be worth to fix it?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "I have not thought about it", sub: "No specific problem comes to mind" },
+          { value: 2, label: "General idea only", sub: "No real number attached" },
+          { value: 3, label: "I know what it is", sub: "But have not put a dollar amount on it" },
+          { value: 4, label: "I know exactly", sub: "The problem and what fixing it is worth" }
+        ]
+      },
+      {
+        text: "How ready is your business to commit to testing one AI tool for 90 days — with time set aside, a real budget, and one person responsible for making it work?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Not ready", sub: "No bandwidth or budget right now" },
+          { value: 2, label: "Open to it", sub: "But no real plans made" },
+          { value: 3, label: "Seriously considering", sub: "But have not committed yet" },
+          { value: 4, label: "Ready to start", sub: "We have the time, budget, and owner" }
+        ]
+      },
+      {
+        text: "Be honest: are you exploring AI because it will solve a real, specific problem — or mostly because everyone is talking about it and you do not want to be left behind?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Mostly the hype", sub: "No specific problem identified yet" },
+          { value: 2, label: "Vague idea", sub: "Something feels right but nothing concrete" },
+          { value: 3, label: "Real problem", sub: "I have something specific in mind" },
+          { value: 4, label: "Crystal clear", sub: "Specific problem, clear value, right tool" }
+        ]
+      }
     ]
   },
   {
     id: "talent", label: "Talent & Culture", weight: 0.20, color: "#8BE08B", icon: "◎",
     questions: [
-      { text: "How much of your team's week is spent doing the same repetitive tasks over and over — scheduling, confirming, sending the same messages, answering the same questions — that a tool could probably handle?", type: "pain" },
-      { text: "When you introduce a new app, tool, or process, how well does your team actually stick with it after the first couple of weeks?", type: "readiness" },
-      { text: "How much does fear of AI — worry about jobs, privacy, or just not understanding it — get in the way of your team seriously considering tools that could make work easier?", type: "pain" },
-      { text: "How comfortable are you personally with sitting down and figuring out a new AI tool — testing it, learning what it does, and deciding if it fits your business?", type: "readiness" },
-      { text: "How badly would your business be hurt if your most important employee left next month and took everything they know with them?", type: "pain" }
+      {
+        text: "How much of your team's week is spent doing the same repetitive tasks over and over — scheduling, confirming, sending the same messages, answering the same questions — that a tool could probably handle?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "Most of the week", sub: "Repetitive tasks dominate our time" },
+          { value: 2, label: "A significant amount", sub: "A real drain on productivity" },
+          { value: 3, label: "Some of it", sub: "Takes time but not our biggest issue" },
+          { value: 4, label: "Very little", sub: "We have automated most of it already" }
+        ]
+      },
+      {
+        text: "When you introduce a new app, tool, or process, how well does your team actually stick with it after the first couple of weeks?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "They go back to the old way", sub: "Almost immediately every time" },
+          { value: 2, label: "Some stick, most do not", sub: "Adoption is inconsistent" },
+          { value: 3, label: "Most stick with it", sub: "Some friction but it usually works" },
+          { value: 4, label: "They embrace it", sub: "New tools become part of the routine" }
+        ]
+      },
+      {
+        text: "How much does fear of AI — worry about jobs, privacy, or just not understanding it — get in the way of your team seriously considering tools that could make work easier?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "A lot", sub: "Fear is a real barrier on our team" },
+          { value: 2, label: "Somewhat", sub: "Hesitation slows things down" },
+          { value: 3, label: "A little", sub: "A few concerns but most are open" },
+          { value: 4, label: "Not at all", sub: "Our team is open and not afraid" }
+        ]
+      },
+      {
+        text: "How comfortable are you personally with sitting down and figuring out a new AI tool — testing it, learning what it does, and deciding if it fits your business?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Not comfortable", sub: "New tools intimidate me" },
+          { value: 2, label: "Can manage basics", sub: "Struggle with anything unfamiliar" },
+          { value: 3, label: "Reasonably comfortable", sub: "Not fully confident but I get through it" },
+          { value: 4, label: "Very comfortable", sub: "I enjoy figuring out new tools" }
+        ]
+      },
+      {
+        text: "How badly would your business be hurt if your most important employee left next month and took everything they know with them?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "Very badly", sub: "Critical knowledge lives in one person" },
+          { value: 2, label: "Pretty badly", sub: "We would struggle for a while" },
+          { value: 3, label: "Somewhat", sub: "It would hurt but we would recover" },
+          { value: 4, label: "Not much", sub: "Knowledge is shared and documented" }
+        ]
+      }
     ]
   },
   {
     id: "current", label: "Current AI Use", weight: 0.20, color: "#FF8C42", icon: "◆",
     questions: [
-      { text: "How much are you currently using AI for real business tasks — beyond asking ChatGPT questions the way you used to Google things?", type: "readiness" },
-      { text: "When a customer calls, emails, or submits a request, how consistently does your business respond the same day?", type: "readiness" },
-      { text: "How much of your customer follow-up — reminders, confirmations, thank you messages, check-ins — happens automatically without someone having to manually remember to do it?", type: "readiness" },
-      { text: "How often do things fall through the cracks — a call not returned, a quote not sent, a follow-up forgotten — because you are too busy and there is no system catching what you miss?", type: "pain" },
-      { text: "Before spending money on AI, how carefully do you look for a simple, affordable tool that already exists — before assuming you need something custom built?", type: "readiness" }
+      {
+        text: "How much are you currently using AI for real business tasks — beyond asking ChatGPT questions the way you used to Google things?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "We are not using it", sub: "AI is not part of how we work yet" },
+          { value: 2, label: "Occasionally", sub: "Not in any consistent or meaningful way" },
+          { value: 3, label: "Regularly for a few things", sub: "A handful of specific use cases" },
+          { value: 4, label: "Every day, multiple areas", sub: "AI is woven into how we operate" }
+        ]
+      },
+      {
+        text: "When a customer calls, emails, or submits a request, how consistently does your business respond the same day?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Rarely same day", sub: "We fall behind on responses regularly" },
+          { value: 2, label: "We try but miss a lot", sub: "Same-day is hit or miss" },
+          { value: 3, label: "Most of the time", sub: "Same day usually but not always" },
+          { value: 4, label: "Almost always", sub: "Same-day response is our standard" }
+        ]
+      },
+      {
+        text: "How much of your customer follow-up — reminders, confirmations, thank you messages, check-ins — happens automatically without someone having to manually remember to do it?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "None of it", sub: "Everything is manual when someone remembers" },
+          { value: 2, label: "A small amount", sub: "Most is still done manually" },
+          { value: 3, label: "A decent amount", sub: "Automated but room to do more" },
+          { value: 4, label: "Most of it", sub: "Routine communication runs automatically" }
+        ]
+      },
+      {
+        text: "How often do things fall through the cracks — a call not returned, a quote not sent, a follow-up forgotten — because you are too busy and there is no system catching what you miss?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "All the time", sub: "We drop the ball regularly and it costs us" },
+          { value: 2, label: "Pretty often", sub: "More than we would like" },
+          { value: 3, label: "Sometimes", sub: "We miss things but usually catch them" },
+          { value: 4, label: "Rarely or never", sub: "Good systems catch what needs doing" }
+        ]
+      },
+      {
+        text: "Before spending money on AI, how carefully do you look for a simple, affordable tool that already exists — before assuming you need something custom built?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "I do not look", sub: "I jump to solutions without researching" },
+          { value: 2, label: "A little research", sub: "Not always thorough" },
+          { value: 3, label: "Generally research", sub: "Could be more systematic about it" },
+          { value: 4, label: "Always look first", sub: "Simplest existing solution before anything custom" }
+        ]
+      }
     ]
   },
   {
     id: "governance", label: "Governance & Risk", weight: 0.15, color: "#BF80FF", icon: "◇",
     questions: [
-      { text: "How much does the idea of using AI make you nervous when it comes to customer privacy, data security, or the risk of something going wrong?", type: "pain" },
-      { text: "How well does your team understand that typing a customer's personal details into a free AI tool like ChatGPT is a real privacy risk?", type: "readiness" },
-      { text: "How clearly does your business know what customer information you collect — email addresses, payment details, personal data — and where it all ends up?", type: "readiness" },
-      { text: "When you sign up for a new app or software, how carefully do you check what they are allowed to do with your business and customer data?", type: "readiness" },
-      { text: "How prepared is your business if something went wrong — a vendor had a data breach, an AI tool made a serious mistake, or a customer filed a privacy complaint?", type: "readiness" }
+      {
+        text: "How much does the idea of using AI make you nervous when it comes to customer privacy, data security, or the risk of something going wrong?",
+        type: "pain",
+        answers: [
+          { value: 1, label: "Very nervous", sub: "Privacy concerns are a real barrier for me" },
+          { value: 2, label: "Somewhat nervous", sub: "Concerns that slow me down" },
+          { value: 3, label: "A little uneasy", sub: "Some questions but not stopping me" },
+          { value: 4, label: "Not nervous", sub: "I feel informed and comfortable" }
+        ]
+      },
+      {
+        text: "How well does your team understand that typing a customer's personal details into a free AI tool like ChatGPT is a real privacy risk?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "They do not know this", sub: "This is news and we have probably done it" },
+          { value: 2, label: "A few people know", sub: "Most of the team does not" },
+          { value: 3, label: "Most people know", sub: "But we have never made it official" },
+          { value: 4, label: "Everyone knows", sub: "Clear on what should and should not go in" }
+        ]
+      },
+      {
+        text: "How clearly does your business know what customer information you collect — email addresses, payment details, personal data — and where it all ends up?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "We have never mapped this", sub: "No clear picture of what we collect" },
+          { value: 2, label: "General idea only", sub: "Not fully clear on the details" },
+          { value: 3, label: "Mostly know", sub: "Some gaps in our understanding" },
+          { value: 4, label: "Completely clear", sub: "We know what we collect and where it goes" }
+        ]
+      },
+      {
+        text: "When you sign up for a new app or software, how carefully do you check what they are allowed to do with your business and customer data?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "I hit accept without reading", sub: "Terms and conditions get ignored" },
+          { value: 2, label: "I skim occasionally", sub: "Not thorough about it" },
+          { value: 3, label: "I read the important parts", sub: "Most of the time" },
+          { value: 4, label: "I always review", sub: "Data terms before agreeing to anything" }
+        ]
+      },
+      {
+        text: "How prepared is your business if something went wrong — a vendor had a data breach, an AI tool made a serious mistake, or a customer filed a privacy complaint?",
+        type: "readiness",
+        answers: [
+          { value: 1, label: "Not prepared at all", sub: "No plan and would not know what to do" },
+          { value: 2, label: "We would figure it out", sub: "But no real plan exists" },
+          { value: 3, label: "Thought about it", sub: "But nothing formalized" },
+          { value: 4, label: "We have a process", sub: "Clear steps for handling data issues" }
+        ]
+      }
     ]
   }
 ]
-
-
-
-const ANSWERS = {
-  readiness: [
-    { value: 1, label: "Not at all",    sub: "We are not there yet" },
-    { value: 2, label: "Just starting", sub: "Early and inconsistent" },
-    { value: 3, label: "Getting there", sub: "Mostly but not fully" },
-    { value: 4, label: "Absolutely",    sub: "Solid and consistent" }
-  ],
-  pain: [
-    { value: 1, label: "All the time",    sub: "This is a real problem" },
-    { value: 2, label: "Pretty often",    sub: "Happens more than it should" },
-    { value: 3, label: "Sometimes",       sub: "Occasional but manageable" },
-    { value: 4, label: "Rarely or never", sub: "Not really an issue for us" }
-  ],
-  pain_amount: [
-    { value: 1, label: "A lot",        sub: "It is a real barrier for us" },
-    { value: 2, label: "Somewhat",     sub: "It slows us down" },
-    { value: 3, label: "A little",     sub: "Minor but not stopping us" },
-    { value: 4, label: "Not at all",   sub: "Not an issue for us" }
-  ],
-  pain_repetitive: [
-    { value: 1, label: "Most of the week",  sub: "Repetitive tasks dominate our time" },
-    { value: 2, label: "A lot",             sub: "A significant drain on productivity" },
-    { value: 3, label: "Some",              sub: "Takes up time but not our biggest problem" },
-    { value: 4, label: "Very little",       sub: "We have already automated most of it" }
-  ],
-  pain_damage: [
-    { value: 1, label: "Very badly",   sub: "Critical knowledge lives in one person" },
-    { value: 2, label: "Pretty badly", sub: "We would struggle significantly" },
-    { value: 3, label: "Somewhat",     sub: "It would hurt but we would recover" },
-    { value: 4, label: "Not much",     sub: "Our knowledge is shared and documented" }
-  ],
-  readiness_honest: [
-    { value: 1, label: "Mostly the hype",    sub: "I have not identified a specific problem" },
-    { value: 2, label: "Somewhat real",      sub: "A vague idea but nothing concrete" },
-    { value: 3, label: "Mostly real",        sub: "A specific problem but not fully defined" },
-    { value: 4, label: "Completely real",    sub: "Specific problem, clear value, right tool" }
-  ]
-};
-
-// Custom answer type overrides per question
-const QUESTION_ANSWER_TYPES = {
-  "talent_2": "pain_amount",    // fear of AI
-  "talent_0": "pain_repetitive", // repetitive tasks
-  "talent_4": "pain_damage",    // key employee leaving
-  "governance_0": "pain_amount", // nervousness about AI
-  "strategy_4": "readiness_honest" // honest motivation
-};
-
-function getAnswerType(domainId, qIndex, questionType) {
-  const key = domainId + "_" + qIndex;
-  return QUESTION_ANSWER_TYPES[key] || questionType;
-}
-
-const MATURITY = [
-  { min: 0,   max: 20,  level: 1, name: "Unaware",      color: "#FF5555", desc: "AI is not on the radar. Focus on education, awareness, and identifying quick wins with basic automation." },
-  { min: 21,  max: 40,  level: 2, name: "Aware",         color: "#FF8C00", desc: "Leadership knows AI matters but nothing formal is underway. Identify a champion, set a small budget, and run one focused pilot." },
-  { min: 41,  max: 60,  level: 3, name: "Experimenting", color: "#FD6B2B", desc: "Tools are being tried but results are not consistent or scaled. Pick the highest-ROI pilot, measure it rigorously, and build internal confidence." },
-  { min: 61,  max: 80,  level: 4, name: "Scaling",       color: "#8BE08B", desc: "AI is working in pockets. Shift focus to governance, cross-team integration, and data pipelines that let AI improve over time." },
-  { min: 81,  max: 100, level: 5, name: "Transforming",  color: "#00C4EE", desc: "AI is a core business driver. Focus on continuous learning loops, competitive differentiation, and responsible scaling." }
-];
 
 const USE_CASES = {
   data:       ["Implement a centralized data warehouse (Snowflake, BigQuery, or similar)", "Automate reporting pipelines to eliminate manual spreadsheet work", "Deploy data quality monitoring to catch issues before they propagate", "Build a single source of truth dashboard for operational KPIs"],
@@ -304,10 +466,8 @@ function calcResults() {
   DOMAINS.forEach(d => {
     const vals = d.questions.map((q, i) => {
       const raw = answers[akey(d.id, i)] || 1;
-      // Invert all pain-type answers: more pain = lower score
-      const answerType = getAnswerType(d.id, i, q.type);
-      const isPain = answerType.startsWith("pain");
-      return isPain ? (5 - raw) : raw;
+      // Invert pain questions: more pain = lower score
+      return q.type === "pain" ? (5 - raw) : raw;
     });
     const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
     domainScores[d.id] = Math.round(((avg - 1) / 3) * 100);
