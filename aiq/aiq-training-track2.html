@@ -720,22 +720,10 @@ async function unlockTraining() {
   userEmail = e;
   btn.textContent = "Unlocking...";
   btn.disabled = true;
-  const WORKER_URL = "https://cc-leads.wewearsmiles.workers.dev";
-  try {
-    await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName: nameParts[0],
-        lastName: nameParts.slice(1).join(" ") || "",
-        email: e,
-        score: userScore,
-        level: userLevel,
-        track: "Track 2. From Pilot to Proof",
-        domainScores
-      })
-    });
-  } catch(err) { console.warn("Lead capture failed:", err); }
+  
+// Worker call disabled — lead capture handled upstream via CTCT signup form
+  // Will be replaced by Stripe paywall flow when Track 2 paywall is built
+
   // Update KV record with name and email
   const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
   try {
