@@ -535,10 +535,11 @@ function render() {
       </div>
       <div class="question-text" id="qtext">${d.questions[qIndex].text}</div>
       <div class="answer-grid" id="agrid">
-        ${(d.questions[qIndex].answers || (ANSWERS[d.questions[qIndex].type] || ANSWERS.readiness).map(a => a.label)).map((label, idx) => `
-          <button class="answer-btn ${selected === (idx+1) ? 'selected' : ''}" onclick="handleAnswer(${idx+1})">
-            <span class="answer-num">${idx+1}</span>
-            <span class="answer-label">${label}</span>
+        ${(d.questions[qIndex].answers || ANSWERS.readiness).map(a => `
+          <button class="answer-btn ${selected === a.value ? 'selected' : ''}" onclick="handleAnswer(${a.value})">
+            <span class="answer-num">${a.value}</span>
+            <span class="answer-label">${a.label}</span>
+            <span class="answer-sub">${a.sub}</span>
           </button>`).join("")}
       </div>
       <div class="domain-track">
