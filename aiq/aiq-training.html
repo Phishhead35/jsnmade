@@ -696,34 +696,10 @@ async function unlockTraining() {
   btn.textContent = "Saving...";
   btn.disabled = true;
 
-  // Send to Constant Contact via Worker
-  // IMPORTANT: Replace this URL with your actual Worker URL after deploying
-  const WORKER_URL = "https://cc-leads.wewearsmiles.workers.dev";
+// Worker call disabled — lead capture handled upstream via CTCT signup form
+// Will be replaced by Stripe paywall flow when Track 2 paywall is built
 
-  try {
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email: e,
-        score: userScore,
-        level: m.name,
-        track: m.track,
-        domainScores
-      })
-    });
-
-    if (!res.ok) {
-      console.warn("Lead capture failed silently. continuing anyway");
-    }
-  } catch (err) {
-    // Fail silently. don't block the user from accessing training
-    console.warn("Lead capture error:", err);
-  }
-
-  // Update KV record with name and email
+     // Update KV record with name and email
   const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
   try {
     await fetch(KV_WORKER, {
