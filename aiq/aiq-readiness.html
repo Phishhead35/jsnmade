@@ -550,6 +550,7 @@ function render() {
   }
 
   if (screen === "results" && results) {
+    try {
     const { domainScores, composite, maturity, gaps } = results;
     const gapHTML = gaps.length
       ? gaps.map(d => `
@@ -649,9 +650,9 @@ function render() {
         const el = document.getElementById("bar-" + d.id);
         if (el) el.style.width = domainScores[d.id] + "%";
       });
-      // Set score-aware audit copy
-      setAuditCopy(maturity.level);
+      try { setAuditCopy(maturity.level); } catch(e) { console.warn("setAuditCopy error:", e); }
     }, 80);
+    } catch(err) { console.error("Results render error:", err); app.innerHTML = "<p style='color:white;padding:40px'>Results error: " + err.message + "</p>"; }
   }
 }
 
