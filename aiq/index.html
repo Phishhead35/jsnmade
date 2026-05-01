@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AIQ Readiness Assessment — JSN Made</title>
+<meta name="description" content="Find out exactly where your business stands on AI in 5 minutes. Free assessment, personalized score, and a clear action plan built for small business owners."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1121;
+  --surface:#121C2F;
+  --card:#151F33;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(29,198,194,0.2);
+  --text:#FFFFFF;
+  --cyan:#1DC6C2;
+  --cyan2:#2DD9D5;
+  --orange:#FD6B2B;
+  --green:#5BE0A0;
+  --mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.35}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,17,33,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:var(--serif);font-size:20px;color:var(--cyan);text-decoration:none}
+.nav-brand span{color:#FFFFFF}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-link{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;transition:color 0.15s}
+.nav-link:hover{color:var(--cyan)}
+.nav-cta{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--bg);background:var(--cyan);border:none;padding:10px 20px;cursor:pointer;text-decoration:none;transition:opacity 0.15s}
+.nav-cta:hover{opacity:0.88}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(29,198,194,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(29,198,194,0.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(29,198,194,0.08) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:900px;width:100%;text-align:center;position:relative;z-index:1}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--cyan);margin-bottom:24px;display:inline-flex;align-items:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:32px;height:1px;background:var(--cyan);opacity:0.5}
+.hero-h1{font-family:var(--serif);font-size:clamp(40px,7vw,80px);line-height:1.05;margin-bottom:24px;letter-spacing:-0.01em}
+.hero-h1 em{color:var(--cyan);font-style:italic}
+.hero-sub{font-size:clamp(16px,2vw,20px);line-height:1.7;color:#FFFFFF;max-width:580px;margin:0 auto 48px}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.btn-primary{background:var(--orange);color:#FFFFFF;border:none;padding:18px 40px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity 0.15s}
+.btn-primary:hover{opacity:0.88}
+.btn-ghost{background:transparent;color:#FFFFFF;border:1px solid var(--border2);padding:17px 36px;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.15s}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+.hero-proof{margin-top:48px;display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap}
+.proof-item{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:#FFFFFF;display:flex;align-items:center;gap:8px}
+.proof-dot{width:4px;height:4px;background:var(--cyan);border-radius:50%}
+
+/* SCORE PREVIEW */
+.score-preview{padding:80px 40px;position:relative;z-index:1}
+.score-preview-inner{max-width:1000px;margin:0 auto}
+.section-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:16px;text-align:center}
+.section-title{font-family:var(--serif);font-size:clamp(28px,4vw,48px);line-height:1.15;text-align:center;margin-bottom:16px}
+.section-title em{color:var(--cyan);font-style:italic}
+.section-sub{font-size:16px;color:#FFFFFF;text-align:center;max-width:520px;margin:0 auto 56px;line-height:1.7}
+
+.levels-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:48px}
+.level-card{background:var(--surface);border:1px solid var(--border);padding:20px 16px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.level-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.level-card:nth-child(1)::before{background:#FF5555}
+.level-card:nth-child(2)::before{background:#FF8C00}
+.level-card:nth-child(3)::before{background:var(--orange)}
+.level-card:nth-child(4)::before{background:var(--green)}
+.level-card:nth-child(5)::before{background:var(--cyan)}
+.level-num{font-family:var(--serif);font-size:36px;line-height:1;margin-bottom:8px}
+.level-card:nth-child(1) .level-num{color:#FF5555}
+.level-card:nth-child(2) .level-num{color:#FF8C00}
+.level-card:nth-child(3) .level-num{color:var(--orange)}
+.level-card:nth-child(4) .level-num{color:var(--green)}
+.level-card:nth-child(5) .level-num{color:var(--cyan)}
+.level-name{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
+.level-desc{font-size:12px;color:#FFFFFF;line-height:1.5}
+
+/* DOMAINS */
+.domains{padding:80px 40px;background:var(--surface);position:relative;z-index:1}
+.domains-inner{max-width:1000px;margin:0 auto}
+.domains-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:48px}
+.domain-card{background:var(--card);border:1px solid var(--border);padding:24px 20px}
+.domain-icon{font-size:24px;margin-bottom:12px}
+.domain-name{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.domain-weight{font-family:var(--serif);font-size:28px;color:#FFFFFF;margin-bottom:8px;line-height:1}
+.domain-desc{font-size:12px;color:#FFFFFF;line-height:1.6}
+
+/* HOW IT WORKS */
+.how{padding:80px 40px;position:relative;z-index:1}
+.how-inner{max-width:900px;margin:0 auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.step{position:relative}
+.step-num{font-family:var(--serif);font-size:64px;color:rgba(29,198,194,0.12);line-height:1;margin-bottom:16px}
+.step-title{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.step-body{font-size:14px;color:#FFFFFF;line-height:1.7}
+.step-connector{display:none}
+
+/* WHAT YOU GET */
+.what{padding:80px 40px;background:var(--surface);position:relative;z-index:1}
+.what-inner{max-width:1000px;margin:0 auto}
+.what-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px}
+.what-card{background:var(--card);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden}
+.what-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px;background:var(--cyan)}
+.what-card.orange::before{background:var(--orange)}
+.what-card.green::before{background:var(--green)}
+.what-card.purple::before{background:#BF80FF}
+.what-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.what-card.orange .what-tag{color:var(--orange)}
+.what-card.green .what-tag{color:var(--green)}
+.what-card.purple .what-tag{color:#BF80FF}
+.what-title{font-family:var(--serif);font-size:22px;margin-bottom:10px;line-height:1.2}
+.what-body{font-size:14px;color:#FFFFFF;line-height:1.7}
+
+/* FOR WHO */
+.forwho{padding:80px 40px;position:relative;z-index:1}
+.forwho-inner{max-width:900px;margin:0 auto}
+.forwho-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.forwho-card{background:var(--surface);border:1px solid var(--border);padding:24px}
+.forwho-icon{font-size:28px;margin-bottom:12px}
+.forwho-title{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
+.forwho-body{font-size:13px;color:#FFFFFF;line-height:1.6}
+
+/* AUDIT CTA */
+.audit-cta{padding:80px 40px;background:var(--surface);position:relative;z-index:1;overflow:hidden}
+.audit-cta::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent)}
+.audit-cta-inner{max-width:760px;margin:0 auto;text-align:center}
+.audit-cta-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);margin-bottom:16px;display:inline-block;border:1px solid rgba(253,107,43,0.3);padding:6px 14px}
+.audit-cta-title{font-family:var(--serif);font-size:clamp(28px,4vw,48px);line-height:1.15;margin-bottom:16px}
+.audit-cta-title em{color:var(--orange);font-style:italic}
+.audit-cta-body{font-size:16px;color:#FFFFFF;line-height:1.7;max-width:520px;margin:0 auto 40px}
+.audit-details{display:flex;align-items:center;justify-content:center;gap:32px;margin-bottom:40px;flex-wrap:wrap}
+.audit-detail{font-family:var(--mono);font-size:11px;color:#FFFFFF;display:flex;align-items:center;gap:8px}
+.audit-detail span{color:var(--orange)}
+
+/* FINAL CTA */
+.final-cta{padding:100px 40px;position:relative;z-index:1;text-align:center;overflow:hidden}
+.final-glow{position:absolute;bottom:-100px;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(29,198,194,0.06) 0%,transparent 70%);pointer-events:none}
+.final-cta-inner{max-width:680px;margin:0 auto;position:relative;z-index:1}
+.final-cta-title{font-family:var(--serif);font-size:clamp(32px,5vw,60px);line-height:1.1;margin-bottom:20px}
+.final-cta-title em{color:var(--cyan);font-style:italic}
+.final-cta-sub{font-size:16px;color:#FFFFFF;line-height:1.7;margin-bottom:48px}
+.final-time{font-family:var(--mono);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-top:20px}
+
+/* FOOTER */
+footer{padding:32px 40px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.footer-brand{font-family:var(--serif);font-size:16px;color:var(--cyan)}
+.footer-brand span{color:#FFFFFF}
+.footer-links{display:flex;gap:24px}
+.footer-link{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;transition:color 0.15s}
+.footer-link:hover{color:var(--cyan)}
+.footer-copy{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3)}
+
+/* MOBILE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-links{display:none}
+  .hero{padding:100px 20px 60px}
+  .hero-proof{gap:16px}
+  .score-preview,.domains,.how,.what,.forwho,.audit-cta,.final-cta{padding:60px 20px}
+  .levels-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .levels-grid .level-card:last-child{grid-column:span 2}
+  .domains-grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr}
+  .what-grid{grid-template-columns:1fr}
+  .forwho-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:24px 20px}
+  .footer-links{flex-wrap:wrap;justify-content:center}
+}
+</style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-G33EEH6W8K');</script>
+<!-- Meta Pixel -->
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1940890076534651');fbq('track','PageView');</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="../index.html" class="nav-brand">JSN <span>Made</span></a>
+  <div class="nav-links">
+    <a href="../index.html" class="nav-link">Home</a>
+    <a href="aiq-readiness.html" class="nav-link">Take the Assessment</a>
+    <a href="https://calendly.com/jsnmade-pm/30min" target="_blank" class="nav-link">Book a Call</a>
+    <a href="aiq-readiness.html" class="nav-cta">Start Free →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">AIQ Readiness Assessment</div>
+    <h1 class="hero-h1">Find out if your business<br>is <em>actually ready</em> for AI.</h1>
+    <p class="hero-sub">Not the hype version. The practical version. Five minutes, 25 questions, and you will know exactly where you stand and what to do first.</p>
+    <div class="hero-actions">
+      <a href="aiq-readiness.html" class="btn-primary">Take the Free Assessment →</a>
+      <a href="https://calendly.com/jsnmade-pm/30min" target="_blank" class="btn-ghost">Book a Discovery Call</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-item"><div class="proof-dot"></div>Free. No credit card.</div>
+      <div class="proof-item"><div class="proof-dot"></div>5 minutes</div>
+      <div class="proof-item"><div class="proof-dot"></div>Instant results</div>
+      <div class="proof-item"><div class="proof-dot"></div>Built for small business</div>
+    </div>
+  </div>
+</section>
+
+<!-- MATURITY LEVELS -->
+<section class="score-preview">
+  <div class="score-preview-inner">
+    <div class="section-eyebrow">// Your Score</div>
+    <h2 class="section-title">Five levels of <em>AI readiness.</em><br>Where do you land?</h2>
+    <p class="section-sub">Your score places you at one of five maturity levels. Each level comes with a personalized action plan built around where you actually are, not where you wish you were.</p>
+    <div class="levels-grid">
+      <div class="level-card">
+        <div class="level-num">01</div>
+        <div class="level-name">Unaware</div>
+        <div class="level-desc">AI is not on your radar yet. You have more opportunity than you know.</div>
+      </div>
+      <div class="level-card">
+        <div class="level-num">02</div>
+        <div class="level-name">Aware</div>
+        <div class="level-desc">You know AI matters but have not taken a real first step yet.</div>
+      </div>
+      <div class="level-card">
+        <div class="level-num">03</div>
+        <div class="level-name">Experimenting</div>
+        <div class="level-desc">Tools are being tried but results are not consistent or scaled.</div>
+      </div>
+      <div class="level-card">
+        <div class="level-num">04</div>
+        <div class="level-name">Scaling</div>
+        <div class="level-desc">AI is working in pockets. Time to expand and systematize.</div>
+      </div>
+      <div class="level-card">
+        <div class="level-num">05</div>
+        <div class="level-name">Transforming</div>
+        <div class="level-desc">AI is core to how you operate. Your competitors are watching you.</div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <a href="aiq-readiness.html" class="btn-primary">Find Your Level →</a>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section class="domains">
+  <div class="domains-inner">
+    <div class="section-eyebrow">// What Gets Measured</div>
+    <h2 class="section-title">25 questions across<br><em>five domains</em> that actually matter.</h2>
+    <p class="section-sub">Generic AI quizzes ask about your feelings. This one measures the five domains that actually predict whether an AI initiative will succeed or fail in your business.</p>
+    <div class="domains-grid">
+      <div class="domain-card">
+        <div class="domain-icon">◈</div>
+        <div class="domain-name">Data & Infrastructure</div>
+        <div class="domain-weight">25%</div>
+        <div class="domain-desc">How organized, accessible, and reliable is your business data? AI runs on data. This is the foundation.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">◎</div>
+        <div class="domain-name">Strategy & Leadership</div>
+        <div class="domain-weight">20%</div>
+        <div class="domain-desc">Does leadership understand AI well enough to make smart decisions about it? Vision drives investment.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">◇</div>
+        <div class="domain-name">Talent & Culture</div>
+        <div class="domain-weight">20%</div>
+        <div class="domain-desc">Is your team curious and adaptable, or resistant to change? Culture determines adoption speed.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">○</div>
+        <div class="domain-name">Current AI Use</div>
+        <div class="domain-weight">20%</div>
+        <div class="domain-desc">What AI tools are you already using, and how effectively? Your starting point matters.</div>
+      </div>
+      <div class="domain-card">
+        <div class="domain-icon">□</div>
+        <div class="domain-name">Governance & Risk</div>
+        <div class="domain-weight">15%</div>
+        <div class="domain-desc">Do you have guardrails in place for responsible AI use? Safety and compliance protect your business.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner">
+    <div class="section-eyebrow">// How It Works</div>
+    <h2 class="section-title">Three steps.<br><em>Five minutes.</em> Real answers.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Take the Assessment</div>
+        <div class="step-body">Answer 25 questions about how your business actually operates today. No tech jargon. No trick questions. Just honest answers about where you are.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Get Your Score</div>
+        <div class="step-body">Instantly see your overall AIQ score, your maturity level, a radar chart of your domain breakdown, and specific recommendations for your priority gaps.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Take Action</div>
+        <div class="step-body">Unlock your personalized training track or book a discovery call to go deeper. Either way you leave with a clear next step, not just a number.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="what">
+  <div class="what-inner">
+    <div class="section-eyebrow">// What You Get</div>
+    <h2 class="section-title">More than a score.<br>A <em>complete picture.</em></h2>
+    <p class="section-sub">Every completed assessment delivers four things immediately. No email required, no sales call gating the results.</p>
+    <div class="what-grid">
+      <div class="what-card">
+        <div class="what-tag">// Score & Level</div>
+        <div class="what-title">Your AIQ Score out of 100</div>
+        <div class="what-body">A single number that places you at one of five maturity levels, with a plain-language description of what that level means for your business right now.</div>
+      </div>
+      <div class="what-card orange">
+        <div class="what-tag">// Domain Breakdown</div>
+        <div class="what-title">Radar Chart + Domain Scores</div>
+        <div class="what-body">A visual breakdown of how you score across all five domains. You will immediately see which areas are strengths and which are holding you back.</div>
+      </div>
+      <div class="what-card green">
+        <div class="what-tag">// Priority Gaps</div>
+        <div class="what-title">Specific Recommendations</div>
+        <div class="what-body">For every domain scoring below 50, you get three concrete actions tailored to your level. Not generic advice. Specific moves you can make this week.</div>
+      </div>
+      <div class="what-card purple">
+        <div class="what-tag">// Learning Path</div>
+        <div class="what-title">Personalized Training Track</div>
+        <div class="what-body">Unlock a custom curriculum built around your score. Lessons, quizzes, and an AI coach that knows your results and helps you apply what you learn to your specific situation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho">
+  <div class="forwho-inner">
+    <div class="section-eyebrow">// Who This Is For</div>
+    <h2 class="section-title">Built for the businesses<br>the big guys <em>ignore.</em></h2>
+    <p class="section-sub">The Fortune 500 has armies of consultants. You have this. A tool built specifically for owners and operators who run real businesses and need practical answers, not a $50,000 strategy deck.</p>
+    <div class="forwho-grid">
+      <div class="forwho-card">
+        <div class="forwho-icon">🔧</div>
+        <div class="forwho-title">Trades & Services</div>
+        <div class="forwho-body">HVAC, plumbing, electrical, landscaping, roofing, auto shops. If you run a crew and manage jobs, AI can help you work smarter without changing how you work.</div>
+      </div>
+      <div class="forwho-card">
+        <div class="forwho-icon">📦</div>
+        <div class="forwho-title">Distribution & Operations</div>
+        <div class="forwho-body">Warehouses, logistics, supply chain, fulfillment. If you move product and manage inventory, AI has direct, measurable ROI for your operation.</div>
+      </div>
+      <div class="forwho-card">
+        <div class="forwho-icon">🏪</div>
+        <div class="forwho-title">Retail & Local Business</div>
+        <div class="forwho-body">Shops, restaurants, professional services, healthcare. If you serve customers and manage a team, AI can handle the repetitive work so you can focus on the business.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIT CTA -->
+<section class="audit-cta">
+  <div class="audit-cta-inner">
+    <div class="audit-cta-tag">// Professional Service</div>
+    <h2 class="audit-cta-title">Want someone to do the<br><em>analysis for you?</em></h2>
+    <p class="audit-cta-body">The AIQ Audit is a 30-minute discovery call followed by a full written report. We look at your score, your operation, and your specific pain points, then tell you exactly what tools to use, in what order, and what the ROI looks like.</p>
+    <div class="audit-details">
+      <div class="audit-detail"><span>→</span> 30-minute discovery call</div>
+      <div class="audit-detail"><span>→</span> Full written audit report</div>
+      <div class="audit-detail"><span>→</span> Tool recommendations with ROI</div>
+      <div class="audit-detail"><span>→</span> Day-by-day implementation plan</div>
+    </div>
+    <a href="https://calendly.com/jsnmade-pm/30min" target="_blank" class="btn-primary" style="background:var(--orange)">Book Your Discovery Call →</a>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-glow"></div>
+  <div class="final-cta-inner">
+    <h2 class="final-cta-title">Five minutes.<br><em>Real answers.</em><br>No excuses.</h2>
+    <p class="final-cta-sub">You have been wondering where your business stands on AI. Now you can know. Take the free assessment, get your score, and walk away with a clear first step.</p>
+    <a href="aiq-readiness.html" class="btn-primary">Take the Free Assessment →</a>
+    <div class="final-time">Free. No credit card. Results in 5 minutes.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">JSN <span>Made</span></div>
+  <div class="footer-links">
+    <a href="../index.html" class="footer-link">Home</a>
+    <a href="aiq-readiness.html" class="footer-link">Assessment</a>
+    <a href="aiq-training.html" class="footer-link">Training</a>
+    <a href="https://calendly.com/jsnmade-pm/30min" target="_blank" class="footer-link">Book a Call</a>
+  </div>
+  <div class="footer-copy">© 2025 JSN Made. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
