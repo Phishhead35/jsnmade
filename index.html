@@ -58,7 +58,7 @@
 
     section, nav, footer { position: relative; z-index: 1; }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
@@ -106,7 +106,7 @@
     }
     .nav-cta:hover { background: var(--cyan2); box-shadow: 0 0 40px rgba(0,212,200,0.4); }
 
-    /* ── HERO ── */
+    /* HERO */
     .hero-wrap { position: relative; }
 
     .hero {
@@ -189,7 +189,7 @@
       background: linear-gradient(to bottom, var(--gray), transparent);
     }
 
-    /* ── PHILOSOPHY ── */
+    /* PHILOSOPHY */
     .philosophy {
       padding: 120px 56px;
       max-width: 1200px; margin: 0 auto;
@@ -232,7 +232,7 @@
     }
     .phil-item-body { font-size: 13px; font-weight: 300; color: var(--white); line-height: 1.65; }
 
-    /* ── PRODUCTS ── */
+    /* PRODUCTS */
     .products {
       padding: 120px 56px;
       border-top: 1px solid var(--border);
@@ -257,7 +257,6 @@
     }
     .product-row:first-child { border-top: 1px solid var(--border); }
 
-    /* left accent bar */
     .product-row::before {
       content: '';
       position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
@@ -306,11 +305,10 @@
     }
     .cyan-bar .prod-arrow { color: var(--cyan); }
 
-    /* non-clickable rows */
     .product-row.static { cursor: default; }
     .product-row.static .prod-arrow { display: none; }
 
-    /* ── CREDIBILITY ── */
+    /* CREDIBILITY */
     .cred { padding: 120px 56px; max-width: 1200px; margin: 0 auto; }
 
     .cred-grid {
@@ -333,7 +331,7 @@
     }
     .cred-body { font-size: 13px; font-weight: 300; color: var(--white); line-height: 1.7; }
 
-    /* ── EARLY ACCESS ── */
+    /* EARLY ACCESS */
     .access {
       padding: 120px 56px;
       background: var(--navy2); border-top: 1px solid var(--border);
@@ -370,7 +368,7 @@
       font-size: 10px; letter-spacing: 0.12em; color: var(--gray);
     }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer {
       padding: 36px 56px; border-top: 1px solid var(--border);
       display: flex; align-items: center;
@@ -396,7 +394,7 @@
     }
     .footer-links a:hover { color: var(--white); }
 
-    /* ── ANIMATIONS ── */
+    /* ANIMATIONS */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -408,7 +406,7 @@
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── RESPONSIVE ── */
+    /* RESPONSIVE */
     @media (max-width: 900px) {
       nav { padding: 18px 24px; }
       .nav-links { display: none; }
@@ -485,7 +483,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         big guys <em>forget.</em>
       </h1>
       <p class="hero-body">
-        The big consulting firms have a minimum engagement size. Most small businesses don't make the cut. JSN Made builds practical AI tools for the businesses they skip — and we find the simple fix before we ever sell you a complex one.
+        The big consulting firms have a minimum engagement size. Most small businesses don't make the cut. JSN Made builds practical AI tools for the businesses they skip, and we find the simple fix before we ever sell you a complex one.
       </p>
       <div class="hero-actions">
         <a href="#products" class="btn-primary">See What We Build</a>
@@ -549,18 +547,18 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
           <div class="prod-content">
             <span class="prod-status status-beta">Early Access</span>
             <span class="prod-name">JSN REPS</span>
-            <p class="prod-desc">Real Estate Performance System — a suite of seven AI tools for agents and brokers. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. One login, everything in one place.</p>
+            <p class="prod-desc">Real Estate Performance System. A suite of seven AI tools for agents and brokers. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. One login, everything in one place.</p>
           </div>
           <div class="prod-arrow">→</div>
         </a>
 
         <!-- 02 — AIQ -->
-       <a href="aiq/index.html" class="product-row cyan-bar reveal">
+        <a href="aiq/index.html" class="product-row cyan-bar reveal">
           <div class="prod-num">02</div>
           <div class="prod-content">
             <span class="prod-status status-live">Early Access</span>
             <span class="prod-name">AIQ</span>
-            <p class="prod-desc">AI Readiness Assessment and personalized training for organizations serious about adoption. 25-question diagnostic across 5 domains, a custom maturity score, gap analysis, and a live AI coach — built for business owners and operators ready to move from AI curiosity to AI action.</p>
+            <p class="prod-desc">AI Readiness Assessment and personalized training for organizations serious about adoption. 25-question diagnostic across 5 domains, a custom maturity score, gap analysis, and a live AI coach built for business owners and operators ready to move from AI curiosity to AI action.</p>
           </div>
           <div class="prod-arrow">→</div>
         </a>
@@ -571,7 +569,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
           <div class="prod-content">
             <span class="prod-status status-dev">In Development</span>
             <span class="prod-name">L&amp;D Consulting Partner</span>
-            <p class="prod-desc">Strategic AI for learning &amp; development professionals — from diagnosing real business problems to designing programs, drafting proposals, and translating outcomes into ROI language executives understand.</p>
+            <p class="prod-desc">Strategic AI for learning &amp; development professionals. From diagnosing real business problems to designing programs, drafting proposals, and translating outcomes into ROI language executives understand.</p>
           </div>
         </div>
 
@@ -589,7 +587,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       <div class="cred-card">
         <span class="cred-icon">🛡️</span>
         <div class="cred-title">Disclosure on Every Output</div>
-        <div class="cred-body">AI-generated content is clearly labeled across all tools. Outputs support professional judgment — they don't replace it.</div>
+        <div class="cred-body">AI-generated content is clearly labeled across all tools. Outputs support professional judgment. They don't replace it.</div>
       </div>
       <div class="cred-card">
         <span class="cred-icon">🏗️</span>
@@ -599,7 +597,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       <div class="cred-card">
         <span class="cred-icon">📋</span>
         <div class="cred-title">Compliance-Aware</div>
-        <div class="cred-body">Designed with fair housing, NAR settlement requirements, and professional liability in mind. Not a workaround — a professional tool.</div>
+        <div class="cred-body">Designed with fair housing, NAR settlement requirements, and professional liability in mind. Not a workaround. A professional tool.</div>
       </div>
     </div>
   </section>
@@ -632,7 +630,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
   </footer>
 
   <script>
-    // ── SCROLL REVEAL ──
+    // SCROLL REVEAL
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
@@ -643,44 +641,6 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       });
     }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
     reveals.forEach(el => observer.observe(el));
-
-    // ── EARLY ACCESS FORM ──
-    async function handleSignup(btn) {
-      const input = btn.previousElementSibling;
-      const email = input.value.trim();
-
-      if (!email || !email.includes('@')) {
-        input.style.borderColor = 'rgba(255,107,43,0.6)';
-        input.focus();
-        setTimeout(() => input.style.borderColor = '', 2000);
-        return;
-      }
-
-      btn.textContent = 'Sending...';
-      btn.disabled = true;
-      input.disabled = true;
-
-      try {
-        const res = await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev/email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'early_access', email }),
-        });
-
-        if (res.ok) {
-          btn.textContent = "You're on the list ✓";
-          btn.style.background = 'var(--cyan)';
-          btn.style.color = 'var(--navy)';
-        } else { throw new Error(); }
-      } catch {
-        btn.textContent = 'Try again';
-        btn.disabled = false;
-        input.disabled = false;
-        btn.style.background = '';
-      }
-    }
-
-    // access-input removed — early access now uses direct CTCT links
   </script>
 
 </body>
