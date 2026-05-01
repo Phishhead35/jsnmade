@@ -257,7 +257,19 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       </div>
     </div>
     <input class="gate-input" type="text" id="gate-name" placeholder="Your name" autocomplete="name"/>
-    <input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email" style="margin-bottom:20px"/>
+<input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email"/>
+<select class="gate-input" id="gate-industry" style="margin-bottom:20px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231DC6C2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px">
+  <option value="" disabled selected style="color:rgba(255,255,255,0.3)">Select your industry (optional)</option>
+  <option value="food_beverage">Food & Beverage</option>
+  <option value="distribution">Distribution & Supply Chain</option>
+  <option value="real_estate">Real Estate</option>
+  <option value="professional_services">Professional Services</option>
+  <option value="healthcare">Healthcare</option>
+  <option value="auto">Automotive</option>
+  <option value="fitness">Fitness & Wellness</option>
+  <option value="childcare">Childcare & Early Education</option>
+  <option value="general">Other / General</option>
+</select>
     <button class="btn-primary" id="gate-btn" onclick="unlockTraining()">Unlock My Training →</button>
     <div id="gate-error" style="display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-top:10px;font-family:var(--mono)"></div>
     <div class="gate-privacy">No spam. No sharing. Unsubscribe anytime.</div>
@@ -607,6 +619,7 @@ let chatHistory = [];
 let quizState = { current: 0, answers: [], complete: false };
 let completedPages = new Set();
 let domainScores = {};
+let userIndustry = "general";
 
 const MATURITY = [
   { min:0,  max:20,  level:1, name:"Unaware",      color:"#FF5555", track:"AI Foundations" },
@@ -686,9 +699,11 @@ async function unlockTraining() {
   const nameParts = fullName.split(" ");
   const firstName = nameParts[0];
   const lastName = nameParts.slice(1).join(" ") || "";
+  const industry = document.getElementById("gate-industry").value || "general";
 
   userName = fullName;
   userEmail = e;
+  userIndustry = industry;
 
   const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[1];
 
@@ -869,7 +884,10 @@ async function sendMessage(text) {
   const domainSummary = Object.keys(domainScores).length
     ? " Domain scores from their assessment. Data & Infrastructure: " + (domainScores.data ?? "N/A") + "/100, Strategy & Leadership: " + (domainScores.strategy ?? "N/A") + "/100, Talent & Culture: " + (domainScores.talent ?? "N/A") + "/100, Current AI Use: " + (domainScores.current ?? "N/A") + "/100, Governance & Risk: " + (domainScores.governance ?? "N/A") + "/100. When advising, prioritize their lowest-scoring domains."
     : "";
+  const industryContext = INDUSTRY_KB[userIndustry] || INDUSTRY_KB["general"];
   const systemPrompt = `You are an AI readiness coach on the JSN Made platform. You are helping ${userName}, whose email is ${userEmail}.
+
+${industryContext}
 
 Their AI readiness assessment score is ${userScore}/100, placing them at Level ${m.level}: ${m.name}.${domainSummary}
 
@@ -934,6 +952,140 @@ function goToTrack2() {
   Object.keys(domainScores).forEach(k => params.set(k, domainScores[k]));
   window.location.href = "aiq-training-track2.html?" + params.toString();
 }
+const INDUSTRY_KB = {
+
+  general: `INDUSTRY CONTEXT: General / No Specific Industry
+
+This user has not selected a specific industry. Apply broad AI readiness coaching applicable to any small or mid-size business.
+
+LANDSCAPE: Most small businesses are at the Aware or Experimenting stage of AI adoption. The majority have heard about AI tools but have not systematically evaluated where AI fits in their operation. The biggest barrier is not cost or technology — it is knowing where to start and having someone they trust to guide them.
+
+TOP PAIN POINTS AI ADDRESSES: Manual repetitive data entry and reporting. Inconsistent customer communication and slow follow-up. Knowledge trapped in one person's head. Scheduling and resource allocation done manually. No visibility into business performance without pulling reports manually.
+
+BEST-FIT FIRST USE CASES: Generative AI for drafting emails, proposals, SOPs, and customer communications (ChatGPT, Claude, Copilot). AI-assisted scheduling tools. Automated reporting and dashboard tools. Customer inquiry routing and FAQ automation. Document processing assistance.
+
+REALISTIC ROI: Knowledge work acceleration of 20 to 40% productivity improvement. Customer response time reduction of 50 to 70%. Reporting time reduction of 60 to 80%. First pilot payback typically 60 to 90 days.
+
+COACHING APPROACH: Start by identifying the single most expensive recurring problem. Size it in hours per week or dollars per month. Find the simplest tool that addresses it. Define one metric before deploying. Run for 90 days. Present results.`,
+
+  food_beverage: `INDUSTRY CONTEXT: Food & Beverage
+
+This user operates in food and beverage — restaurants, cafes, bars, food trucks, catering, food manufacturing, or CPG brands.
+
+LANDSCAPE: Food and beverage businesses operate on razor-thin margins (3 to 9% net for restaurants) with high labor costs and significant waste. AI adoption is accelerating but most independent operators are still early. Large chains have invested heavily — the tools that trickled down are now affordable for independents.
+
+TOP PAIN POINTS: Food waste from over-ordering and poor demand forecasting. Labor scheduling mismatches. Menu pricing that does not reflect ingredient cost fluctuations. Inconsistent customer experience and slow review response. Supplier management done in spreadsheets.
+
+BEST-FIT USE CASES: Demand forecasting and inventory optimization (MarketMan, Craftable, BlueCart). AI-assisted labor scheduling (7shifts, HotSchedules, When I Work). Automated review response (Birdeye, Podium, Yext). Menu engineering analysis. AI-powered ordering and supplier communication (Choco, Cut+Dry).
+
+ROI EXAMPLES: A 20-location restaurant group reduced food waste 23% saving $340,000 annually. A catering company reduced overtime costs 18% saving $60,000/year. A regional bakery reduced over-ordering 31% recovering $45,000 in annual waste.
+
+TERMINOLOGY: COGS, food cost percentage, labor cost percentage, covers, average check, RevPASH, pour cost, theoretical vs actual variance, 86'd items, front of house, back of house.`,
+
+  distribution: `INDUSTRY CONTEXT: Distribution & Supply Chain
+
+This user operates in distribution, logistics, warehousing, or supply chain — wholesale distributors, 3PLs, fulfillment operations, or companies managing complex inventory and routing.
+
+LANDSCAPE: Distribution is one of the highest-ROI sectors for AI because operations are data-rich, repetitive, and sensitive to small efficiency gains. A 1% improvement in route efficiency can represent hundreds of thousands of dollars at scale. Most regional distributors run on legacy ERP systems with manual workarounds.
+
+TOP PAIN POINTS: Demand forecasting errors causing stockouts or excess inventory. Inefficient routing increasing fuel costs. Manual order processing and invoice matching. Warehouse pick path inefficiency. Supplier lead time variability.
+
+BEST-FIT USE CASES: Demand forecasting and inventory optimization (Inventory Planner, Lokad, Blue Yonder). Route optimization (OptimoRoute, Route4Me, Circuit). Automated order processing and invoice matching (Rossum, Stampli). Warehouse management with AI-assisted slotting (Fishbowl, Extensiv). Predictive maintenance for fleet (Uptake, SparkCognition).
+
+ROI EXAMPLES: A regional food distributor reduced fuel costs 14% and improved on-time delivery from 87% to 96%. A building materials distributor reduced inventory carrying costs $2.1M annually while cutting stockouts 40%. A 3PL automated invoice processing eliminating 3 data entry positions.
+
+TERMINOLOGY: SKU, carrying cost, stockout, fill rate, OTIF, pick accuracy, slotting, dwell time, load factor, last-mile delivery, cross-docking, 3PL, WMS, ERP, EOQ, safety stock, lead time variability.`,
+
+  real_estate: `INDUSTRY CONTEXT: Real Estate
+
+This user operates in real estate — residential agents, commercial brokers, property managers, investors, mortgage professionals, or teams and brokerages.
+
+LANDSCAPE: AI disruption is significant at enterprise level. Independent agents and small brokerages are the target market for the second wave of affordable AI tools. The NAR settlement has added compliance complexity making accurate well-documented communications more important. AI adoption among independent agents remains low despite high availability of affordable tools.
+
+TOP PAIN POINTS: Time spent on repetitive written communications. Lead response time — conversion drops 80% if not contacted within 5 minutes. CRM data entry done inconsistently. Market analysis and CMA preparation taking hours. Client education during transaction process.
+
+BEST-FIT USE CASES: AI-assisted listing copy (Listing AI, ChatGPT, Copy.ai). Lead response automation (Follow Up Boss with AI, Sierra Interactive, Structurely). CMA and market analysis assistance (HouseCanary, Restb.ai, RPR). Transaction communication templates (Dotloop, DocuSign with AI). Social media and content generation (Canva AI, Jasper, Buffer AI).
+
+ROI EXAMPLES: A 12-agent team increased contact rate from 23% to 67% adding 8 to 12 closings per year. A property management company reduced staff time on routine inquiries by 4 hours per day per coordinator. An independent agent reduced marketing prep per listing from 6 hours to 45 minutes.
+
+TERMINOLOGY: CMA, GCI, absorption rate, days on market, list-to-sale ratio, buyer agency agreement, earnest money, contingency, title, escrow, MLS, IDX, cap rate, NOI, 1031 exchange, seller concessions.`,
+
+  professional_services: `INDUSTRY CONTEXT: Professional Services
+
+This user operates in professional services — accounting, law, consulting, marketing agencies, HR firms, IT service providers, financial advisors, or knowledge-based service businesses.
+
+LANDSCAPE: Professional services firms sell time and expertise. AI directly compresses the time required for high-value deliverables, forcing a rethinking of billing models. Firms that adapt AI deliver faster, higher-quality work and capture market share. The window to build an AI-first competitive advantage is open now and will close within 2 to 3 years.
+
+TOP PAIN POINTS: Document drafting and research consuming billable hours on low-value work. Proposals and engagement letters created from scratch each time. Client reporting requiring manual compilation. Knowledge trapped in individual practitioners. Inconsistent business development outreach.
+
+BEST-FIT USE CASES: Document drafting and review (Harvey for legal, Casetext, ChatGPT). Proposal and SOW generation (PandaDoc with AI, Proposify). Client reporting automation (Klipfolio, AgencyAnalytics, Databox). Meeting transcription and action items (Otter.ai, Fireflies, Fathom). Knowledge base and internal wiki (Notion AI, Guru).
+
+ROI EXAMPLES: A 15-attorney firm reduced associate research time per brief by 6 hours recovering $180,000 billable capacity annually. A marketing agency reduced creative production time 35% taking on 4 additional retainer clients. An accounting firm eliminated 12 hours per week of manual report prep.
+
+TERMINOLOGY: Billable hours, utilization rate, realization rate, engagement letter, SOW, retainer, matter management, WIP, accounts receivable, client acquisition cost, referral network, due diligence, deliverable, milestone billing.`,
+
+  healthcare: `INDUSTRY CONTEXT: Healthcare
+
+This user operates in healthcare — private practices, dental offices, chiropractic or PT practices, urgent care, mental health practices, medical billing, or healthcare administration.
+
+LANDSCAPE: Healthcare AI adoption faces unique HIPAA regulatory complexity. The highest-ROI applications are administrative, not clinical. Physicians spend an average of 2 hours on paperwork for every 1 hour of patient care. Any AI tool handling PHI must be HIPAA compliant with a BAA in place.
+
+TOP PAIN POINTS: Clinical documentation time consuming provider hours. Medical billing errors and claim denials delaying revenue. Patient scheduling inefficiency and no-shows. Patient communication and follow-up between appointments. Staff time on insurance verification and prior authorization.
+
+BEST-FIT USE CASES: AI medical scribing (Nuance DAX, Suki, Ambience Healthcare) — reduces documentation time 50 to 70%. Revenue cycle management (Waystar, Kareo with AI, AdvancedMD). AI-assisted scheduling and no-show prediction (Luma Health, Klara, Relatient). Patient communication automation (Klara, Luma). Prior authorization automation (Cohere Health, Infinitus).
+
+ROI EXAMPLES: A 4-physician practice recovered 90 minutes per physician per day from AI scribing. A dental group reduced no-shows from 18% to 7% adding $280,000 annual revenue. A PT practice reduced prior auth time from 45 minutes to 8 minutes.
+
+COMPLIANCE: Always verify HIPAA compliance and BAA before recommending any tool that handles PHI. Stick to administrative AI for first pilots — clinical decision support AI is subject to FDA oversight.
+
+TERMINOLOGY: HIPAA, PHI, BAA, EHR/EMR, prior authorization, claim denial, revenue cycle, RVU, no-show rate, patient panel, CPT code, ICD-10, payer mix, capitation, fee-for-service.`,
+
+  auto: `INDUSTRY CONTEXT: Automotive
+
+This user operates in automotive — dealerships, independent repair shops, body shops, tire and service centers, auto parts retailers, fleet management, or detailing businesses.
+
+LANDSCAPE: The automotive industry is undergoing transformation driven by EVs, connected vehicles, and changing consumer behavior. Large dealer groups have invested in AI-powered CRM and inventory management. Independent shops are the next wave. The highest-ROI applications for independents are in customer communication, service scheduling, inventory management, and marketing.
+
+TOP PAIN POINTS: Service bay scheduling and capacity utilization — feast or famine workloads. Customer follow-up and declined service reminders leaving revenue on the table. Parts inventory management over and understocked simultaneously. Poor digital presence despite strong customer satisfaction. Technician time tracking accuracy.
+
+BEST-FIT USE CASES: Shop management with AI (Shop-Ware, Tekmetric, Mitchell 1 with AI). Customer communication and declined service follow-up (Podium, Birdeye, DealerSocket). AI-powered parts inventory (PartsTech, Epicor, WHI). Digital marketing automation (Broadly, Podium). AI service recommendations based on vehicle history.
+
+ROI EXAMPLES: An 8-bay shop implemented declined service follow-up recovering $4,200/month in previously lost revenue. A 3-location tire chain increased bay utilization from 71% to 88% adding $340,000 annual revenue. A dealership service department reduced dead stock 28% while improving same-day fill rate from 76% to 91%.
+
+TERMINOLOGY: ARO (average repair order), bay utilization, labor rate, flat rate, technician efficiency, comeback rate, CSI, declined service, deferred maintenance, OEM vs aftermarket, parts fill rate, dead stock, service interval, multi-point inspection, DMS.`,
+
+  fitness: `INDUSTRY CONTEXT: Fitness & Wellness
+
+This user operates in fitness and wellness — gyms, personal training studios, CrossFit boxes, yoga studios, Pilates studios, wellness centers, sports performance facilities, or online fitness coaches.
+
+LANDSCAPE: The fitness industry operates on thin margins with high member churn as the primary business challenge. Average gym churn is 30 to 50% annually. AI's highest-ROI application is churn prediction and retention intervention, followed by lead nurturing and automated member communication.
+
+TOP PAIN POINTS: Member churn — identifying at-risk members before they cancel. Lead follow-up speed and consistency. Class scheduling optimization and instructor utilization. Personalized member programming at scale. Administrative burden on front desk and management staff.
+
+BEST-FIT USE CASES: Member engagement and churn prediction (Glofox with AI, Mindbody Insights, ClubReady). Lead management and follow-up automation (Gym Lead Machine, Wodify, PushPress with AI). AI-assisted programming (Trainerize, TrueCoach, custom GPT). Class and schedule optimization (Mindbody, Mariana Tek). Automated member communication (Keap, ActiveCampaign).
+
+ROI EXAMPLES: A 600-member CrossFit reduced monthly attrition from 5.2% to 3.1% worth $2,800/month in retained revenue. A personal training studio increased trial conversion from 24% to 41% adding 8 to 12 new clients monthly. A yoga studio chain increased class average attendance from 11 to 16 students improving instructor ROI 45%.
+
+TERMINOLOGY: Churn rate, attrition, lifetime value (LTV), cost per acquisition (CPA), lead conversion rate, trial close rate, EFT, monthly recurring revenue (MRR), class utilization, average class size, revenue per member, front desk labor, programming, periodization.`,
+
+  childcare: `INDUSTRY CONTEXT: Childcare & Early Education
+
+This user operates in childcare or early education — daycare centers, preschools, after-school programs, summer camps, in-home providers, or child development centers.
+
+LANDSCAPE: Childcare is one of the most administratively burdened and financially constrained industries. Operators face high staff turnover (30 to 40% annually), complex licensing requirements, and parent communication demands that consume significant staff time. Margins are extremely thin. AI's highest-ROI applications are administrative efficiency — reducing paperwork and communication burden on directors and teachers.
+
+TOP PAIN POINTS: Parent communication — daily updates, incident reports, newsletters consuming staff hours. Staff scheduling and substitute coordination with high turnover. Enrollment management and waitlist follow-up losing prospective families. Compliance documentation for licensing. Curriculum planning and milestone tracking documentation.
+
+BEST-FIT USE CASES: Parent communication platforms (Brightwheel, HiMama, Procare) — reduces staff time on parent updates 60 to 80%. Enrollment and lead management (Brightwheel CRM, ChildcareCRM). Staff scheduling (When I Work, Homebase with AI). Curriculum and lesson planning assistance (Claude, ChatGPT). Billing and tuition management automation (Procare, Brightwheel billing).
+
+ROI EXAMPLES: A 4-center group reduced director time on parent communication from 3 hours to 45 minutes daily. A preschool reduced inquiry-to-enrollment time from 12 days to 4 days increasing enrollment rate 22%. A daycare automated tuition reminders reducing late payment rate from 31% to 9%.
+
+COMPLIANCE: Tools handling children's data must be COPPA compliant. Always verify compliance documentation before adopting any platform.
+
+TERMINOLOGY: Child-to-staff ratio, licensing, CACFP, enrollment capacity, waitlist, tuition assistance, subsidy, developmental milestones, IEP, NAEYC accreditation, lead teacher, floater, director, incident report, daily sheet, drop-in rate.`
+
+};
+
 </script>
 </body>
 </html>
