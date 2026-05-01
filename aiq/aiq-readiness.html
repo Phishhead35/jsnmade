@@ -442,6 +442,14 @@ const DOMAINS = [
   }
 ]
 
+const MATURITY = [
+  { min: 0,   max: 20,  level: 1, name: "Unaware",      color: "#FF5555", desc: "AI is not on the radar. Focus on education, awareness, and identifying quick wins with basic automation." },
+  { min: 21,  max: 40,  level: 2, name: "Aware",         color: "#FF8C00", desc: "Leadership knows AI matters but nothing formal is underway. Identify a champion, set a small budget, and run one focused pilot." },
+  { min: 41,  max: 60,  level: 3, name: "Experimenting", color: "#FD6B2B", desc: "Tools are being tried but results are not consistent or scaled. Pick the highest-ROI pilot, measure it rigorously, and build internal confidence." },
+  { min: 61,  max: 80,  level: 4, name: "Scaling",       color: "#8BE08B", desc: "AI is working in pockets. Shift focus to governance, cross-team integration, and data pipelines that let AI improve over time." },
+  { min: 81,  max: 100, level: 5, name: "Transforming",  color: "#00C4EE", desc: "AI is a core business driver. Focus on continuous learning loops, competitive differentiation, and responsible scaling." }
+];
+
 const USE_CASES = {
   data:       ["Implement a centralized data warehouse (Snowflake, BigQuery, or similar)", "Automate reporting pipelines to eliminate manual spreadsheet work", "Deploy data quality monitoring to catch issues before they propagate", "Build a single source of truth dashboard for operational KPIs"],
   strategy:   ["Run a structured AI opportunity mapping session with leadership", "Define a 90-day AI pilot with a clear success metric and owner", "Benchmark competitors on AI adoption to build internal urgency", "Assign an AI lead or taskforce with explicit mandate and budget"],
