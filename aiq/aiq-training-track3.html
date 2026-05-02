@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AIQ Training. Track 3: Governance and Growth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1121;--surface:#121C2F;--card:#151F33;--border:rgba(255,255,255,0.07);
+  --border2:rgba(29,198,194,0.25);--text:#FFFFFF;--muted:rgba(255,255,255,0.5);
+  --dim:rgba(255,255,255,0.2);--accent:#1DC6C2;--accent2:#2DD9D5;--orange:#FD6B2B;
+  --green:#5BE0A0;--red:#FF6B6B;--mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.4}
+.shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:32px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{padding:48px 56px;max-width:900px}
+.sidebar-brand{padding:0 28px 28px;border-bottom:1px solid var(--border)}
+.brand-back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:16px;transition:color 0.15s}
+.brand-back:hover{color:var(--accent)}
+.brand-name{font-family:var(--serif);font-size:18px;color:var(--accent)}
+.brand-sub{font-size:11px;color:#FFFFFF;margin-top:2px;font-family:var(--mono)}
+.track-badge{margin:20px 28px;background:var(--card);border:1px solid var(--border2);padding:16px;position:relative;overflow:hidden}
+.track-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DC6C2,#2DD9D5)}
+.track-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:6px}
+.track-name{font-family:var(--serif);font-size:20px;line-height:1.2;color:var(--accent)}
+.track-sub{font-size:11px;color:#FFFFFF;margin-top:4px;font-family:var(--mono)}
+.nav-section{padding:20px 28px 8px;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 28px;cursor:pointer;transition:background 0.12s;font-size:13px;color:#FFFFFF;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--accent)}
+.nav-item.active{background:rgba(29,198,194,0.08);color:var(--accent)}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent)}
+.nav-num{font-family:var(--mono);font-size:10px;width:20px;flex-shrink:0;color:rgba(255,255,255,0.6)}
+.nav-item.active .nav-num{color:var(--accent)}
+.nav-check{margin-left:auto;font-size:10px;color:var(--green)}
+.sidebar-footer{margin-top:auto;padding:20px 28px;border-top:1px solid var(--border);font-size:10px;color:rgba(255,255,255,0.25);font-family:var(--mono);line-height:1.6}
+.paywall-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px;background:var(--bg);position:fixed;inset:0;z-index:200;overflow-y:auto}
+.paywall-wrap.hidden{display:none}
+.paywall-card{background:var(--surface);border:1px solid var(--border2);max-width:820px;width:100%;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 320px}
+.paywall-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#1DC6C2,transparent);z-index:1}
+.paywall-top{padding:32px 36px 28px}
+.paywall-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.paywall-h1{font-family:var(--serif);font-size:clamp(26px,3.5vw,38px);line-height:1.1;margin-bottom:10px;color:#FFFFFF}
+.paywall-h1 em{color:var(--accent);font-style:italic}
+.paywall-sub{font-size:13px;line-height:1.65;color:#FFFFFF;margin-bottom:20px}
+.paywall-includes-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:10px}
+.paywall-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:13px;color:#FFFFFF;line-height:1.4}
+.paywall-item-icon{color:var(--accent);font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px;min-width:18px}
+.paywall-bottom{background:var(--card);border-left:1px solid var(--border);padding:32px 28px;display:flex;flex-direction:column;justify-content:center}
+.paywall-price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
+.paywall-price{font-family:var(--serif);font-size:44px;color:#FFFFFF;line-height:1}
+.paywall-price-label{font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.1em}
+.paywall-price-sub{font-size:11px;color:#FFFFFF;margin-bottom:8px;font-family:var(--mono)}
+.paywall-bundle-note{font-size:11px;color:var(--accent);margin-bottom:20px;font-family:var(--mono);line-height:1.5}
+.btn-paywall{display:block;width:100%;background:var(--orange);color:#FFFFFF;border:none;padding:14px 20px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:opacity 0.15s;margin-bottom:8px}
+.btn-paywall:hover{opacity:0.88}
+.btn-paywall-secondary{display:block;width:100%;background:transparent;color:#FFFFFF;border:1px solid var(--border2);padding:12px 20px;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:all 0.15s;margin-bottom:12px}
+.btn-paywall-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.paywall-secure{font-size:10px;color:#FFFFFF;text-align:center;font-family:var(--mono)}
+.paywall-track1{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:#FFFFFF;font-family:var(--mono)}
+.paywall-track1 a{color:var(--accent);text-decoration:none}
+.paywall-track1 a:hover{text-decoration:underline}
+.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:var(--bg);position:fixed;inset:0;z-index:100;transition:opacity 0.4s}
+.gate-wrap.hidden{opacity:0;pointer-events:none}
+.gate-card{background:var(--surface);border:1px solid var(--border2);padding:52px 48px;max-width:520px;width:100%;position:relative}
+.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#1DC6C2,transparent)}
+.gate-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:16px}
+.gate-h1{font-family:var(--serif);font-size:clamp(28px,4vw,42px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
+.gate-h1 em{color:var(--accent);font-style:italic}
+.gate-body{font-size:14px;line-height:1.75;color:#FFFFFF;margin-bottom:32px}
+.gate-track-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--card);border:1px solid var(--border);margin-bottom:32px}
+.gate-track-num{font-family:var(--serif);font-size:48px;line-height:1;color:var(--accent)}
+.gate-track-info{font-size:12px;color:#FFFFFF;line-height:1.5}
+.gate-track-info strong{display:block;color:#FFFFFF;font-size:13px;margin-bottom:2px}
+.gate-input{width:100%;background:var(--card);border:1px solid var(--border2);color:#FFFFFF;padding:14px 16px;font-family:var(--mono);font-size:13px;margin-bottom:10px;outline:none;transition:border-color 0.15s}
+.gate-input:focus{border-color:var(--accent)}
+.gate-input::placeholder{color:rgba(255,255,255,0.4)}
+.btn-primary{background:var(--orange);color:#FFFFFF;border:none;padding:15px 36px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;width:100%;transition:opacity 0.15s}
+.btn-primary:hover{opacity:0.88}
+.gate-privacy{font-size:10px;color:rgba(255,255,255,0.6);text-align:center;margin-top:12px;font-family:var(--mono)}
+#gate-error{display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-top:10px;font-family:var(--mono)}
+.page{display:none;animation:fadeUp 0.3s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.lesson-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.lesson-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.lesson-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
+.lesson-title em{color:var(--accent);font-style:italic}
+.lesson-meta{display:flex;gap:20px;font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.08em;margin-bottom:40px}
+.lesson-body{font-size:15px;line-height:1.8;color:#FFFFFF}
+.lesson-body p{margin-bottom:20px}
+.lesson-body h3{font-family:var(--serif);font-size:22px;color:#FFFFFF;margin:36px 0 14px}
+.lesson-body h3 em{color:var(--accent);font-style:italic}
+.callout{background:var(--card);border-left:3px solid #1DC6C2;padding:20px 24px;margin:28px 0}
+.callout-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:8px}
+.callout p{font-size:14px;color:#FFFFFF;line-height:1.7;margin:0}
+.callout-orange{background:var(--card);border-left:3px solid var(--orange);padding:20px 24px;margin:28px 0}
+.callout-orange .callout-label{color:var(--orange)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);padding:20px}
+.stat-num{font-family:var(--serif);font-size:32px;color:#1DC6C2;line-height:1;margin-bottom:6px}
+.stat-label{font-size:12px;color:#FFFFFF;line-height:1.4}
+.example-box{background:var(--card);border:1px solid var(--border2);padding:24px;margin:28px 0}
+.example-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px}
+.example-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.example-item{padding:12px;background:var(--surface);font-size:13px;color:#FFFFFF;line-height:1.5}
+.example-item strong{display:block;color:#FFFFFF;font-size:12px;margin-bottom:4px;font-family:var(--mono)}
+.matrix{width:100%;border-collapse:collapse;margin:24px 0}
+.matrix th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#1DC6C2;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border2)}
+.matrix td{font-size:13px;color:#FFFFFF;padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+.matrix tr:last-child td{border-bottom:none}
+.matrix .good{color:var(--green)}
+.matrix .bad{color:#FF6B6B}
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
+.btn-nav{background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:12px 24px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.btn-nav:hover{border-color:var(--accent);color:var(--accent)}
+.btn-nav-primary{background:var(--orange);color:#FFFFFF;border:1px solid var(--orange);padding:12px 28px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:opacity 0.15s}
+.btn-nav-primary:hover{opacity:0.88}
+.quiz-progress{height:1px;background:var(--border);margin-bottom:32px}
+.quiz-progress-fill{height:100%;background:#1DC6C2;transition:width 0.4s ease}
+.quiz-q{font-family:var(--serif);font-size:clamp(18px,3vw,26px);line-height:1.45;margin-bottom:28px;min-height:60px;color:#FFFFFF}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+.quiz-option{background:var(--card);border:1px solid var(--border);padding:16px 20px;cursor:pointer;font-size:14px;color:#FFFFFF;text-align:left;font-family:var(--sans);transition:all 0.12s;display:flex;align-items:center;gap:14px}
+.quiz-option:hover{background:rgba(29,198,194,0.05);border-color:rgba(29,198,194,0.3)}
+.quiz-option.correct{border-color:#1DC6C2;background:rgba(29,198,194,0.08)}
+.quiz-option.wrong{border-color:var(--red);background:rgba(255,107,107,0.08)}
+.quiz-opt-letter{font-family:var(--mono);font-size:11px;width:22px;height:22px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#FFFFFF}
+.quiz-option.correct .quiz-opt-letter{border-color:#1DC6C2;color:#1DC6C2}
+.quiz-option.wrong .quiz-opt-letter{border-color:var(--red);color:var(--red)}
+.quiz-feedback{padding:16px 20px;margin-bottom:24px;font-size:13px;line-height:1.6;display:none;color:#FFFFFF}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:rgba(29,198,194,0.08);border-left:3px solid #1DC6C2}
+.quiz-feedback.wrong{background:rgba(255,107,107,0.08);border-left:3px solid var(--red)}
+.quiz-score-final{text-align:center;padding:48px 0}
+.quiz-score-circle{width:120px;height:120px;border:2px solid #1DC6C2;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;font-family:var(--serif)}
+.quiz-score-circle .big{font-size:40px;color:#1DC6C2;line-height:1}
+.quiz-score-circle .small{font-size:12px;color:#FFFFFF;font-family:var(--mono)}
+.quiz-result-title{font-family:var(--serif);font-size:28px;margin-bottom:12px;color:#FFFFFF}
+.quiz-result-body{font-size:14px;color:#FFFFFF;max-width:400px;margin:0 auto 32px;line-height:1.7}
+.chat-container{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;height:520px}
+.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
+.msg{display:flex;gap:12px;align-items:flex-start;animation:fadeUp 0.2s ease}
+.msg-avatar{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:500;margin-top:2px}
+.msg-avatar.ai{background:rgba(29,198,194,0.12);border:1px solid rgba(29,198,194,0.3);color:#1DC6C2}
+.msg-avatar.user{background:rgba(253,107,43,0.12);border:1px solid rgba(253,107,43,0.3);color:var(--orange)}
+.msg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px}
+.msg-text{font-size:14px;line-height:1.7;color:#FFFFFF}
+.msg-text p{margin-bottom:8px}
+.msg-text p:last-child{margin-bottom:0}
+.msg.user .msg-bubble{text-align:right}
+.msg.user .msg-name{text-align:right}
+.msg.user .msg-text{background:rgba(253,107,43,0.08);border:1px solid rgba(253,107,43,0.15);padding:12px 16px;display:inline-block;text-align:left}
+.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.typing span{width:6px;height:6px;background:rgba(255,255,255,0.4);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:0.15s}
+.typing span:nth-child(3){animation-delay:0.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.chat-input-row{border-top:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-end}
+.chat-input{flex:1;background:transparent;border:none;color:#FFFFFF;font-family:var(--sans);font-size:14px;resize:none;outline:none;min-height:36px;max-height:120px;line-height:1.5}
+.chat-input::placeholder{color:rgba(255,255,255,0.4)}
+.chat-send{background:var(--orange);border:none;color:#FFFFFF;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:opacity 0.15s}
+.chat-send:hover{opacity:0.88}
+.chat-send:disabled{opacity:0.4;cursor:not-allowed}
+.suggested-qs{margin-top:16px}
+.sq-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:10px}
+.sq-grid{display:flex;flex-wrap:wrap;gap:8px}
+.sq-btn{background:var(--card);border:1px solid var(--border);color:#FFFFFF;padding:8px 14px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.4}
+.sq-btn:hover{border-color:#1DC6C2;color:#1DC6C2}
+.complete-wrap{text-align:center;padding:60px 0}
+.complete-icon{font-size:48px;margin-bottom:24px}
+.complete-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);margin-bottom:16px;color:#FFFFFF}
+.complete-title em{color:var(--accent);font-style:italic}
+.complete-body{font-size:15px;color:#FFFFFF;line-height:1.7;max-width:480px;margin:0 auto 40px}
+.next-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;text-align:left}
+.track-card{background:var(--card);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden}
+.track-card.locked{opacity:0.5}
+.track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.track-card:nth-child(1)::before{background:#1DC6C2}
+.track-card:nth-child(2)::before{background:var(--orange)}
+.track-card:nth-child(3)::before{background:var(--green)}
+.track-level{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
+.track-title{font-family:var(--serif);font-size:16px;margin-bottom:6px;color:#FFFFFF}
+.track-desc{font-size:12px;color:#FFFFFF;line-height:1.5}
+.track-lock{position:absolute;top:12px;right:12px;font-size:12px;color:rgba(255,255,255,0.6)}
+@media(max-width:768px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+  .main{padding:32px 20px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .example-grid{grid-template-columns:1fr}
+  .next-tracks{grid-template-columns:1fr}
+  .gate-card,.paywall-top{padding:28px 20px}
+  .paywall-bottom{border-left:none;border-top:1px solid var(--border);padding:24px 20px}
+  .paywall-card{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- PAYWALL -->
+<div class="paywall-wrap" id="paywall">
+  <div class="paywall-card">
+    <div class="paywall-top">
+      <div class="paywall-eyebrow">// AIQ &nbsp;&middot;&nbsp; TRACK 3</div>
+      <h1 class="paywall-h1">Governance<br>and <em>Growth.</em></h1>
+      <p class="paywall-sub">Your pilot worked. Now you need to scale it without breaking what already works. Track 3 covers the governance frameworks, vendor decisions, change management strategies, and internal capabilities that turn one successful pilot into a company-wide AI advantage.</p>
+      <div class="paywall-includes-label">What is included</div>
+      <div class="paywall-item"><span class="paywall-item-icon">01</span><strong>Building Your Data Foundation</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">02</span><strong>Vendor Evaluation at Scale</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">03</span><strong>Change Management Across Teams</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">04</span><strong>Building Internal AI Capability</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">&#10002;</span><strong>Module Quiz</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">&#9672;</span><strong>Industry-Tailored AI Coach</strong></div>
+    </div>
+    <div class="paywall-bottom">
+      <div class="paywall-price-row">
+        <div class="paywall-price">$79</div>
+        <div class="paywall-price-label">one-time</div>
+      </div>
+      <div class="paywall-price-sub">Track 3 only. Lifetime access.</div>
+      <a class="btn-paywall" href="https://buy.stripe.com/00w5kD9Pi8ucf2h6o50kE03">Unlock Track 3 &rarr;</a>
+      <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Full Program</div>
+      <div style="font-family:var(--serif);font-size:28px;color:#FFFFFF;line-height:1;margin-bottom:4px">$197</div>
+      <div style="font-size:11px;color:#FFFFFF;font-family:var(--mono);margin-bottom:12px">Tracks 2, 3 &amp; 4 &middot; Save $40</div>
+      <a class="btn-paywall-secondary" href="https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01">Get Full Program &rarr;</a>
+      <div class="paywall-secure">&#128274;&nbsp; Secured by Stripe</div>
+      <div class="paywall-track1"><a href="aiq-training-track2.html">Already have Track 2? Sign in &rarr;</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL GATE -->
+<div class="gate-wrap hidden" id="gate">
+  <div class="gate-card">
+    <div class="gate-eyebrow">// AIQ &nbsp;&middot;&nbsp; TRACK 3 &nbsp;&middot;&nbsp; ACCESS CONFIRMED</div>
+    <h1 class="gate-h1">Payment <em>Confirmed.</em><br>Let's Go Deeper.</h1>
+    <p class="gate-body">Track 3 access is unlocked. Enter your details to personalize your training and industry-tailored AI Coach.</p>
+    <div class="gate-track-row">
+      <div class="gate-track-num">03</div>
+      <div class="gate-track-info">
+        <strong>Track 3. Governance and Growth</strong>
+        <span>4 lessons &middot; Quiz &middot; AI Coach &middot; ~35 min</span>
+      </div>
+    </div>
+    <input class="gate-input" type="text" id="gate-name" placeholder="Your name" autocomplete="name"/>
+    <input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email"/>
+    <select class="gate-input" id="gate-industry" style="margin-bottom:20px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231DC6C2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px">
+      <option value="" disabled selected>Select your industry (optional)</option>
+      <option value="food_beverage">Food &amp; Beverage</option>
+      <option value="distribution">Distribution &amp; Supply Chain</option>
+      <option value="real_estate">Real Estate</option>
+      <option value="professional_services">Professional Services</option>
+      <option value="healthcare">Healthcare</option>
+      <option value="auto">Automotive</option>
+      <option value="fitness">Fitness &amp; Wellness</option>
+      <option value="childcare">Childcare &amp; Early Education</option>
+      <option value="general">Other / General</option>
+    </select>
+    <button class="btn-primary" id="gate-btn" onclick="unlockTraining()">Start Track 3 &rarr;</button>
+    <div id="gate-error"></div>
+    <div class="gate-privacy">Your info is never shared or sold.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="shell" id="app-shell" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <a href="aiq-training-track2.html" class="brand-back">&larr; Track 2</a>
+      <div class="brand-name">AIQ <span style="color:#FFFFFF">Training</span></div>
+      <div class="brand-sub">Track 3. Governance and Growth</div>
+    </div>
+    <div class="track-badge">
+      <div class="track-label">Current Track</div>
+      <div class="track-name">Governance<br>and Growth</div>
+      <div class="track-sub" id="sb-level">.</div>
+    </div>
+    <div class="nav-section">Curriculum</div>
+    <div class="nav-item active" onclick="showPage('lesson1')" id="nav-lesson1"><span class="nav-num">01</span> Building Your Data Foundation</div>
+    <div class="nav-item" onclick="showPage('lesson2')" id="nav-lesson2"><span class="nav-num">02</span> Vendor Evaluation at Scale</div>
+    <div class="nav-item" onclick="showPage('lesson3')" id="nav-lesson3"><span class="nav-num">03</span> Change Management</div>
+    <div class="nav-item" onclick="showPage('lesson4')" id="nav-lesson4"><span class="nav-num">04</span> Building AI Capability</div>
+    <div class="nav-item" onclick="showPage('quiz')" id="nav-quiz"><span class="nav-num">&#10002;</span> Module Quiz</div>
+    <div class="nav-item" onclick="showPage('chat')" id="nav-chat"><span class="nav-num">&#9672;</span> AI Coach</div>
+    <div class="nav-item" onclick="showPage('complete')" id="nav-complete"><span class="nav-num">&#9733;</span> Complete</div>
+    <div class="sidebar-footer">
+      <div id="sb-user-name" style="color:#FFFFFF;margin-bottom:4px"></div>
+      <div id="sb-user-email"></div>
+      <div style="margin-top:8px">Recommendations are AI-assisted and for informational purposes only. They do not constitute professional consulting advice.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- LESSON 1 -->
+    <div class="page active" id="page-lesson1">
+      <div class="lesson-eyebrow">// MODULE 01 OF 04</div>
+      <h1 class="lesson-title">Building Your<br><em>Data Foundation</em></h1>
+      <div class="lesson-meta"><span>10 min read</span><span>Governance and Growth</span></div>
+      <div class="lesson-body">
+        <p>AI tools are only as good as the data they run on. You already know this intuitively. but most small businesses reach the scaling stage and discover their data is fragmented, inconsistent, and largely inaccessible to the tools they want to deploy. The pilot worked despite the data situation. Scaling will not.</p>
+        <p>Building a data foundation does not mean hiring a data engineer or purchasing a data warehouse. For most SMBs, it means three things: knowing what data you have, getting it into formats AI tools can actually use, and establishing simple practices that keep it clean going forward.</p>
+
+        <h3>The <em>Data Audit</em></h3>
+        <p>Before you can improve your data situation, you need to know what you are working with. A data audit does not have to be sophisticated. It is a structured inventory of where your business data actually lives right now.</p>
+
+        <div class="example-box">
+          <div class="example-label">Data Audit Framework</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>Where Does It Live?</strong>List every system that holds business data: your CRM, accounting software, POS system, spreadsheets, email, project management tools, and any industry-specific platforms. Most businesses are surprised by how many systems they find.</div>
+            <div class="example-item"><strong>Is It Structured?</strong>Structured data lives in rows and columns and can be exported as a CSV or connected via API. Unstructured data lives in documents, emails, and images. AI works best with structured data. Unstructured data requires extra processing steps.</div>
+            <div class="example-item"><strong>How Old Is It?</strong>Data older than 18 months may no longer reflect your current business reality. For forecasting and pattern recognition, recency matters. Identify your freshest, most complete datasets first.</div>
+            <div class="example-item"><strong>Who Owns It?</strong>Every dataset needs a named owner who is responsible for its accuracy. If nobody owns it, nobody maintains it. This is the single most common reason business data becomes unreliable over time.</div>
+          </div>
+        </div>
+
+        <h3>The Three <em>Data Problems</em> That Kill AI Initiatives</h3>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num">73%</div>
+            <div class="stat-label">of business data goes unused in decision-making due to accessibility issues</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">80%</div>
+            <div class="stat-label">of data work in AI projects is cleaning and preparation, not the AI itself</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">3x</div>
+            <div class="stat-label">more likely to scale successfully when data ownership is clearly defined</div>
+          </div>
+        </div>
+
+        <p>The three problems that derail more AI scaling initiatives than any technical issue are siloed data, dirty data, and undocumented data. Understanding each one will help you prioritize where to invest your cleanup effort first.</p>
+
+        <div class="example-box">
+          <div class="example-label">The Three Data Problems</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>Siloed Data</strong>Your sales data is in your CRM. Your financial data is in QuickBooks. Your operational data is in spreadsheets. None of them talk to each other. AI tools that need a complete picture of the business cannot get one. The fix is not always integration. sometimes it is a weekly export routine that consolidates the data you need into one place.</div>
+            <div class="example-item"><strong>Dirty Data</strong>Duplicate records, inconsistent naming conventions, missing fields, and outdated entries are the norm in most SMB systems. A CRM where the same customer appears three times with three different spellings cannot feed a reliable AI recommendation. Before scaling any AI initiative, run a data quality pass on the specific dataset it will use.</div>
+            <div class="example-item"><strong>Undocumented Data</strong>Data that exists but that only one person knows how to interpret is fragile. If your controller is the only person who understands how your accounting codes work, that data is effectively unavailable to any AI tool. Documentation does not have to be elaborate. a single-page data dictionary for each major dataset is enough.</div>
+            <div class="example-item"><strong>The Fix Sequence</strong>Address these in order: first siloed data (consolidation), then dirty data (quality), then undocumented data (documentation). Trying to clean dirty data before consolidating it means cleaning the same data twice. Get it in one place first.</div>
+          </div>
+        </div>
+
+        <h3>Building <em>Data Habits</em> That Scale</h3>
+        <p>The best data foundation is not the result of a one-time cleanup. It is the result of habits that keep data clean as it is created. These habits do not require new technology. They require new expectations about how your team enters and maintains data.</p>
+
+        <div class="callout">
+          <div class="callout-label">The Five Data Habits</div>
+          <p>Enter data once and enter it correctly. Establish naming conventions and enforce them. Assign ownership to every dataset. Set a monthly review cadence for data quality. Never let a spreadsheet become the system of record for mission-critical data. These five habits, consistently applied, will put you ahead of 90% of businesses your size within 12 months.</p>
+        </div>
+
+        <table class="matrix">
+          <thead><tr><th>Data Type</th><th>Ideal Home</th><th>AI Readiness</th></tr></thead>
+          <tbody>
+            <tr><td>Customer records</td><td>CRM (HubSpot, Salesforce, GHL)</td><td class="good">High if maintained</td></tr>
+            <tr><td>Financial transactions</td><td>Accounting software (QuickBooks, Xero)</td><td class="good">High if coded correctly</td></tr>
+            <tr><td>Operational metrics</td><td>Industry-specific software or BI tool</td><td style="color:var(--orange)">Medium</td></tr>
+            <tr><td>Employee performance</td><td>HRIS or structured spreadsheet</td><td style="color:var(--orange)">Medium</td></tr>
+            <tr><td>Customer communications</td><td>CRM or email platform</td><td class="bad">Low without processing</td></tr>
+            <tr><td>Documents and contracts</td><td>Document management system</td><td class="bad">Low without extraction</td></tr>
+          </tbody>
+        </table>
+
+        <p>In the next lesson, we will cover how to evaluate and select AI vendors as you move beyond off-the-shelf tools. knowing what questions to ask, what to watch out for, and how to structure a vendor relationship that protects your business.</p>
+      </div>
+      <div class="lesson-nav"><div></div><button class="btn-nav-primary" onclick="showPage('lesson2')">Next Lesson &rarr;</button></div>
+    </div>
+
+    <!-- LESSON 2 -->
+    <div class="page" id="page-lesson2">
+      <div class="lesson-eyebrow">// MODULE 02 OF 04</div>
+      <h1 class="lesson-title">Vendor Evaluation<br><em>at Scale</em></h1>
+      <div class="lesson-meta"><span>10 min read</span><span>Governance and Growth</span></div>
+      <div class="lesson-body">
+        <p>Your first pilot probably used an off-the-shelf tool you found through a recommendation or a Google search. That is the right approach for Phase 1. But as you scale, the vendor decisions get larger, more expensive, and harder to reverse. A bad vendor relationship at scale can cost you 12 months of progress and significant money.</p>
+        <p>Vendor evaluation is not about finding the best tool in a category. It is about finding the right tool for your specific situation, with a vendor who will still be there when you need support six months from now.</p>
+
+        <h3>The <em>Vendor Evaluation Framework</em></h3>
+
+        <div class="example-box">
+          <div class="example-label">Eight Questions to Ask Every AI Vendor</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>1. Where Does My Data Go?</strong>Your data is your most valuable asset. Understand exactly where it is stored, who has access to it, whether it is used to train the vendor's models, and how it is deleted when you end the relationship. Get this in writing.</div>
+            <div class="example-item"><strong>2. What Is the True Cost?</strong>The listed price is rarely the total cost. Factor in implementation time, training time, integration costs, and any per-seat or usage-based fees that kick in as you scale. Ask for a 12-month cost projection based on your expected usage.</div>
+            <div class="example-item"><strong>3. What Does the Contract Lock You Into?</strong>Annual contracts with auto-renewal clauses are standard. Understand the cancellation terms, data portability rights (can you export your data if you leave?), and any exclusivity provisions before you sign.</div>
+            <div class="example-item"><strong>4. What Is the Integration Story?</strong>Does this tool connect to the systems you already use? Native integrations are faster and cheaper than custom API work. Ask specifically about your existing tech stack and whether those integrations are maintained or community-built.</div>
+            <div class="example-item"><strong>5. Who Is Your Support Contact?</strong>For SMBs, support quality often matters more than feature depth. A powerful tool with no support is dangerous. Ask who your named support contact is, what their response time SLA is, and whether support costs extra.</div>
+            <div class="example-item"><strong>6. What Is the Vendor's Financial Health?</strong>AI startup failures are common. Before committing to a vendor for a mission-critical process, do a basic check: how long have they been operating, who are their investors, and do they have enterprise clients whose contracts would incentivize them to stay in business?</div>
+            <div class="example-item"><strong>7. Can You Run a Paid Pilot?</strong>Any vendor worth working with will let you run a structured trial before committing to an annual contract. If a vendor refuses a pilot or trial period, that is a signal about how they treat customers once locked in.</div>
+            <div class="example-item"><strong>8. What Does Offboarding Look Like?</strong>The easiest time to negotiate exit terms is before you sign. Ask specifically how to export your data, what the process is to cancel, and whether there are any fees associated with leaving. Vendors who make offboarding easy are vendors who are confident you will stay.</strong></div>
+          </div>
+        </div>
+
+        <h3>Build vs. Buy vs. <em>Configure</em></h3>
+        <p>As AI becomes more accessible, the build-vs-buy decision has a third option that most SMBs overlook: configure. Many AI platforms now allow significant customization without any code. Understanding where you are on this spectrum determines how much technical capability you need to bring in-house.</p>
+
+        <table class="matrix">
+          <thead><tr><th>Approach</th><th>When to Use</th><th>Risk</th><th>Timeline</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Buy</strong> (off-the-shelf)</td><td>Standard process, well-served category</td><td class="good">Low</td><td class="good">Days to weeks</td></tr>
+            <tr><td><strong>Configure</strong> (platform + customization)</td><td>Unique workflow, existing platform fits</td><td style="color:var(--orange)">Medium</td><td style="color:var(--orange)">Weeks to months</td></tr>
+            <tr><td><strong>Build</strong> (custom development)</td><td>No existing solution, proprietary advantage</td><td class="bad">High</td><td class="bad">Months to years</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <div class="callout-label">The Configuration Sweet Spot</div>
+          <p>For most SMBs scaling AI, the configuration path is underutilized. Platforms like Make, Zapier, and n8n allow you to connect AI capabilities to your existing tools without writing code. A configured workflow built on proven infrastructure carries a fraction of the risk of a custom build and can often be deployed in days rather than months.</p>
+        </div>
+
+        <h3>Red Flags in <em>Vendor Pitches</em></h3>
+
+        <div class="example-box">
+          <div class="example-label">Walk Away When You Hear These</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>"The AI learns your business automatically"</strong>No AI learns your business without structured data, human feedback, and time. This claim signals a vendor more focused on selling than on setting realistic expectations.</div>
+            <div class="example-item"><strong>"Implementation takes just a few hours"</strong>Any tool that meaningfully changes how your team works takes longer than a few hours to implement correctly. Underestimated implementation time is the leading cause of failed AI deployments.</div>
+            <div class="example-item"><strong>"Our ROI is guaranteed"</strong>ROI from AI tools depends almost entirely on how your team uses them. No vendor can guarantee results they do not control. This claim is a sales tactic, not a business reality.</div>
+            <div class="example-item"><strong>"You do not need technical resources"</strong>Every AI deployment requires someone who owns the configuration, the data connection, and the ongoing maintenance. That person does not have to be a developer but they do have to exist.</div>
+          </div>
+        </div>
+
+        <p>In the next lesson, we cover the human side of scaling: how to bring multiple teams through an AI transition without losing the performance of the people who make your business run today.</p>
+      </div>
+      <div class="lesson-nav"><button class="btn-nav" onclick="showPage('lesson1')">&larr; Previous</button><button class="btn-nav-primary" onclick="showPage('lesson3')">Next Lesson &rarr;</button></div>
+    </div>
+
+    <!-- LESSON 3 -->
+    <div class="page" id="page-lesson3">
+      <div class="lesson-eyebrow">// MODULE 03 OF 04</div>
+      <h1 class="lesson-title">Change Management<br><em>Across Teams</em></h1>
+      <div class="lesson-meta"><span>9 min read</span><span>Governance and Growth</span></div>
+      <div class="lesson-body">
+        <p>Scaling AI across an organization is not primarily a technology problem. It is a people problem. The tools are the easy part. Getting five different teams with five different workflows, comfort levels, and concerns to adopt new ways of working is where most scaling initiatives stall.</p>
+        <p>The businesses that scale AI successfully treat change management as a core competency, not an afterthought. They invest in it before the rollout begins and maintain it throughout. The ones that skip it spend months trying to reverse resistance that could have been prevented with two weeks of preparation.</p>
+
+        <h3>Why <em>People Resist</em> AI Adoption</h3>
+        <p>Resistance to AI is rarely irrational. Your employees have real concerns that deserve direct answers. The mistake most leaders make is either dismissing those concerns or avoiding them entirely. Both approaches backfire. The only thing that works is addressing them head-on, specifically, and early.</p>
+
+        <div class="example-box">
+          <div class="example-label">The Four Legitimate Concerns and How to Address Each</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>Job Security</strong>This is the primary concern and the one most leaders handle worst. Do not say "AI will not replace anyone" if that is not true. Instead, be specific: which roles are being augmented, which tasks are being automated, and what those employees will do with the reclaimed time. Specificity builds trust. Vagueness destroys it.</div>
+            <div class="example-item"><strong>Competency Anxiety</strong>Employees worry they will not be able to use the new tools and that this will be used to evaluate their performance. Address this by framing AI adoption as a team capability, not an individual test. Training should be delivered in groups, not assigned individually. Peer learning reduces anxiety faster than formal instruction.</div>
+            <div class="example-item"><strong>Workflow Disruption</strong>People have spent years developing efficient personal workflows. Changing those workflows has a real productivity cost in the short term. Acknowledge this explicitly. Tell your team that the first 30 days will be slower, not faster, and that this is expected and planned for. Surprises kill morale. Expectations protect it.</div>
+            <div class="example-item"><strong>Loss of Expertise Value</strong>Experienced employees worry that AI will make their hard-won expertise irrelevant. The reality is the opposite. AI without expert human judgment produces mediocre outputs. Make this clear and make it visible: showcase examples where employee expertise improved AI outputs in ways the tool alone could not achieve.</div>
+          </div>
+        </div>
+
+        <h3>The <em>Change Management Playbook</em></h3>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num">6 wks</div>
+            <div class="stat-label">minimum lead time for change management before a major AI rollout</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">1</div>
+            <div class="stat-label">named change champion per team, not per company, is the right ratio</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">30</div>
+            <div class="stat-label">days of daily check-in cadence following any major workflow change</div>
+          </div>
+        </div>
+
+        <table class="matrix">
+          <thead><tr><th>Phase</th><th>Timing</th><th>What to Do</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Awareness</strong></td><td>6 weeks before</td><td>Announce the initiative, explain the why, address job security directly. Do not announce and disappear.</td></tr>
+            <tr><td><strong>Involvement</strong></td><td>4 weeks before</td><td>Identify change champions on each team. Involve them in tool selection or configuration where possible. Ownership drives adoption.</td></tr>
+            <tr><td><strong>Training</strong></td><td>2 weeks before</td><td>Hands-on, group training sessions. Not videos. Not documentation. Live, interactive, with real workflows from their actual jobs.</td></tr>
+            <tr><td><strong>Launch</strong></td><td>Week 1</td><td>Daily check-ins with change champions. Rapid response to friction. Visible leadership engagement. This week sets the tone for the next 90 days.</td></tr>
+            <tr><td><strong>Reinforcement</strong></td><td>Weeks 2 to 8</td><td>Weekly wins shared across the team. Public recognition for early adopters. Continued support for those still struggling. Celebrate progress over perfection.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <div class="callout-label">On Change Champions</div>
+          <p>The change champion model works because peer credibility is more powerful than leadership authority when it comes to behavioral change. Identify one person per team who is respected by their colleagues, comfortable with technology, and willing to be publicly associated with the initiative. Give them early access, extra training, and public recognition. Their adoption signals to their teammates that this is safe and manageable.</p>
+        </div>
+
+        <h3>Measuring <em>Adoption</em>, Not Just Outcomes</h3>
+        <p>Most organizations measure AI success by outcomes: time saved, errors reduced, revenue generated. These are the right metrics long-term, but they are lagging indicators. In the first 90 days, measure adoption instead. Are people logging in? Are they using the features that drive value? Are they asking questions about how to do more with the tool? Adoption metrics tell you whether outcomes are coming. Outcome metrics tell you what already happened.</p>
+
+        <div class="callout-orange">
+          <div class="callout-label">Warning</div>
+          <p>If adoption metrics are low at 45 days, do not wait until 90 days to intervene. Low adoption at 45 days almost always reflects an unaddressed concern or a training gap, not a tool problem. Go back to the people. Ask what is getting in the way. The answers are almost always actionable.</p>
+        </div>
+      </div>
+      <div class="lesson-nav"><button class="btn-nav" onclick="showPage('lesson2')">&larr; Previous</button><button class="btn-nav-primary" onclick="showPage('lesson4')">Next Lesson &rarr;</button></div>
+    </div>
+
+    <!-- LESSON 4 -->
+    <div class="page" id="page-lesson4">
+      <div class="lesson-eyebrow">// MODULE 04 OF 04</div>
+      <h1 class="lesson-title">Building Internal<br><em>AI Capability</em></h1>
+      <div class="lesson-meta"><span>10 min read</span><span>Governance and Growth</span></div>
+      <div class="lesson-body">
+        <p>The businesses that win the AI transition over the next five years are not the ones with the most tools. They are the ones that build the internal capability to evaluate, deploy, and iterate on AI faster than their competitors. That capability does not come from tools. It comes from people, processes, and institutional knowledge that compounds over time.</p>
+        <p>Internal AI capability is what makes your second initiative cheaper than your first, your third faster than your second, and your organization increasingly difficult to displace. It is the compounding advantage that separates AI leaders from AI followers.</p>
+
+        <h3>The <em>Four Pillars</em> of Internal AI Capability</h3>
+
+        <div class="example-box">
+          <div class="example-label">What Internal AI Capability Actually Looks Like</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>Pillar 1: Institutional Knowledge</strong>Every AI initiative produces lessons. What worked, what did not, what the data revealed, what the team learned. Organizations that systematically capture and share this knowledge get smarter with every initiative. Organizations that do not start from scratch every time. A simple internal wiki or shared document updated after every initiative is enough to start.</div>
+            <div class="example-item"><strong>Pillar 2: AI Fluency Across Roles</strong>AI fluency does not mean everyone becomes a data scientist. It means every role in your organization understands how AI affects their work, can identify opportunities where AI could help, and knows how to evaluate whether an AI output is trustworthy. This fluency is built through exposure, not training courses.</div>
+            <div class="example-item"><strong>Pillar 3: A Repeatable Evaluation Process</strong>The first time you evaluate an AI tool, it takes weeks. The tenth time should take days. Building a repeatable vendor evaluation process, a standard pilot structure, and a consistent ROI measurement framework means each new initiative benefits from everything you learned before.</div>
+            <div class="example-item"><strong>Pillar 4: A Named AI Function</strong>At some point, AI initiatives need an owner who sits above any individual department. This does not have to be a dedicated hire. It can be a part-time responsibility assigned to a senior person. What matters is that someone has visibility across all AI initiatives, prevents duplication, and ensures organizational learning is captured and shared.</div>
+          </div>
+        </div>
+
+        <h3>Building an <em>AI Governance Framework</em></h3>
+        <p>Governance sounds bureaucratic. In practice, it is simply the set of decisions you make in advance so that you do not have to make them in a crisis. A lightweight AI governance framework addresses four questions: what AI can be used for, who has authority to approve new AI tools, how AI outputs are reviewed before acting on them, and what happens when something goes wrong.</p>
+
+        <div class="example-box">
+          <div class="example-label">Lightweight AI Governance for SMBs</div>
+          <div class="example-grid">
+            <div class="example-item"><strong>Approved Use Cases</strong>Maintain a short list of approved AI use cases and a short list of prohibited ones. Approved: drafting internal documents, generating reports, customer inquiry routing. Prohibited: making final hiring decisions, generating external legal documents without review, sharing proprietary data with unvetted AI tools. The list does not have to be long. It has to exist.</div>
+            <div class="example-item"><strong>Approval Authority</strong>Any new AI tool that touches customer data, financial data, or employee data should require explicit approval from a named decision-maker before deployment. This prevents well-intentioned employees from inadvertently creating compliance or security risks. A simple one-page approval form is sufficient.</div>
+            <div class="example-item"><strong>Output Review Standards</strong>AI outputs should not go directly to customers or into mission-critical decisions without human review. Define the standard: who reviews, what they are checking for, and when review can be abbreviated as the tool proves reliable over time. Start with 100% review and relax it as trust is earned.</div>
+            <div class="example-item"><strong>Incident Response</strong>Define in advance what you do when an AI tool produces an incorrect output that affects a customer or a business decision. Who is notified, what is the remediation process, and how is the incident documented so it does not happen again? Having this defined before an incident means you respond from a plan, not from panic.</div>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="callout-label">The Compounding Advantage</div>
+          <p>Organizations that build internal AI capability systematically find that their cost per AI initiative decreases by roughly 30% with each successive project. The institutional knowledge, the repeatable process, and the growing fluency of the team compound in the same way that any organizational competency compounds. The businesses that start building this capability now will have a structural advantage that is very difficult for later entrants to replicate.</p>
+        </div>
+
+        <h3>Your <em>90-Day Capability Building</em> Plan</h3>
+
+        <table class="matrix">
+          <thead><tr><th>Month</th><th>Focus</th><th>Deliverable</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Month 1</strong></td><td>Knowledge capture</td><td>Document lessons from your first pilot. Create a shared AI initiatives log. Identify your AI function owner.</td></tr>
+            <tr><td><strong>Month 2</strong></td><td>Process standardization</td><td>Codify your vendor evaluation checklist. Standardize your pilot structure. Define your governance framework.</td></tr>
+            <tr><td><strong>Month 3</strong></td><td>Fluency building</td><td>Run one AI fluency session per team. Identify and develop change champions for future initiatives. Publish your first AI capabilities summary.</td></tr>
+          </tbody>
+        </table>
+
+        <p>Track 4, Competitive Edge, covers how to translate this internal capability into a sustained market advantage. You will learn how to build an AI strategy that is tied directly to your business model, how to measure AI maturity over time, and how to sustain transformation at scale when the initial excitement has faded.</p>
+      </div>
+      <div class="lesson-nav"><button class="btn-nav" onclick="showPage('lesson3')">&larr; Previous</button><button class="btn-nav-primary" onclick="showPage('quiz')">Take the Quiz &rarr;</button></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="page" id="page-quiz">
+      <div class="lesson-eyebrow">// MODULE QUIZ</div>
+      <h1 class="lesson-title">Check Your <em>Understanding</em></h1>
+      <div class="lesson-meta"><span>6 min</span><span>5 questions</span></div>
+      <div id="quiz-body"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="page" id="page-chat">
+      <div class="lesson-eyebrow">// AI COACH</div>
+      <h1 class="lesson-title">Ask Your <em>AI Coach</em></h1>
+      <p style="font-size:14px;color:#FFFFFF;margin-top:8px;line-height:1.6;margin-bottom:32px">Your AI coach is tailored to your industry, your AIQ score, and everything covered in Track 3. Ask anything about data strategy, vendor decisions, change management, or building internal AI capability.</p>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask your AI coach anything..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+          <button class="chat-send" id="chat-send" onclick="sendMessage()">&rarr;</button>
+        </div>
+      </div>
+      <div class="suggested-qs">
+        <div class="sq-label">Suggested questions</div>
+        <div class="sq-grid">
+          <button class="sq-btn" onclick="askSuggested(this)">How do I audit my business data?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">What should I look for in an AI vendor contract?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">How do I handle employee resistance to AI?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">What does an AI governance framework look like for a small business?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">How do I build AI fluency across my team?</button>
+          <button class="sq-btn" onclick="askSuggested(this)">What is a change champion and how do I identify one?</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="page" id="page-complete">
+      <div class="complete-wrap">
+        <div class="complete-icon">&#9733;</div>
+        <h1 class="complete-title">Track 3 <em>Complete</em></h1>
+        <p class="complete-body">You now have the frameworks to scale AI responsibly: a data foundation, a vendor evaluation process, a change management playbook, and a governance structure. The final track shows you how to turn all of this into a lasting competitive advantage.</p>
+        <div class="next-tracks">
+          <div class="track-card">
+            <div class="track-level">Track 2</div>
+            <div class="track-title">From Pilot to Proof</div>
+            <div class="track-desc">Running the pilot, measuring results, making the case to scale.</div>
+          </div>
+          <div class="track-card">
+            <div class="track-level">Track 3</div>
+            <div class="track-title">Governance and Growth</div>
+            <div class="track-desc">Data foundation, vendor evaluation, change management, internal capability.</div>
+          </div>
+          <div class="track-card locked">
+            <div class="track-lock">&#128274;</div>
+            <div class="track-level">Track 4</div>
+            <div class="track-title">Competitive Edge</div>
+            <div class="track-desc">AI strategy, culture building, measuring maturity, sustaining transformation.</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="window.location.href='aiq-training-track4.html?paid=true'">Continue to Track 4 &rarr;</button>
+        <div style="margin-top:24px;background:var(--card);border:1px solid var(--border2);padding:20px;max-width:320px;margin-left:auto;margin-right:auto;text-align:left">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Don't Have Track 4 Yet?</div>
+          <div style="font-size:13px;color:#FFFFFF;line-height:1.6;margin-bottom:12px">Unlock Track 4: Competitive Edge for <strong style="color:#FFFFFF">$79</strong> and complete the full program.</div>
+          <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" style="display:block;background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:10px 16px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-align:center;text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='#FFFFFF'">Unlock Track 4 for $79 &rarr;</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const STRIPE_BUNDLE_LINK = "https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01";
+const STRIPE_BUNDLE_LINK = "https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01";
+
+const QUIZ = [
+  {q:"Which of the following is NOT one of the three data problems that kill AI scaling initiatives?",opts:["Siloed data: systems that do not share information with each other","Dirty data: duplicate records, inconsistent naming, missing fields","Slow data: information that takes too long to retrieve from systems","Undocumented data: datasets only one person knows how to interpret"],correct:2,feedback:"Slow retrieval is a performance issue, not a data quality problem. The three data problems that kill AI scaling initiatives are siloed data (fragmentation), dirty data (quality issues), and undocumented data (institutional knowledge gaps). All three can be addressed without new technology."},
+  {q:"When evaluating an AI vendor, which question is most important to ask about data?",opts:["How many customers does the vendor have?","Where does my data go and is it used to train the vendor's models?","What is the vendor's Net Promoter Score?","How long has the vendor been in business?"],correct:1,feedback:"Your data is your most valuable asset. Understanding exactly where it is stored, who has access, whether it is used to train vendor models, and how it is deleted when you leave is the most critical vendor evaluation question. Get this in writing before signing anything."},
+  {q:"According to the change management playbook, when should you begin change management activities before a major AI rollout?",opts:["The week before launch","Two weeks before launch","Four weeks before launch","Six weeks before launch"],correct:3,feedback:"Six weeks is the minimum lead time for change management before a major AI rollout. This allows time for awareness (week 6), involvement of change champions (week 4), hands-on training (week 2), and a supported launch (week 1). Starting later compresses the preparation and increases resistance at launch."},
+  {q:"What is the primary indicator to measure in the first 90 days of an AI rollout, before outcome metrics become meaningful?",opts:["Revenue impact from AI-assisted decisions","Adoption metrics: are people logging in and using the features?","Number of errors caught by the AI system","Cost savings compared to the previous quarter"],correct:1,feedback:"Adoption metrics are leading indicators. Outcome metrics are lagging indicators. In the first 90 days, measuring whether people are using the tool and how they are using it tells you whether outcomes are coming. Low adoption at 45 days almost always signals an unaddressed concern or training gap, not a tool problem."},
+  {q:"Which of the following best describes the 'configure' option in the build vs. buy vs. configure framework?",opts:["Purchasing an off-the-shelf tool with no customization","Hiring developers to build a custom AI solution from scratch","Using an existing platform with customization to fit your specific workflow","Outsourcing AI development to a vendor who builds to your specifications"],correct:2,feedback:"The configure path uses an existing platform (like Make, Zapier, or n8n) with significant customization to fit your specific workflow. It carries less risk than custom building and more flexibility than pure off-the-shelf purchasing. For most SMBs scaling AI, this is the underutilized sweet spot between the two extremes."}
+];
+
+const MATURITY=[{min:0,max:20,level:1,name:"Unaware"},{min:21,max:40,level:2,name:"Aware"},{min:41,max:60,level:3,name:"Experimenting"},{min:61,max:80,level:4,name:"Scaling"},{min:81,max:100,level:5,name:"Transforming"}];
+let userScore=50,userLevel="Experimenting",userName="",userEmail="",chatHistory=[],quizState={current:0,answers:[],complete:false},domainScores={},userIndustry="general";
+
+window.onload=()=>{
+  const params=new URLSearchParams(window.location.search);
+  const s=parseInt(params.get("score"));
+  if(!isNaN(s)&&s>=0&&s<=100)userScore=s;
+  ["data","strategy","talent","current","governance"].forEach(id=>{const v=parseInt(params.get(id));if(!isNaN(v))domainScores[id]=v;});
+  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
+  userLevel=m.name;
+  if(params.get("paid")==="true"){
+    document.getElementById("paywall").classList.add("hidden");
+    document.getElementById("gate").classList.remove("hidden");
+  }
+};
+
+async function unlockTraining(){
+  const fullName=document.getElementById("gate-name").value.trim();
+  const e=document.getElementById("gate-email").value.trim();
+  const errEl=document.getElementById("gate-error");
+  const btn=document.getElementById("gate-btn");
+  errEl.style.display="none";
+  if(!fullName){errEl.textContent="Please enter your name.";errEl.style.display="block";return;}
+  if(!e||!e.includes("@")){errEl.textContent="Please enter a valid email address.";errEl.style.display="block";return;}
+  userName=fullName;userEmail=e;
+  userIndustry=document.getElementById("gate-industry").value||"general";
+  btn.textContent="Loading...";btn.disabled=true;
+  const KV_WORKER="https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
+  try{await fetch(KV_WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:fullName,email:e,score:userScore,level:userLevel,track:"Track 3 - Governance and Growth",paid:true,domainScores,timestamp:new Date().toISOString()})});}catch(err){console.warn("KV silent fail:",err);}
+  btn.textContent="Start Track 3 \u2192";btn.disabled=false;
+  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
+  document.getElementById("sb-level").textContent="Level "+m.level+": "+m.name;
+  document.getElementById("sb-user-name").textContent=fullName;
+  document.getElementById("sb-user-email").textContent=e;
+  const gate=document.getElementById("gate");
+  gate.classList.add("hidden");
+  setTimeout(()=>gate.style.display="none",400);
+  document.getElementById("app-shell").style.display="grid";
+  initChat();renderQuiz();
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("page-"+id).classList.add("active");
+  const nav=document.getElementById("nav-"+id);
+  if(nav)nav.classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function renderQuiz(){
+  const body=document.getElementById("quiz-body");
+  if(quizState.complete){renderQuizComplete();return;}
+  const q=QUIZ[quizState.current];
+  const letters=["A","B","C","D"];
+  body.innerHTML=`<div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div><div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join("")}</div><div class="quiz-feedback" id="quiz-feedback"></div><div id="quiz-next-btn"></div>`;
+}
+
+function selectAnswer(i){
+  const q=QUIZ[quizState.current];
+  const opts=document.querySelectorAll(".quiz-option");
+  opts.forEach(o=>o.style.pointerEvents="none");
+  opts[i].classList.add(i===q.correct?"correct":"wrong");
+  if(i!==q.correct)opts[q.correct].classList.add("correct");
+  quizState.answers.push(i);
+  const fb=document.getElementById("quiz-feedback");
+  fb.className="quiz-feedback show "+(i===q.correct?"correct":"wrong");
+  fb.textContent=(i===q.correct?"Correct. ":"Not quite. ")+q.feedback;
+  document.getElementById("quiz-next-btn").innerHTML=`<button class="btn-nav-primary" style="margin-top:8px" onclick="nextQuestion()">${quizState.current<QUIZ.length-1?"Next Question \u2192":"See Results \u2192"}</button>`;
+}
+
+function nextQuestion(){
+  quizState.current++;
+  if(quizState.current>=QUIZ.length){quizState.complete=true;renderQuizComplete();}
+  else renderQuiz();
+}
+
+function renderQuizComplete(){
+  const correct=quizState.answers.filter((a,i)=>a===QUIZ[i].correct).length;
+  const pct=Math.round((correct/QUIZ.length)*100);
+  const msg=pct>=80?"Strong understanding. You are ready for the AI Coach.":pct>=60?"Good foundation. Review any missed questions before continuing.":"Consider re-reading the lessons. The AI Coach can help clarify concepts.";
+  document.getElementById("quiz-body").innerHTML=`<div class="quiz-score-final"><div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div><div class="quiz-result-title">${pct>=80?"Excellent Work":pct>=60?"Good Work":"Keep Going"}</div><p class="quiz-result-body">${msg}</p><button class="btn-nav-primary" onclick="showPage('chat')">Continue to AI Coach \u2192</button></div>`;
+  const nav=document.getElementById("nav-quiz");
+  if(nav&&!nav.querySelector(".nav-check"))nav.innerHTML+='<span class="nav-check">&#10003;</span>';
+}
+
+function initChat(){
+  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
+  addMessage("ai","Hi "+userName+". I am your AI coach for Track 3. Your AIQ score is "+userScore+"/100 at the "+m.name+" level.\n\nYou have completed Governance and Growth. I am tailored to your industry and your specific domain gaps. Ask me anything about data strategy, vendor selection, change management, or building internal AI capability in your business.");
+}
+
+function addMessage(role,text){
+  chatHistory.push({role:role==="ai"?"assistant":"user",content:text});
+  const container=document.getElementById("chat-messages");
+  const div=document.createElement("div");
+  div.className="msg "+role;
+  div.innerHTML=`<div class="msg-avatar ${role}">${role==="ai"?"AI":"ME"}</div><div class="msg-bubble"><div class="msg-name">${role==="ai"?"AI Coach":userName||"You"}</div><div class="msg-text"><p>${text.replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br/>")}</p></div></div>`;
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+
+function addTyping(){
+  const container=document.getElementById("chat-messages");
+  const div=document.createElement("div");
+  div.className="msg ai";div.id="typing-indicator";
+  div.innerHTML=`<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+  container.appendChild(div);container.scrollTop=container.scrollHeight;
+}
+
+function removeTyping(){const t=document.getElementById("typing-indicator");if(t)t.remove();}
+
+async function sendMessage(text){
+  const input=document.getElementById("chat-input");
+  const msg=text||input.value.trim();
+  if(!msg)return;
+  input.value="";autoResize(input);
+  document.getElementById("chat-send").disabled=true;
+  addMessage("user",msg);addTyping();
+  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
+  const domainSummary=Object.keys(domainScores).length?" Domain scores: Data "+(domainScores.data??"N/A")+"/100, Strategy "+(domainScores.strategy??"N/A")+"/100, Talent "+(domainScores.talent??"N/A")+"/100, Current AI Use "+(domainScores.current??"N/A")+"/100, Governance "+(domainScores.governance??"N/A")+"/100.":"";
+  const industryContext=INDUSTRY_KB[userIndustry]||INDUSTRY_KB["general"];
+  const systemPrompt=`You are an advanced AI readiness coach on the JSN Made platform helping ${userName} (${userEmail}).\n\n${industryContext}\n\nTheir AIQ score is ${userScore}/100. Level ${m.level}: ${m.name}.${domainSummary}\n\nThey have completed Track 3: Governance and Growth, which covered:\n1. Building a data foundation: data audit, the three data problems (siloed, dirty, undocumented), data habits that scale\n2. Vendor evaluation at scale: the eight vendor questions, build vs. buy vs. configure, red flags in vendor pitches\n3. Change management across teams: four legitimate employee concerns, the change management playbook, change champions, adoption metrics\n4. Building internal AI capability: the four pillars (institutional knowledge, AI fluency, repeatable process, named AI function), lightweight governance framework\n\nYour role:\n- Provide advanced, specific guidance tailored to their industry and domain gaps\n- Reference their domain scores when relevant, especially low Governance and Data scores\n- Go deeper than Track 2 coaching: this audience has already run a pilot and is now scaling\n- Help them navigate real organizational complexity, not just conceptual frameworks\n- Be direct and opinionated: if their approach sounds wrong for their situation, say so\n- Keep responses to 3 to 5 sentences unless they ask for more detail\n- Respond in plain conversational prose, no bullet points or markdown`;
+  const ANTHROPIC_WORKER="https://jsn-aiq-coach.wewearsmiles.workers.dev";
+  try{
+    const res=await fetch(ANTHROPIC_WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:1000,system:systemPrompt,messages:chatHistory})});
+    const data=await res.json();
+    removeTyping();
+    const reply=data?.content?.[0]?.text||"I am having trouble connecting right now. Please try again.";
+    addMessage("ai",reply);
+  }catch(e){removeTyping();addMessage("ai","I am having trouble connecting right now. Please try again in a moment.");}
+  document.getElementById("chat-send").disabled=false;
+}
+
+function handleChatKey(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function autoResize(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,120)+"px";}
+function askSuggested(btn){sendMessage(btn.textContent);}
+
+const INDUSTRY_KB={
+  general:`INDUSTRY CONTEXT: General / No Specific Industry\n\nApply broad AI governance and scaling coaching for any small or mid-size business. Focus on practical, low-complexity governance frameworks appropriate for businesses without dedicated IT or data teams.\n\nKEY SCALING CHALLENGES: Fragmented data across multiple SaaS tools. No dedicated data or IT function. Change management without formal HR infrastructure. Vendor selection without procurement expertise.\n\nCOACHING APPROACH: Recommend the simplest governance structure that addresses the actual risk. Avoid enterprise frameworks that require resources SMBs do not have. Prioritize quick wins in data consolidation over comprehensive overhauls.`,
+  food_beverage:`INDUSTRY CONTEXT: Food & Beverage\n\nThis user operates in food and beverage scaling AI governance. Key data systems include POS, inventory management, scheduling platforms, and supplier management tools.\n\nDATA FOUNDATION PRIORITIES: POS transaction data is typically the cleanest and most AI-ready dataset. Inventory data is often fragmented across ordering systems and spreadsheets. Labor scheduling data is frequently undocumented and owned by individual managers.\n\nVENDOR CONSIDERATIONS: Food-specific platforms (7shifts, MarketMan, Toast) have deeper integrations than generic tools. Verify that any AI vendor understands food safety compliance implications of automated recommendations.\n\nCHANGE MANAGEMENT: Kitchen staff have high turnover and low tolerance for complex new tools. Any AI tool in food operations must be operable without reading a manual. Front-of-house staff adoption is faster when they see time savings in the first shift.\n\nTERMINOLOGY: POS, COGS, food cost percentage, labor cost percentage, theoretical vs actual variance, recipe management, menu engineering, par levels.`,
+  distribution:`INDUSTRY CONTEXT: Distribution & Supply Chain\n\nThis user is scaling AI in distribution, logistics, warehousing, or supply chain operations. Data richness is typically high but data quality and accessibility vary significantly.\n\nDATA FOUNDATION PRIORITIES: Order history and inventory movement data are typically the highest-value datasets for AI applications. ERP data is often the most structured but integration access varies by system age. Carrier and routing data is frequently siloed in separate TMS or spreadsheet-based systems.\n\nVENDOR CONSIDERATIONS: Integration with existing ERP (SAP, Oracle, NetSuite, Fishbowl) is the critical evaluation criterion. Verify that AI vendors have production integrations with your specific ERP version, not just API documentation. EDI compatibility is often required for enterprise customer relationships.\n\nCHANGE MANAGEMENT: Warehouse staff adoption is highest when AI tools reduce physical steps, not just administrative steps. Route optimization must prove out in driver experience before dispatch will trust it.\n\nTERMINOLOGY: SKU, EOQ, safety stock, OTIF, fill rate, pick accuracy, slotting, dwell time, EDI, TMS, WMS, 3PL, carrier compliance.`,
+  real_estate:`INDUSTRY CONTEXT: Real Estate\n\nThis user is scaling AI governance in real estate operations. Key data systems include CRM, MLS feeds, transaction management platforms, and marketing analytics.\n\nDATA FOUNDATION PRIORITIES: CRM data quality is typically the biggest constraint. Duplicate contacts, inconsistent address formatting, and incomplete transaction histories limit AI effectiveness. MLS data is structured but access and usage rights vary by market.\n\nVENDOR CONSIDERATIONS: NAR settlement compliance implications should be evaluated for any AI tool that touches buyer-agent communication or commission structures. Verify that AI-generated content for listings meets local MLS rules on disclosure.\n\nCHANGE MANAGEMENT: Agent adoption is driven by time-to-first-close impact. Any tool that does not demonstrably help an agent close faster or with less effort will be abandoned within 30 days regardless of leadership mandate.\n\nTERMINOLOGY: CMA, GCI, list-to-sale ratio, days on market, IDX, MLS, buyer agency agreement, transaction coordinator, pipeline, sphere of influence.`,
+  professional_services:`INDUSTRY CONTEXT: Professional Services\n\nThis user is scaling AI governance in a professional services firm. Key data systems include practice management software, billing systems, document management, and CRM.\n\nDATA FOUNDATION PRIORITIES: Matter or project data is typically the richest AI-ready dataset. Time and billing records are usually clean but underutilized for AI pattern recognition. Client communication history is valuable but often unstructured and scattered across email threads.\n\nVENDOR CONSIDERATIONS: Professional liability implications of AI-assisted work product must be evaluated. Any AI tool that contributes to client-facing deliverables needs clear disclosure and review protocols. Verify that vendors have experience with professional services compliance requirements in your specific discipline.\n\nCHANGE MANAGEMENT: Senior professionals resist AI adoption when it appears to commoditize their expertise. Frame AI tools as expertise amplifiers, not expertise replacements. Early wins that save administrative time (not billable time) are the safest entry point.\n\nTERMINOLOGY: Billable hours, utilization rate, realization rate, matter management, WIP, professional liability, engagement letter, SOW, retainer, client origination.`,
+  healthcare:`INDUSTRY CONTEXT: Healthcare\n\nThis user is scaling AI governance in a healthcare setting. HIPAA compliance is the primary governance constraint for all AI initiatives involving patient data.\n\nDATA FOUNDATION PRIORITIES: Clinical documentation data is typically the highest-value dataset but requires HIPAA-compliant processing. Scheduling and billing data is usually cleaner and easier to use for initial AI applications. Patient communication data requires explicit consent documentation before AI processing.\n\nVENDOR CONSIDERATIONS: Every AI vendor touching PHI must have a signed BAA before any data sharing. Verify that vendors have completed a HIPAA risk assessment and can provide documentation. Clinical decision support AI may require FDA clearance depending on the specific application.\n\nCHANGE MANAGEMENT: Clinical staff adoption depends on workflow integration, not standalone tools. AI that requires leaving the EHR will not be adopted. Administrative staff adoption is faster and less regulated, making it the safer scaling starting point.\n\nTERMINOLOGY: HIPAA, PHI, BAA, EHR/EMR, prior authorization, revenue cycle, RVU, clinical decision support, meaningful use, payer mix.`,
+  auto:`INDUSTRY CONTEXT: Automotive\n\nThis user is scaling AI governance in automotive retail or service. Key data systems include DMS, CRM, parts inventory systems, and service scheduling platforms.\n\nDATA FOUNDATION PRIORITIES: DMS data is typically the most structured and AI-ready but access varies by DMS vendor and API availability. Service history data is the highest-value dataset for predictive maintenance and declined service follow-up applications. Parts inventory data is often fragmented between DMS and supplier catalog systems.\n\nVENDOR CONSIDERATIONS: DMS integration is the critical vendor evaluation criterion. Verify that any AI vendor has a certified or tested integration with your specific DMS, not just a generic API connection. Reynolds and Reynolds and CDK have historically restricted third-party integrations, so verify current API policies.\n\nCHANGE MANAGEMENT: Service advisor adoption is highest when AI tools increase their effective labor rate, not just their efficiency. Technician adoption requires that AI recommendations are visibly accurate before they will trust the system for diagnostic guidance.\n\nTERMINOLOGY: DMS, ARO, labor rate, flat rate, CSI, bay utilization, declined service, deferred maintenance, parts fill rate, OEM compliance.`,
+  fitness:`INDUSTRY CONTEXT: Fitness & Wellness\n\nThis user is scaling AI governance in a fitness or wellness operation. Key data systems include membership management software, class scheduling platforms, and payment processing.\n\nDATA FOUNDATION PRIORITIES: Member attendance and engagement data is typically the most AI-ready dataset for churn prediction applications. Lead and conversion data quality varies widely depending on CRM discipline. Class scheduling data is usually structured but rarely analyzed for optimization opportunities.\n\nVENDOR CONSIDERATIONS: Member data privacy is increasingly regulated at the state level. Verify that AI vendors processing member behavioral data comply with applicable state privacy laws (CCPA, VCDPA, etc.). Wearable and health data integration carries additional compliance considerations.\n\nCHANGE MANAGEMENT: Front desk staff adoption depends on reducing their administrative burden, not adding to it. Member-facing AI (chatbots, automated check-in) requires careful rollout to avoid undermining the personal connection that is the primary retention driver in fitness.\n\nTERMINOLOGY: Churn rate, LTV, CAC, EFT, class utilization, trial conversion, average class size, MRR, retention rate, NPS.`,
+  childcare:`INDUSTRY CONTEXT: Childcare & Early Education\n\nThis user is scaling AI governance in a childcare or early education operation. COPPA compliance governs all data involving children under 13.\n\nDATA FOUNDATION PRIORITIES: Enrollment and attendance data is typically the most structured and AI-ready. Parent communication data is high-volume but often unstructured across multiple channels. Licensing compliance documentation is critical but rarely digitized in a way that supports AI processing.\n\nVENDOR CONSIDERATIONS: Any AI vendor handling children's data must be COPPA compliant with documented verification. Verify that vendors have experience with childcare-specific regulations in your state, as licensing requirements vary significantly. Parent-facing AI communication tools require careful review of what information they can access and share.\n\nCHANGE MANAGEMENT: Teacher and caregiver adoption is highest when AI tools reduce documentation burden, not increase it. Parent trust in AI-assisted communication must be built gradually. Introduce AI-assisted updates as enhanced communication, not automated communication.\n\nTERMINOLOGY: COPPA, child-to-staff ratio, CACFP, licensing, enrollment capacity, subsidy management, developmental milestones, IEP, tuition assistance, NAEYC accreditation.`
+};
+</script>
+</body>
+</html>

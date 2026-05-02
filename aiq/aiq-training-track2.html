@@ -66,6 +66,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .paywall-price-sub{font-size:11px;color:#FFFFFF;margin-bottom:20px;font-family:var(--mono)}
 .btn-paywall{display:block;width:100%;background:var(--orange);color:#FFFFFF;border:none;padding:14px 20px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:opacity 0.15s;margin-bottom:10px}
 .btn-paywall:hover{opacity:0.88}
+.btn-paywall-secondary{display:block;width:100%;background:transparent;color:#FFFFFF;border:1px solid var(--border2);padding:12px 20px;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:all 0.15s;margin-bottom:12px}
+.btn-paywall-secondary:hover{border-color:var(--accent);color:var(--accent)}
 .paywall-secure{font-size:10px;color:#FFFFFF;text-align:center;font-family:var(--mono)}
 .paywall-track1{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:#FFFFFF;font-family:var(--mono)}
 .paywall-track1 a{color:var(--accent);text-decoration:none}
@@ -229,23 +231,28 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
     <div class="paywall-top">
       <div class="paywall-eyebrow">// AIQ &nbsp;&middot;&nbsp; TRACK 2</div>
       <h1 class="paywall-h1">From <em>Pilot</em><br>to Proof.</h1>
-      <p class="paywall-sub">You understand AI. Now it is time to run your first initiative, measure it properly, and build the internal case to scale. This track gives you the exact framework operators use to move from theory to results.</p>
-      <div class="paywall-includes-label">What is included</div>
+      <p class="paywall-sub">Run your first AI initiative, measure it properly, and build the internal case to scale. Or grab the full program and go all the way from pilot to competitive advantage.</p>
+      <div class="paywall-includes-label">Track 2 includes</div>
       <div class="paywall-item"><span class="paywall-item-icon">01</span><strong>Picking the Right First AI Project</strong></div>
       <div class="paywall-item"><span class="paywall-item-icon">02</span><strong>Running the 90-Day Pilot</strong></div>
       <div class="paywall-item"><span class="paywall-item-icon">03</span><strong>Measuring Results and Making the Case to Scale</strong></div>
       <div class="paywall-item"><span class="paywall-item-icon">&#10002;</span><strong>Module Quiz</strong></div>
-      <div class="paywall-item"><span class="paywall-item-icon">&#9672;</span><strong>Live AI Coach</strong></div>
+      <div class="paywall-item"><span class="paywall-item-icon">&#9672;</span><strong>AI Coach</strong></div>
     </div>
     <div class="paywall-bottom">
       <div class="paywall-price-row">
-        <div class="paywall-price">$97</div>
+        <div class="paywall-price">$79</div>
         <div class="paywall-price-label">one-time</div>
       </div>
-      <div class="paywall-price-sub">Lifetime access. No subscription.</div>
-      <a class="btn-paywall" id="stripe-btn" href="https://buy.stripe.com/8x27sLaTmaCk9HX4fX0kE00">Unlock Track 2 &rarr;</a>
+      <div class="paywall-price-sub">Track 2 only. Lifetime access.</div>
+      <a class="btn-paywall" href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02">Unlock Track 2 &rarr;</a>
+      <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Full Program</div>
+      <div style="font-family:var(--serif);font-size:28px;color:#FFFFFF;line-height:1;margin-bottom:4px">$197</div>
+      <div style="font-size:11px;color:#FFFFFF;font-family:var(--mono);margin-bottom:12px">Tracks 2, 3 &amp; 4 &middot; Save $40</div>
+      <a class="btn-paywall-secondary" href="https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01">Get Full Program &rarr;</a>
       <div class="paywall-secure">&#128274;&nbsp; Secured by Stripe</div>
-      <div class="paywall-track1">Completed Track 1? <a href="aiq-training.html">Return to Track 1 &rarr;</a></div>
+      <div class="paywall-track1"><a href="aiq-training.html">Return to Track 1 &rarr;</a> &nbsp;&middot;&nbsp; <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" style="color:var(--accent)">Have Track 2? Upgrade for $118 &rarr;</a></div>
     </div>
   </div>
 </div>
@@ -496,7 +503,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
           <div class="track-card locked"><div class="track-lock">&#128274;</div><div class="track-level">Track 3</div><div class="track-title">Governance &amp; Growth</div><div class="track-desc">Data strategy, vendor evaluation, change management, and scaling AI across teams.</div></div>
           <div class="track-card locked"><div class="track-lock">&#128274;</div><div class="track-level">Track 4</div><div class="track-title">Competitive Edge</div><div class="track-desc">Advanced AI strategy, building AI culture, and sustaining transformation at scale.</div></div>
         </div>
-        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="alert('Track 3 coming soon. You will be notified at your registered email.')">Continue to Track 3 &rarr;</button>
+        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="window.location.href='aiq-training-track3.html?paid=true'">Continue to Track 3 &rarr;</button>
+        <div style="margin-top:24px;background:var(--card);border:1px solid var(--border2);padding:20px;max-width:320px;margin-left:auto;margin-right:auto;text-align:left">
+          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Upgrade to Full Program</div>
+          <div style="font-size:13px;color:#FFFFFF;line-height:1.6;margin-bottom:12px">Unlock Tracks 3 and 4 for <strong style="color:#FFFFFF">$118</strong> &mdash; that is the full program price minus what you already paid.</div>
+          <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" style="display:block;background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:10px 16px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-align:center;text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='#FFFFFF'">Upgrade for $118 &rarr;</a>
+        </div>
       </div>
     </div>
 
@@ -508,7 +520,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 // STRIPE CONFIG
 // To update the payment link, change this one value only.
 // ============================================================
-const STRIPE_LINK = "https://buy.stripe.com/8x27sLaTmaCk9HX4fX0kE00";
+const STRIPE_LINK = "https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01";
 
 const QUIZ = [
   {q:"Which of the following is NOT one of the three criteria for a good first AI pilot project?",opts:["High repetition: the task happens frequently","Measurable outcome: success can be defined in a number","Low failure risk: consequences of errors are manageable","High complexity: the task requires significant human expertise"],correct:3,feedback:"High complexity is actually a warning sign for a first pilot, not a criterion. The best first projects are high repetition, measurable, and low risk if the AI makes a mistake."},
