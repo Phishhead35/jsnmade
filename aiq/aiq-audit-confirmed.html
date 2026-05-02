@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Audit Confirmed &middot; JSN Made</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1121;--surface:#121C2F;--card:#151F33;--border:rgba(255,255,255,0.07);
+  --border2:rgba(29,198,194,0.25);--accent:#1DC6C2;--orange:#FD6B2B;--green:#5BE0A0;
+  --white:#FFFFFF;--dim:#8899AA;--mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;-webkit-font-smoothing:antialiased}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.4}
+
+.wrap{max-width:640px;width:100%;animation:fadeUp 0.5s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Top bar */
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:48px}
+.brand{font-family:var(--serif);font-size:18px;color:var(--accent);text-decoration:none}
+.brand span{color:var(--white)}
+.back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color 0.15s}
+.back:hover{color:var(--accent)}
+
+/* Confirmed card */
+.card{background:var(--surface);border:1px solid var(--border2);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DC6C2,#5BE0A0)}
+
+.card-top{padding:48px 48px 40px}
+.check-wrap{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+.check{width:48px;height:48px;border:1px solid var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;color:var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(91,224,160,0)}50%{box-shadow:0 0 0 6px rgba(91,224,160,0.1)}}
+.confirmed-label{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--green)}
+
+.card-title{font-family:var(--serif);font-size:clamp(32px,5vw,48px);line-height:1.1;margin-bottom:16px;color:var(--white)}
+.card-title em{color:var(--accent);font-style:italic}
+.card-sub{font-size:14px;line-height:1.75;color:var(--white);margin-bottom:0}
+
+/* What happens next */
+.card-steps{background:var(--card);border-top:1px solid var(--border);padding:36px 48px}
+.steps-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
+
+.step{display:flex;gap:20px;margin-bottom:24px}
+.step:last-child{margin-bottom:0}
+.step-num{font-family:var(--serif);font-size:28px;color:var(--accent);line-height:1;flex-shrink:0;width:28px}
+.step-body{}
+.step-title{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;font-family:var(--sans)}
+.step-desc{font-size:12px;color:var(--white);line-height:1.6;font-family:var(--mono)}
+
+/* Detail row */
+.detail-row{background:var(--surface);border-top:1px solid var(--border);padding:24px 48px;display:flex;gap:32px;flex-wrap:wrap}
+.detail-item{}
+.detail-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.detail-value{font-family:var(--mono);font-size:12px;color:var(--white)}
+.detail-value.green{color:var(--green)}
+.detail-value.accent{color:var(--accent)}
+
+/* CTA */
+.cta-wrap{margin-top:32px;text-align:center}
+.cta-label{font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.btn-cta{display:inline-block;background:var(--orange);color:var(--white);padding:14px 36px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;transition:opacity 0.15s}
+.btn-cta:hover{opacity:0.88}
+.btn-secondary{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color 0.15s}
+.btn-secondary:hover{color:var(--accent)}
+
+@media(max-width:600px){
+  .card-top,.card-steps,.detail-row{padding-left:24px;padding-right:24px}
+  .detail-row{gap:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top-bar">
+    <a href="/" class="brand">JSN <span>Made</span></a>
+    <a href="aiq-training.html" class="back">&larr; Back to Training</a>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <div class="check-wrap">
+        <div class="check">&#10003;</div>
+        <div class="confirmed-label">Payment Confirmed</div>
+      </div>
+      <h1 class="card-title">Your Audit is<br><em>Confirmed.</em></h1>
+      <p class="card-sub">Thank you for your order. Your AI Readiness Audit is now in queue. You will receive your personalized report, specific tool recommendations, and a 4-day implementation plan within 48 hours.</p>
+    </div>
+
+    <div class="card-steps">
+      <div class="steps-label">// What Happens Next</div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Check your email</div>
+          <div class="step-desc">A confirmation has been sent to the email you used at checkout. Keep it for your records.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">We review your AIQ assessment</div>
+          <div class="step-desc">Your domain scores, maturity level, and industry context from your assessment are already in our system and inform your audit.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Your report is delivered within 48 hours</div>
+          <div class="step-desc">A personalized audit presentation with your specific tool recommendations, implementation plan, and ROI projections is delivered to your inbox as a private link.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">30-minute review call included</div>
+          <div class="step-desc">After you receive the report, we schedule a 30-minute call to walk through findings, answer questions, and confirm your implementation plan.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-item">
+        <div class="detail-label">Product</div>
+        <div class="detail-value">AI Readiness Audit</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Amount</div>
+        <div class="detail-value green">$1,000.00</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Format</div>
+        <div class="detail-value accent">Private presentation link</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Includes</div>
+        <div class="detail-value">Report + 30-min review call</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <div class="cta-label">Questions? We are here.</div>
+    <a href="mailto:hello@jsnmade.com" class="btn-cta">Email Us &rarr;</a>
+    <br>
+    <a href="aiq-training.html" class="btn-secondary">Return to AIQ Training &rarr;</a>
+  </div>
+
+</div>
+</body>
+</html>
