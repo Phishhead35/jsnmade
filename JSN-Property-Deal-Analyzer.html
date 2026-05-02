@@ -544,6 +544,7 @@ header {
     </div>
   </div>
   <div class="header-right">
+    <a href="reps/index.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='var(--gray)'">← REPS</a>
     <div class="header-chip">Downside-First Analysis</div>
     <button class="btn-header" onclick="clearAll()">New Deal</button>
   </div>
@@ -594,7 +595,7 @@ header {
         <div class="fg">
           <label class="fl" for="propType">Property Type</label>
           <select class="fs" id="propType">
-            <option value="">— select —</option>
+            <option value="">Select...</option>
             <option>Single Family</option>
             <option>2–4 Unit</option>
             <option>Small Multifamily (5+)</option>
@@ -606,7 +607,7 @@ header {
         <div class="fg">
           <label class="fl" for="condition">Condition</label>
           <select class="fs" id="condition">
-            <option value="">— select —</option>
+            <option value="">Select...</option>
             <option>Move-in Ready</option>
             <option>Light Cosmetic</option>
             <option>Medium Rehab</option>
@@ -833,7 +834,7 @@ header {
   <div class="empty" id="emptyState">
     <div class="empty-icon">🏗️</div>
     <div class="empty-title">Property Deal Analyzer</div>
-    <div class="empty-desc">Enter your deal numbers and let the analyzer pressure-test assumptions, surface downside risk, and give you a grounded verdict — best, base, and worst case.</div>
+    <div class="empty-desc">Enter your deal numbers and let the analyzer pressure-test assumptions, surface downside risk, and give you a grounded verdict: best, base, and worst case.</div>
     <div class="pill-row">
       <span class="pill">Cash Flow</span>
       <span class="pill">Cap Rate</span>
@@ -1162,19 +1163,19 @@ function validateInputs(inp) {
   if (inp.vacancyRate !== null && (inp.vacancyRate < 0 || inp.vacancyRate > 100))
     w.push('Vacancy rate must be 0–100%.');
   if (inp.mgmtRate !== null && (inp.mgmtRate < 0 || inp.mgmtRate > 50))
-    w.push('Management fee seems unusually high — verify.');
+    w.push('Management fee seems unusually high. Please verify.');
   if (inp.interestRate !== null && inp.interestRate > 25)
-    w.push('Interest rate over 25% — is this correct?');
+    w.push('Interest rate over 25%. Is this correct?');
   if (inp.askPrice && inp.downPmt && inp.downPmt > inp.askPrice)
-    w.push('Down payment exceeds asking price — please verify.');
+    w.push('Down payment exceeds asking price. Please verify.');
   if (inp.arv && inp.askPrice && inp.askPrice > inp.arv * 1.1)
-    w.push('Asking price exceeds ARV — deal may be upside-down.');
+    w.push('Asking price exceeds ARV. Deal may be upside-down.');
   if (inp.askPrice && inp.rehabBudget && inp.rehabBudget > inp.askPrice * 0.8)
-    w.push('Rehab budget is over 80% of purchase price — verify rehab scope.');
+    w.push('Rehab budget is over 80% of purchase price. Verify rehab scope.');
   if (['buy-hold','multifamily'].includes(inp.dealType) && inp.monthlyRent && inp.askPrice) {
     const grossYield = (inp.monthlyRent * 12) / inp.askPrice;
     if (grossYield < 0.04)
-      w.push(`Gross rent yield is ${(grossYield*100).toFixed(1)}% — very thin for a rental.`);
+      w.push(`Gross rent yield is ${(grossYield*100).toFixed(1)}%. Very thin for a rental.`);
   }
   return w;
 }

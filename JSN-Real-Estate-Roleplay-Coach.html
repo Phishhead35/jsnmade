@@ -178,9 +178,12 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
       <span class="logo-tag">Boston &amp; North Shore · Agent &amp; Team Training</span>
     </div>
   </div>
-  <div class="mode-toggle">
-    <button class="mode-btn active" onclick="setMode('agent')" id="ma" aria-pressed="true" aria-label="Switch to Agent Mode">Agent Mode</button>
-    <button class="mode-btn" onclick="setMode('team')" id="mt" aria-pressed="false" aria-label="Switch to Team Leader Mode">Team Leader</button>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="reps/index.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">← REPS</a>
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('agent')" id="ma" aria-pressed="true" aria-label="Switch to Agent Mode">Agent Mode</button>
+      <button class="mode-btn" onclick="setMode('team')" id="mt" aria-pressed="false" aria-label="Switch to Team Leader Mode">Team Leader</button>
+    </div>
   </div>
 </div>
 </header>
@@ -261,6 +264,9 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
   </div>
 </div>
 
+<div style="text-align:center; padding:8px 20px; font-size:11px; color:#ffffff; line-height:1.6; border-top:1px solid rgba(255,107,43,0.15); background:rgba(11,17,32,0.97); flex-shrink:0;">
+  Output is AI-generated and for informational use only. Not financial, legal, or compliance advice. Consult qualified professionals before making decisions.
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script>
 // ── EMBEDDED KB ───────────────────────────────────────────────────────────────

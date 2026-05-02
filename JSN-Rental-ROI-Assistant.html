@@ -633,6 +633,7 @@
     </div>
   </div>
   <div class="header-right">
+    <a href="reps/index.html" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='var(--gray)'">← REPS</a>
     <div class="header-badge">Estimate Only · Not Financial Advice</div>
     <button class="btn-clear" onclick="clearAll()">New Analysis</button>
   </div>
@@ -671,7 +672,7 @@
         <div class="form-group">
           <label class="form-label" for="propType">Property Type</label>
           <select class="form-select" id="propType">
-            <option value="">— select —</option>
+            <option value="">Select...</option>
             <option>Single Family</option>
             <option>Multi-Family (2–4)</option>
             <option>Small Multifamily (5+)</option>
@@ -876,7 +877,7 @@
     <div class="empty-state" id="emptyState">
       <div class="empty-icon">📊</div>
       <div class="empty-title">Rental ROI Assistant</div>
-      <div class="empty-desc">Enter your property numbers in the panel and run an analysis. Only your provided inputs are used — no invented assumptions.</div>
+      <div class="empty-desc">Enter your property numbers in the panel and run an analysis. Only your provided inputs are used. No invented assumptions.</div>
       <div class="quick-tags">
         <span class="quick-tag">Cash Flow</span>
         <span class="quick-tag">Cap Rate</span>
@@ -1209,7 +1210,7 @@ function validateInputs(inputs) {
 
   // Down payment > purchase price
   if (inputs.purchasePrice && inputs.downPayment && inputs.downPayment > inputs.purchasePrice) {
-    warnings.push('Down payment exceeds purchase price — please verify.');
+    warnings.push('Down payment exceeds purchase price. Please verify.');
   }
 
   // Total expenses > income (warn, not block)
@@ -1223,15 +1224,15 @@ function validateInputs(inputs) {
   const monthlyIncome = (inputs.rent || 0) + (inputs.otherIncome || 0);
 
   if (monthlyIncome > 0 && monthlyExpenses > monthlyIncome * 1.5) {
-    warnings.push('Operating expenses appear much higher than income — double-check your numbers.');
+    warnings.push('Operating expenses appear much higher than income. Double-check your numbers.');
   }
 
   // Absurdly large numbers (likely entry error)
   if (inputs.rent && inputs.rent > 100000) {
-    warnings.push('Monthly rent over $100,000 — is this a monthly figure?');
+    warnings.push('Monthly rent over $100,000. Is this a monthly figure?');
   }
   if (inputs.purchasePrice && inputs.purchasePrice > 50000000) {
-    warnings.push('Purchase price over $50M — this tool is designed for residential / small multifamily.');
+    warnings.push('Purchase price over $50M. This tool is designed for residential and small multifamily.');
   }
 
   return warnings;
@@ -1464,7 +1465,7 @@ function renderResult(inputs, text) {
       <div class="verdict-icon">${verdictIcon}</div>
       <div>
         <div class="verdict-label">Simple Verdict</div>
-        <div class="verdict-text">${escapeHtml(sections['SIMPLE VERDICT'] || 'Analysis complete — see breakdown below.')}</div>
+        <div class="verdict-text">${escapeHtml(sections['SIMPLE VERDICT'] || 'Analysis complete. See breakdown below.')}</div>
       </div>
     </div>
 
@@ -1755,6 +1756,9 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runAnalysis();
 });
 </script>
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#ffffff; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(11,17,32,0.97);">
+  Output is AI-generated and for informational use only. Not financial, legal, tax, or investment advice. Consult qualified professionals before making decisions.
+</div>
 <script src="/jsn-nav.js"></script>
 </body>
 </html>

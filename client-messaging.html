@@ -255,7 +255,7 @@ body{font-family:'Barlow', sans-serif;background:var(--bg);color:var(--text);min
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="sb-head">
-      <div class="brand">JSN Client Messaging</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;"><div class="brand">JSN Client Messaging</div><a href="reps/index.html" style="font-size:10px;color:rgba(255,255,255,0.45);text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Mono',monospace;transition:color 0.15s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">← REPS</a></div>
       <div class="brand-sub">MA Compliance Suite</div>
       <div class="agent-pill">
         <div class="agent-avatar" id="agent-avatar">JD</div>
@@ -826,7 +826,7 @@ function renderOutput(r, mode, fromHistory) {
   const rc  = r.risk_level === 'Green' ? 'g' : r.risk_level === 'Yellow' ? 'a' : 'r';
   const bc  = rc === 'g' ? 'bg' : rc === 'a' ? 'ba' : 'br';
   const fdot = rc === 'r' ? 'var(--red-dot)' : 'var(--amber-dot)';
-  const bdg = r.risk_level + ' — ' + (
+  const bdg = r.risk_level + ': ' + (
     r.action === 'APPROVE'       ? 'Ready to send' :
     r.action === 'BROKER_REVIEW' ? 'Broker review needed' : 'Blocked'
   );
@@ -951,7 +951,7 @@ function renderOutput(r, mode, fromHistory) {
   }
 })();
 </script>
-<div style="text-align:center; padding:10px 20px; font-size:11px; color:#8899aa; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(8,15,30,0.97);">
+<div style="text-align:center; padding:10px 20px; font-size:11px; color:#ffffff; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(8,15,30,0.97);">
   Output is AI-generated and for informational use only. Not financial, legal, or compliance advice. Always consult your broker and qualified legal counsel before sending communications.
 </div>
 <script src="/jsn-nav.js"></script>
