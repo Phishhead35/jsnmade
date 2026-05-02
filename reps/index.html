@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSN REPS — Real Estate Performance System</title>
+  <meta name="description" content="Seven AI tools for real estate agents and brokers. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. One login." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0b1120;
+      --navy2:  #111a2e;
+      --navy3:  #192236;
+      --navy4:  #0e1628;
+      --cyan:   #00d4c8;
+      --cyan2:  #00ffe7;
+      --orange: #ff6b2b;
+      --orange2:#ff8c55;
+      --white:  #ffffff;
+      --gray:   #7a8ba6;
+      --border: rgba(255,255,255,0.07);
+      --border-o: rgba(255,107,43,0.18);
+      --glow-c: 0 0 32px rgba(0,212,200,0.18);
+      --glow-o: 0 0 24px rgba(255,107,43,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grid texture */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,107,43,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,43,0.018) 1px, transparent 1px);
+      background-size: 72px 72px;
+      pointer-events: none; z-index: 0;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.35;
+    }
+
+    section, nav, footer, header { position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 56px;
+      background: rgba(11,17,32,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+
+    .logo-mark {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--orange), var(--orange2));
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 15px; color: white;
+      box-shadow: var(--glow-o);
+    }
+
+    .logo-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 17px; letter-spacing: 0.05em; color: var(--white);
+    }
+    .logo-text span { color: var(--cyan); }
+
+    .nav-right { display: flex; align-items: center; gap: 32px; }
+
+    .nav-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gray); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--white); }
+
+    .nav-cta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--navy); background: var(--orange);
+      padding: 9px 22px; border-radius: 6px; text-decoration: none;
+      transition: all 0.2s; box-shadow: var(--glow-o);
+    }
+    .nav-cta:hover { background: var(--orange2); box-shadow: 0 0 40px rgba(255,107,43,0.4); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: center;
+      padding: 160px 56px 100px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 28px;
+      display: flex; align-items: center; gap: 14px;
+      opacity: 0; animation: fadeUp 0.9s ease 0.1s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '//'; color: rgba(255,107,43,0.4);
+    }
+
+    .hero-headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: clamp(60px, 9vw, 108px);
+      line-height: 0.92; letter-spacing: -0.01em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 36px;
+      opacity: 0; animation: fadeUp 0.9s ease 0.25s forwards;
+    }
+    .hero-headline em { font-style: normal; color: var(--orange); }
+
+    .hero-sub {
+      font-size: clamp(15px, 1.8vw, 18px); font-weight: 300;
+      color: var(--white); max-width: 520px; line-height: 1.85;
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.9s ease 0.38s forwards;
+    }
+
+    .hero-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 48px;
+      opacity: 0; animation: fadeUp 0.9s ease 0.44s forwards;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.9s ease 0.55s forwards;
+    }
+
+    .btn-primary {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--navy); background: var(--orange);
+      padding: 14px 36px; border-radius: 6px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.2s; box-shadow: var(--glow-o); display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 40px rgba(255,107,43,0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white); background: transparent;
+      padding: 14px 32px; border-radius: 6px; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.14); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* STAT BAR */
+    .stat-bar {
+      border-top: 1px solid var(--border-o);
+      border-bottom: 1px solid var(--border-o);
+      background: rgba(255,107,43,0.04);
+      padding: 28px 56px;
+    }
+    .stat-bar-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 0; align-items: stretch;
+    }
+    .stat-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: flex-start; padding: 0 40px 0 0;
+      border-right: 1px solid var(--border-o);
+    }
+    .stat-item:first-child { padding-left: 0; }
+    .stat-item:last-child { border-right: none; padding-right: 0; }
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 42px; line-height: 1;
+      color: var(--orange); letter-spacing: -0.01em;
+    }
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--white); margin-top: 6px;
+    }
+
+    /* SECTION SHARED */
+    .section-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--orange); display: block; margin-bottom: 20px;
+    }
+    .section-eyebrow::before { content: '// '; color: rgba(255,107,43,0.4); }
+
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: clamp(36px, 5vw, 58px);
+      line-height: 1.0; text-transform: uppercase; color: var(--white);
+      letter-spacing: -0.01em;
+    }
+    .section-title em { font-style: normal; color: var(--orange); }
+
+    .section-body {
+      font-size: 16px; font-weight: 300;
+      color: var(--white); line-height: 1.8;
+      max-width: 560px;
+    }
+
+    /* TOOLS SECTION */
+    .tools-section {
+      padding: 100px 56px;
+    }
+    .tools-inner { max-width: 1200px; margin: 0 auto; }
+
+    .tools-header {
+      margin-bottom: 64px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--border-o);
+      border: 1px solid var(--border-o);
+    }
+
+    .tool-card {
+      background: var(--navy2);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.25s;
+      cursor: default;
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--orange);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+    .tool-card:hover { background: var(--navy3); }
+    .tool-card:hover::before { transform: scaleY(1); }
+
+    .tool-card-full {
+      grid-column: 1 / -1;
+    }
+
+    .tool-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,107,43,0.5); margin-bottom: 16px;
+    }
+
+    .tool-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 22px; text-transform: uppercase;
+      color: var(--white); margin-bottom: 12px; letter-spacing: 0.02em;
+    }
+
+    .tool-desc {
+      font-size: 14px; font-weight: 300;
+      color: var(--white); line-height: 1.75;
+      margin-bottom: 20px;
+    }
+
+    .tool-caps {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+
+    .cap-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 3px;
+    }
+    .cap-free {
+      color: var(--white);
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cap-pro {
+      color: var(--orange);
+      background: rgba(255,107,43,0.1);
+      border: 1px solid rgba(255,107,43,0.2);
+    }
+    .cap-team {
+      color: var(--cyan);
+      background: rgba(0,212,200,0.08);
+      border: 1px solid rgba(0,212,200,0.18);
+    }
+
+    .free-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--white);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 4px 10px; border-radius: 3px;
+      margin-bottom: 20px;
+    }
+
+    /* PRICING */
+    .pricing-section {
+      padding: 100px 56px;
+      background: var(--navy4);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-inner { max-width: 1200px; margin: 0 auto; }
+
+    .pricing-header { margin-bottom: 56px; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border-o);
+      border: 1px solid var(--border-o);
+    }
+
+    .price-card {
+      background: var(--navy2);
+      padding: 48px 40px;
+      position: relative;
+    }
+    .price-card.featured {
+      background: var(--navy3);
+    }
+    .price-card.featured::after {
+      content: 'Most Popular';
+      position: absolute; top: 0; right: 40px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--navy);
+      background: var(--orange);
+      padding: 5px 12px;
+    }
+
+    .price-tier {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 20px;
+    }
+    .price-tier::before { content: '// '; color: rgba(255,107,43,0.35); }
+
+    .price-amount {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 62px; line-height: 1;
+      color: var(--white); letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .price-amount sup {
+      font-size: 28px; vertical-align: top; margin-top: 10px;
+      font-weight: 700;
+    }
+    .price-amount .price-free {
+      font-size: 52px;
+    }
+
+    .price-cadence {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gray); margin-bottom: 32px;
+    }
+
+    .price-divider {
+      height: 1px; background: var(--border-o); margin-bottom: 28px;
+    }
+
+    .price-features {
+      list-style: none; margin-bottom: 40px;
+    }
+    .price-features li {
+      font-size: 14px; font-weight: 300;
+      color: var(--white); padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .price-features li:last-child { border-bottom: none; }
+    .price-features li::before {
+      content: '→';
+      color: var(--orange); font-size: 12px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .price-features li.locked {
+      color: var(--gray);
+    }
+    .price-features li.locked::before {
+      content: '—';
+      color: rgba(255,255,255,0.15);
+    }
+
+    .price-cta {
+      display: block; text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 24px; border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .price-cta-free {
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.14);
+      background: transparent;
+    }
+    .price-cta-free:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.06);
+    }
+    .price-cta-pro {
+      color: var(--navy);
+      background: var(--orange);
+      box-shadow: var(--glow-o);
+    }
+    .price-cta-pro:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 40px rgba(255,107,43,0.5);
+      transform: translateY(-1px);
+    }
+    .price-cta-team {
+      color: var(--navy);
+      background: var(--cyan);
+      box-shadow: var(--glow-c);
+    }
+    .price-cta-team:hover {
+      background: var(--cyan2);
+      box-shadow: 0 0 40px rgba(0,212,200,0.4);
+      transform: translateY(-1px);
+    }
+
+    /* CAP TABLE */
+    .cap-table-section {
+      padding: 80px 56px;
+    }
+    .cap-table-inner { max-width: 1200px; margin: 0 auto; }
+
+    .cap-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+    .cap-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--orange);
+      padding: 14px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-o);
+      background: rgba(255,107,43,0.04);
+    }
+    .cap-table th:not(:first-child) { text-align: center; }
+
+    .cap-table td {
+      font-size: 13px; font-weight: 300;
+      color: var(--white);
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .cap-table td:not(:first-child) { text-align: center; }
+
+    .cap-table tr:hover td { background: rgba(255,107,43,0.03); }
+
+    .cap-table .tool-col {
+      font-weight: 500; color: var(--white);
+    }
+    .cap-table .limit-col { color: var(--gray); font-size: 12px; }
+
+    .tier-dot {
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-right: 6px;
+    }
+    .dot-free { background: rgba(255,255,255,0.3); }
+    .dot-pro { background: var(--orange); }
+    .dot-team { background: var(--cyan); }
+
+    .check { color: var(--orange); font-size: 14px; }
+    .check-team { color: var(--cyan); font-size: 14px; }
+    .dash { color: rgba(255,255,255,0.15); }
+
+    /* LOGIN CTA */
+    .login-section {
+      padding: 100px 56px;
+    }
+    .login-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .login-left {}
+    .login-right {
+      background: rgba(255,107,43,0.06);
+      border: 1px solid var(--border-o);
+      padding: 48px;
+    }
+
+    .login-form-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--orange); margin-bottom: 24px; display: block;
+    }
+    .login-form-label::before { content: '// '; color: rgba(255,107,43,0.35); }
+
+    .login-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800; font-size: 28px; text-transform: uppercase;
+      color: var(--white); margin-bottom: 16px;
+    }
+
+    .login-subtext {
+      font-size: 14px; font-weight: 300;
+      color: var(--white); line-height: 1.75; margin-bottom: 32px;
+    }
+
+    .form-field {
+      margin-bottom: 16px;
+    }
+    .form-field input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px;
+      padding: 13px 16px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px; font-weight: 300;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field input::placeholder { color: rgba(255,255,255,0.3); }
+    .form-field input:focus {
+      border-color: rgba(255,107,43,0.4);
+      background: rgba(255,107,43,0.04);
+    }
+
+    .form-submit {
+      width: 100%;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--navy); background: var(--orange);
+      padding: 15px 24px; border-radius: 6px;
+      border: none; cursor: pointer;
+      transition: all 0.2s; box-shadow: var(--glow-o);
+      margin-top: 8px;
+    }
+    .form-submit:hover {
+      background: var(--orange2);
+      box-shadow: 0 0 40px rgba(255,107,43,0.5);
+    }
+
+    .form-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray); text-align: center; margin-top: 14px;
+    }
+
+    .login-feature-list {
+      list-style: none; margin-top: 36px;
+    }
+    .login-feature-list li {
+      font-size: 15px; font-weight: 300;
+      color: var(--white);
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .login-feature-list li:last-child { border-bottom: none; }
+    .login-feature-list li::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orange); flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 56px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+
+    .footer-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900; font-size: 18px; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--white);
+    }
+    .footer-brand span { color: var(--cyan); }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .footer-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .hero { padding: 140px 24px 80px; }
+      .stat-bar { padding: 24px; }
+      .stat-bar-inner { flex-wrap: wrap; gap: 24px; }
+      .stat-item { border-right: none; padding: 0; }
+      .tools-section, .pricing-section, .cap-table-section, .login-section { padding: 64px 24px; }
+      .tools-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .tool-card-full { grid-column: 1; }
+      .login-inner { grid-template-columns: 1fr; gap: 40px; }
+      footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">
+      <div class="logo-mark">J</div>
+      <div class="logo-text">JSN <span>Made</span></div>
+    </a>
+    <div class="nav-right">
+      <a href="../index.html" class="nav-back">← Back to Platform</a>
+      <a href="../login.html" class="nav-cta">Log In</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="position:relative;z-index:1;">
+    <div class="hero">
+      <div class="hero-eyebrow">JSN REPS &nbsp;·&nbsp; Real Estate Performance System</div>
+      <h1 class="hero-headline">
+        Seven tools.<br>
+        One <em>system.</em><br>
+        Zero guesswork.
+      </h1>
+      <p class="hero-sub">
+        AI built for agents and brokers who want to perform at the top of their market. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. Everything in one place.
+      </p>
+      <div class="hero-meta">Free to start &nbsp;·&nbsp; No setup required &nbsp;·&nbsp; Runs in your browser</div>
+      <div class="hero-actions">
+        <a href="../login.html" class="btn-primary">Get Started Free</a>
+        <a href="#tools" class="btn-ghost">See All 7 Tools</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAT BAR -->
+  <div class="stat-bar reveal">
+    <div class="stat-bar-inner">
+      <div class="stat-item">
+        <div class="stat-num">7</div>
+        <div class="stat-label">AI Tools in One Login</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">$0</div>
+        <div class="stat-label">To Start — No Card Required</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">$29</div>
+        <div class="stat-label">Per Month for Full Suite</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">60s</div>
+        <div class="stat-label">Average Time to First Output</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <section class="tools-section" id="tools">
+    <div class="tools-inner">
+      <div class="tools-header reveal">
+        <span class="section-eyebrow">The Suite</span>
+        <h2 class="section-title">Every tool<br>you actually <em>need.</em></h2>
+        <p class="section-body" style="margin-top:20px;">
+          Not a bloated platform with features you'll never use. Seven purpose-built tools, each one designed around a specific problem agents face every week.
+        </p>
+      </div>
+
+      <div class="tools-grid reveal">
+
+        <!-- Pipeline Analyzer -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 01</div>
+          <div class="tool-name">Pipeline Analyzer</div>
+          <p class="tool-desc">
+            Know exactly where every deal stands. Run your pipeline and get clear intelligence on deal health, risk factors, and what needs your attention today. No more gut-feel status updates.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">5/mo Free</span>
+            <span class="cap-tag cap-pro">Unlimited on Pro</span>
+            <span class="cap-tag cap-team">Dashboard Mode on Team</span>
+          </div>
+        </div>
+
+        <!-- Listing Studio -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 02</div>
+          <div class="tool-name">Listing Studio</div>
+          <p class="tool-desc">
+            Stop staring at a blank screen. Generate compelling, market-ready listing copy in seconds. Free tier covers two platforms. Pro unlocks five platforms and full creative controls.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">3/mo · 2 Platforms</span>
+            <span class="cap-tag cap-pro">Unlimited · 5 Platforms</span>
+          </div>
+        </div>
+
+        <!-- Marketing Kit -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 03</div>
+          <div class="tool-name">Marketing Kit</div>
+          <p class="tool-desc">
+            Every listing deserves a strong marketing push. Generate your full campaign asset set fast — social copy, email content, and property descriptions across all your channels.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">3/mo · 3 Channels</span>
+            <span class="cap-tag cap-pro">Unlimited · 9 Channels</span>
+          </div>
+        </div>
+
+        <!-- Client Messaging -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 04</div>
+          <div class="tool-name">Client Messaging</div>
+          <p class="tool-desc">
+            Say the right thing at the right time. Draft professional, on-brand client communications that build trust and keep deals moving forward. Team tier adds broker review queue.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">5/mo Free</span>
+            <span class="cap-tag cap-pro">Unlimited on Pro</span>
+            <span class="cap-tag cap-team">Broker Review Queue</span>
+          </div>
+        </div>
+
+        <!-- Property Deal Analyzer -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 05</div>
+          <div class="tool-name">Property Deal Analyzer</div>
+          <p class="tool-desc">
+            Run the numbers before you advise. Deep deal analysis so you always walk into conversations with the data to back you up. Free tier shows verdict and core numbers. Pro unlocks the full output.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">3/mo · Core Numbers</span>
+            <span class="cap-tag cap-pro">Full Analysis Unlocked</span>
+          </div>
+        </div>
+
+        <!-- Rental ROI Assistant -->
+        <div class="tool-card">
+          <div class="tool-num">// TOOL 06</div>
+          <div class="tool-name">Rental ROI Assistant</div>
+          <p class="tool-desc">
+            Investors ask hard questions. The Rental ROI Assistant gives you the answers fast, clean, and presentation-ready. Full output available free — built intentionally as a lead magnet.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">5/mo · Full Output Free</span>
+            <span class="cap-tag cap-pro">Unlimited on Pro</span>
+          </div>
+        </div>
+
+        <!-- Roleplay Coach — full width -->
+        <div class="tool-card tool-card-full">
+          <div class="tool-num">// TOOL 07</div>
+          <div class="tool-name">Real Estate Roleplay Coach</div>
+          <p class="tool-desc" style="max-width:680px;">
+            Practice your pitches, sharpen your objection handling, and show up to every conversation fully prepared. Free tier covers two scenarios. Pro unlocks the full library. Team adds coaching dashboards and agent rankings so brokers can see where their team needs work.
+          </p>
+          <div class="tool-caps">
+            <span class="cap-tag cap-free">3/mo · 2 Scenarios</span>
+            <span class="cap-tag cap-pro">Full Scenario Library</span>
+            <span class="cap-tag cap-team">Team Coaching Dashboard</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing-section" id="pricing">
+    <div class="pricing-inner">
+      <div class="pricing-header reveal">
+        <span class="section-eyebrow">Pricing</span>
+        <h2 class="section-title">Start free.<br><em>Scale</em> when you're ready.</h2>
+        <p class="section-body" style="margin-top:20px;">
+          No credit card to start. No pressure. Use the free tier to run your first few analyses and see what REPS can do for your business before you spend a dollar.
+        </p>
+      </div>
+
+      <div class="pricing-grid reveal">
+
+        <!-- FREE -->
+        <div class="price-card">
+          <div class="price-tier">Free</div>
+          <div class="price-amount"><span class="price-free">$0</span></div>
+          <div class="price-cadence">Per month, always</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>All 7 tools accessible</li>
+            <li>3–5 runs per tool per month</li>
+            <li>Core outputs on each tool</li>
+            <li>Rental ROI full output free</li>
+            <li class="locked">Unlimited runs</li>
+            <li class="locked">Extended platform channels</li>
+            <li class="locked">Team Dashboard and rankings</li>
+          </ul>
+          <a href="../login.html" class="price-cta price-cta-free">Start Free</a>
+        </div>
+
+        <!-- PRO -->
+        <div class="price-card featured">
+          <div class="price-tier">Pro</div>
+          <div class="price-amount"><sup>$</sup>29<span style="font-size:24px;font-weight:400;color:var(--gray)">–49</span></div>
+          <div class="price-cadence">Per month</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>All 7 tools, unlimited runs</li>
+            <li>Full outputs on all tools</li>
+            <li>5 listing platforms</li>
+            <li>9 marketing channels</li>
+            <li>Full scenario library — Roleplay Coach</li>
+            <li>Full deal analysis — Deal Analyzer</li>
+            <li class="locked">Team Dashboard and rankings</li>
+          </ul>
+          <a href="../login.html" class="price-cta price-cta-pro">Get Pro Access</a>
+        </div>
+
+        <!-- TEAM -->
+        <div class="price-card">
+          <div class="price-tier">Team</div>
+          <div class="price-amount"><sup>$</sup>79<span style="font-size:24px;font-weight:400;color:var(--gray)">–149</span></div>
+          <div class="price-cadence">Per month</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>Everything in Pro</li>
+            <li>Team Dashboard Mode</li>
+            <li>Agent performance rankings</li>
+            <li>Team coaching via Roleplay Coach</li>
+            <li>Broker review queue — messaging</li>
+            <li>Pipeline Dashboard Mode</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="../login.html" class="price-cta price-cta-team">Get Team Access</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CAP TABLE -->
+  <section class="cap-table-section">
+    <div class="cap-table-inner reveal">
+      <span class="section-eyebrow">Usage Limits by Tier</span>
+      <h2 class="section-title" style="margin-bottom:8px;">What you get<br>on each <em>plan.</em></h2>
+      <p class="section-body" style="margin-top:16px;margin-bottom:0;">
+        Every tool is accessible on the free tier. Limits exist to let you evaluate before committing.
+      </p>
+
+      <table class="cap-table">
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th><span class="tier-dot dot-free"></span>Free</th>
+            <th><span class="tier-dot dot-pro"></span>Pro</th>
+            <th><span class="tier-dot dot-team"></span>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="tool-col">Pipeline Analyzer<br><span class="limit-col">No Dashboard Mode on Free</span></td>
+            <td>5/mo</td>
+            <td><span class="check">✓</span> Unlimited</td>
+            <td><span class="check-team">✓</span> + Dashboard</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Listing Studio<br><span class="limit-col">2 platforms on Free</span></td>
+            <td>3/mo</td>
+            <td><span class="check">✓</span> 5 Platforms</td>
+            <td><span class="check-team">✓</span> 5 Platforms</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Marketing Kit<br><span class="limit-col">3 channels on Free</span></td>
+            <td>3/mo</td>
+            <td><span class="check">✓</span> 9 Channels</td>
+            <td><span class="check-team">✓</span> 9 Channels</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Client Messaging<br><span class="limit-col">No broker review on Free/Pro</span></td>
+            <td>5/mo</td>
+            <td><span class="check">✓</span> Unlimited</td>
+            <td><span class="check-team">✓</span> + Review Queue</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Property Deal Analyzer<br><span class="limit-col">Core numbers only on Free</span></td>
+            <td>3/mo</td>
+            <td><span class="check">✓</span> Full Analysis</td>
+            <td><span class="check-team">✓</span> Full Analysis</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Rental ROI Assistant<br><span class="limit-col">Full output on all tiers</span></td>
+            <td>5/mo</td>
+            <td><span class="check">✓</span> Unlimited</td>
+            <td><span class="check-team">✓</span> Unlimited</td>
+          </tr>
+          <tr>
+            <td class="tool-col">Roleplay Coach<br><span class="limit-col">2 scenarios on Free</span></td>
+            <td>3/mo</td>
+            <td><span class="check">✓</span> Full Library</td>
+            <td><span class="check-team">✓</span> + Team Dashboard</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- LOGIN / SIGN UP CTA -->
+  <section class="login-section" id="start">
+    <div class="login-inner">
+      <div class="login-left reveal">
+        <span class="section-eyebrow">Get Access</span>
+        <h2 class="section-title">Start in<br><em>60 seconds.</em></h2>
+        <p class="section-body" style="margin-top:20px;">
+          No card required. No setup. Sign up and run your first analysis today. Upgrade when the value is obvious.
+        </p>
+        <ul class="login-feature-list">
+          <li>All 7 tools available from day one</li>
+          <li>Free tier never expires</li>
+          <li>Upgrade or cancel anytime</li>
+          <li>Built for individual agents and broker teams</li>
+          <li>Output in under 60 seconds, every time</li>
+        </ul>
+      </div>
+      <div class="login-right reveal">
+        <span class="login-form-label">Create Your Account</span>
+        <div class="login-heading">Start Free Today</div>
+        <p class="login-subtext">Join agents and brokers already using REPS to save hours every week and show up more prepared to every conversation.</p>
+        <div class="form-field">
+          <input type="text" placeholder="First Name" />
+        </div>
+        <div class="form-field">
+          <input type="email" placeholder="Work Email" />
+        </div>
+        <div class="form-field">
+          <input type="password" placeholder="Create Password" />
+        </div>
+        <button class="form-submit" onclick="window.location='../login.html'">Create Free Account</button>
+        <div class="form-note">No credit card &nbsp;·&nbsp; No setup &nbsp;·&nbsp; Cancel anytime</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">JSN <span>Made</span></div>
+    <span class="footer-copy">© 2026 JSN Made. All rights reserved.</span>
+    <ul class="footer-links">
+      <li><a href="../privacy.html">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="../login.html">Sign In</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // SCROLL REVEAL
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
