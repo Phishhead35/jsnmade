@@ -108,6 +108,32 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .empty-title{font-size:18px;font-weight:500;margin-bottom:8px;color:#FFFFFF}
 .empty-body{font-size:13px;color:#FFFFFF}
 
+/* AUDIT PANEL */
+.audit-overlay{position:fixed;inset:0;background:rgba(11,17,33,0.7);z-index:200;display:none;align-items:stretch;justify-content:flex-end}
+.audit-overlay.open{display:flex}
+.audit-panel{background:var(--surface);border-left:1px solid var(--border2);width:560px;max-width:100vw;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.audit-panel-head{padding:24px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:10}
+.audit-panel-title{font-family:var(--mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent)}
+.audit-panel-close{background:transparent;border:1px solid var(--border);color:#FFFFFF;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s}
+.audit-panel-close:hover{border-color:var(--accent);color:var(--accent)}
+.audit-panel-body{padding:24px 28px;flex:1}
+.audit-section{margin-bottom:28px}
+.audit-section-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.audit-field{margin-bottom:12px}
+.audit-field label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;margin-bottom:5px}
+.audit-input{width:100%;background:var(--card);border:1px solid var(--border2);color:#FFFFFF;padding:10px 12px;font-family:var(--mono);font-size:12px;outline:none;transition:border-color 0.15s;resize:vertical}
+.audit-input:focus{border-color:var(--accent)}
+.audit-input::placeholder{color:rgba(255,255,255,0.25)}
+.audit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.audit-win-block{background:var(--card);border:1px solid var(--border);padding:14px;margin-bottom:10px}
+.audit-win-num{font-family:var(--mono);font-size:9px;color:var(--accent);letter-spacing:0.15em;margin-bottom:10px;text-transform:uppercase}
+.audit-info-row{background:var(--card);border:1px solid var(--border);padding:12px;margin-bottom:8px;font-family:var(--mono);font-size:11px;color:#FFFFFF}
+.audit-info-row span{color:var(--accent)}
+.audit-panel-footer{padding:20px 28px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface)}
+.audit-generate-btn{width:100%;background:var(--orange);color:#FFFFFF;border:none;padding:14px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:opacity 0.15s}
+.audit-generate-btn:hover{opacity:0.88}
+.audit-generate-btn:disabled{opacity:0.5;cursor:not-allowed}
+
 /* LOADING */
 .loading{text-align:center;padding:80px 40px;font-family:var(--mono);font-size:12px;color:#FFFFFF;letter-spacing:0.1em}
 
@@ -122,8 +148,114 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
+
+<!-- AUDIT PANEL OVERLAY -->
+<div class="audit-overlay" id="audit-overlay" onclick="closeAuditIfOverlay(event)">
+  <div class="audit-panel" id="audit-panel">
+    <div class="audit-panel-head">
+      <div class="audit-panel-title">// Generate Audit Report</div>
+      <button class="audit-panel-close" onclick="closeAudit()">✕</button>
+    </div>
+    <div class="audit-panel-body">
+
+      <!-- Pre-filled from assessment -->
+      <div class="audit-section">
+        <div class="audit-section-label">Client Info (from assessment)</div>
+        <div class="audit-info-row">Name: <span id="ap-name"></span></div>
+        <div class="audit-info-row">Email: <span id="ap-email"></span></div>
+        <div class="audit-info-row">AIQ Score: <span id="ap-score"></span> &nbsp;·&nbsp; Level: <span id="ap-level"></span></div>
+        <div class="audit-info-row">Industry: <span id="ap-industry"></span></div>
+        <div class="audit-info-row">Domain Scores: <span id="ap-domains"></span></div>
+        <div class="audit-field" style="margin-top:10px">
+          <label>Assessment Date</label>
+          <input class="audit-input" id="ap-date" type="text" placeholder="e.g. May 1, 2026"/>
+        </div>
+      </div>
+
+      <!-- Executive summary -->
+      <div class="audit-section">
+        <div class="audit-section-label">Executive Summary</div>
+        <div class="audit-field">
+          <label>Pain Summary (1-2 sentences)</label>
+          <textarea class="audit-input" id="ap-pain" rows="3" placeholder="Describe the client's primary pain points identified in the assessment."></textarea>
+        </div>
+        <div class="audit-field">
+          <label>Outcome Summary (1-2 sentences)</label>
+          <textarea class="audit-input" id="ap-outcome" rows="3" placeholder="What targeted AI implementation can achieve for this client."></textarea>
+        </div>
+        <div class="audit-row">
+          <div class="audit-field">
+            <label>Hours Reclaimed Weekly</label>
+            <input class="audit-input" id="ap-hours" type="text" placeholder="e.g. 8"/>
+          </div>
+          <div class="audit-field">
+            <label>Primary Focus</label>
+            <input class="audit-input" id="ap-focus" type="text" placeholder="Efficiency / Revenue / Both"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick wins -->
+      <div class="audit-section">
+        <div class="audit-section-label">Quick Win Recommendations (up to 4)</div>
+        <div id="ap-wins-container">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- 4-day plan -->
+      <div class="audit-section">
+        <div class="audit-section-label">4-Day Implementation Plan</div>
+        <div id="ap-plan-container">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="audit-section">
+        <div class="audit-section-label">Phase 2 Recommendations (up to 3)</div>
+        <div class="audit-field">
+          <label>Recommendation 1</label>
+          <input class="audit-input" id="ap-p2-1" type="text" placeholder="e.g. Set up GoHighLevel CRM to consolidate leads"/>
+        </div>
+        <div class="audit-field">
+          <label>Recommendation 2</label>
+          <input class="audit-input" id="ap-p2-2" type="text" placeholder="e.g. Build a brand voice AI assistant"/>
+        </div>
+        <div class="audit-field">
+          <label>Recommendation 3</label>
+          <input class="audit-input" id="ap-p2-3" type="text" placeholder="e.g. Create a customer FAQ chatbot"/>
+        </div>
+      </div>
+
+      <!-- Financial impact -->
+      <div class="audit-section">
+        <div class="audit-section-label">Financial Impact</div>
+        <div class="audit-row">
+          <div class="audit-field">
+            <label>Weekly Hours Reclaimed</label>
+            <input class="audit-input" id="ap-fin-hours" type="text" placeholder="e.g. 8"/>
+          </div>
+          <div class="audit-field">
+            <label>Monthly Net ROI</label>
+            <input class="audit-input" id="ap-fin-roi" type="text" placeholder="e.g. $3,141"/>
+          </div>
+        </div>
+        <div class="audit-field">
+          <label>Monthly Tool Cost</label>
+          <input class="audit-input" id="ap-fin-tools" type="text" placeholder="e.g. $59"/>
+        </div>
+      </div>
+
+    </div>
+    <div class="audit-panel-footer">
+      <button class="audit-generate-btn" id="audit-generate-btn" onclick="generateAuditReport()">Generate &amp; Download Report →</button>
+    </div>
+  </div>
+</div>
 
 <!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
@@ -328,6 +460,7 @@ function renderLeads() {
             <button class="action-btn" onclick="copySummary(\`${summaryText.replace(/`/g, "'")}\`)">Copy Summary</button>
             <button class="action-btn orange" onclick="window.open('https://calendly.com/jsnmade-pm/30min','_blank')">Book Discovery Call</button>
             <button class="action-btn" onclick="window.open('mailto:${lead.email}','_blank')">Send Email</button>
+            <button class="action-btn" style="border-color:rgba(29,198,194,0.4);color:var(--accent)" onclick="openAudit(${i})">Generate Audit Report</button>
           </div>
         </div>
       </div>`;
@@ -371,6 +504,331 @@ function exportCSV() {
 document.getElementById("login-password").addEventListener("keydown", e => {
   if (e.key === "Enter") login();
 });
+
+// ============================================================
+// AUDIT PANEL
+// ============================================================
+let currentAuditLead = null;
+
+function openAudit(i) {
+  const leads = getFilteredLeads();
+  const lead = leads[i];
+  currentAuditLead = lead;
+
+  // Pre-fill from assessment data
+  document.getElementById("ap-name").textContent = lead.name || "Unknown";
+  document.getElementById("ap-email").textContent = lead.email || "Unknown";
+  document.getElementById("ap-score").textContent = (lead.score || 0) + "/100";
+  document.getElementById("ap-level").textContent = lead.level || "Unknown";
+  document.getElementById("ap-industry").textContent = lead.industry || "Not specified";
+  document.getElementById("ap-domains").textContent = [
+    "Data " + (lead.domainScores?.data ?? 0),
+    "Strategy " + (lead.domainScores?.strategy ?? 0),
+    "Talent " + (lead.domainScores?.talent ?? 0),
+    "Current AI " + (lead.domainScores?.current ?? 0),
+    "Governance " + (lead.domainScores?.governance ?? 0)
+  ].join("  ·  ");
+
+  // Set date to today by default
+  const today = new Date().toLocaleDateString("en-US", { month:"long", day:"numeric", year:"numeric" });
+  document.getElementById("ap-date").value = today;
+
+  // Build quick win fields
+  const winsContainer = document.getElementById("ap-wins-container");
+  winsContainer.innerHTML = [1,2,3,4].map(n => `
+    <div class="audit-win-block">
+      <div class="audit-win-num">Quick Win ${n}</div>
+      <div class="audit-field">
+        <label>Pain Point</label>
+        <input class="audit-input" id="ap-w${n}-pain" type="text" placeholder="e.g. No consistent meeting notes"/>
+      </div>
+      <div class="audit-field">
+        <label>Recommended Tool</label>
+        <input class="audit-input" id="ap-w${n}-tool" type="text" placeholder="e.g. Fathom.ai"/>
+      </div>
+      <div class="audit-field">
+        <label>Why It Fits</label>
+        <textarea class="audit-input" id="ap-w${n}-why" rows="2" placeholder="Why this tool fits their specific situation."></textarea>
+      </div>
+      <div class="audit-row">
+        <div class="audit-field">
+          <label>Complexity</label>
+          <input class="audit-input" id="ap-w${n}-complexity" type="text" placeholder="plug-and-play"/>
+        </div>
+        <div class="audit-field">
+          <label>Monthly Cost</label>
+          <input class="audit-input" id="ap-w${n}-cost" type="text" placeholder="$0-10/user"/>
+        </div>
+      </div>
+      <div class="audit-row">
+        <div class="audit-field">
+          <label>Setup Time</label>
+          <input class="audit-input" id="ap-w${n}-setup" type="text" placeholder="15 min"/>
+        </div>
+        <div class="audit-field">
+          <label>Time Saved</label>
+          <input class="audit-input" id="ap-w${n}-saved" type="text" placeholder="2 hrs/wk"/>
+        </div>
+      </div>
+    </div>`).join("");
+
+  // Build 4-day plan fields
+  const planContainer = document.getElementById("ap-plan-container");
+  planContainer.innerHTML = [1,2,3,4].map(n => `
+    <div class="audit-win-block">
+      <div class="audit-win-num">Day ${n}</div>
+      <div class="audit-field">
+        <label>Task</label>
+        <input class="audit-input" id="ap-d${n}-task" type="text" placeholder="e.g. Set up Fathom and connect to Google Calendar"/>
+      </div>
+      <div class="audit-field">
+        <label>Tool</label>
+        <input class="audit-input" id="ap-d${n}-tool" type="text" placeholder="e.g. Fathom"/>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("audit-overlay").classList.add("open");
+  document.getElementById("audit-panel").scrollTop = 0;
+}
+
+function closeAudit() {
+  document.getElementById("audit-overlay").classList.remove("open");
+  currentAuditLead = null;
+}
+
+function closeAuditIfOverlay(e) {
+  if (e.target === document.getElementById("audit-overlay")) closeAudit();
+}
+
+async function generateAuditReport() {
+  if (!currentAuditLead) return;
+  const btn = document.getElementById("audit-generate-btn");
+  btn.disabled = true;
+  btn.textContent = "Generating...";
+
+  const lead = currentAuditLead;
+  const g = (id) => (document.getElementById(id)?.value || "").trim();
+
+  // Collect form data
+  const client = {
+    name:     lead.name || "Client",
+    date:     g("ap-date") || new Date().toLocaleDateString(),
+    score:    String(lead.score || 0),
+    level:    lead.level || "Unknown",
+    painSummary:    g("ap-pain") || "[Pain summary not entered]",
+    outcomeSummary: g("ap-outcome") || "[Outcome summary not entered]",
+    hoursReclaimed: g("ap-hours") || "TBD",
+    primaryFocus:   g("ap-focus") || "Efficiency",
+    domains: [
+      { name: "Data & Infrastructure",  score: lead.domainScores?.data ?? 0 },
+      { name: "Strategy & Leadership",  score: lead.domainScores?.strategy ?? 0 },
+      { name: "Talent & Culture",       score: lead.domainScores?.talent ?? 0 },
+      { name: "Current AI Use",         score: lead.domainScores?.current ?? 0 },
+      { name: "Governance & Risk",      score: lead.domainScores?.governance ?? 0 },
+    ],
+    quickWins: [1,2,3,4].map(n => ({
+      pain:       g("ap-w"+n+"-pain")       || "[Pain point "+n+"]",
+      tool:       g("ap-w"+n+"-tool")       || "[Tool Name]",
+      why:        g("ap-w"+n+"-why")        || "[Why this tool fits]",
+      complexity: g("ap-w"+n+"-complexity") || "some-setup",
+      cost:       g("ap-w"+n+"-cost")       || "TBD",
+      setup:      g("ap-w"+n+"-setup")      || "TBD",
+      saved:      g("ap-w"+n+"-saved")      || "TBD",
+    })),
+    plan: [1,2,3,4].map(n => ({
+      day:  "Day " + n,
+      task: g("ap-d"+n+"-task") || "[Task description]",
+      tool: g("ap-d"+n+"-tool") || "[Tool]",
+    })),
+    phase2: [
+      g("ap-p2-1") || "[Phase 2 recommendation 1]",
+      g("ap-p2-2") || "[Phase 2 recommendation 2]",
+      g("ap-p2-3") || "[Phase 2 recommendation 3]",
+    ],
+    weeklyHours:  g("ap-fin-hours") || "TBD",
+    monthlyROI:   g("ap-fin-roi")   || "TBD",
+    monthlyTools: g("ap-fin-tools") || "TBD",
+  };
+
+  try {
+    await buildAuditPptx(client);
+  } catch(err) {
+    alert("Error generating report: " + err.message);
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Generate & Download Report →";
+}
+
+// ============================================================
+// PPTX BUILDER runs entirely in browser via PptxGenJS
+// ============================================================
+async function buildAuditPptx(c) {
+  const pres = new PptxGenJS();
+  pres.layout = "LAYOUT_16x9";
+  pres.title = "AI Tools Assessment - " + c.name;
+
+  const C = {
+    navy:"0B1121", surface:"121C2F", card:"1A2540",
+    teal:"1DC6C2", orange:"FD6B2B", green:"5BE0A0",
+    white:"FFFFFF", dim:"8899AA", border:"1F3050"
+  };
+  const mk = () => ({ type:"outer", blur:8, offset:3, angle:135, color:"000000", opacity:0.22 });
+  const bar = (s, x, y, h, col=C.teal) => s.addShape("rect",{x,y,w:0.045,h,fill:{color:col},line:{color:col,width:0}});
+  const eyebrow = (s, t, x, y) => s.addText(t,{x,y,w:7,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.teal,charSpacing:3,align:"left",margin:0});
+  const topBar = (s) => s.addShape("rect",{x:0,y:0,w:10,h:0.04,fill:{color:C.teal},line:{color:C.teal,width:0}});
+
+  // SLIDE 1 Cover
+  const s1 = pres.addSlide();
+  s1.background = {color:C.navy};
+  s1.addShape("rect",{x:0,y:0,w:0.28,h:5.625,fill:{color:C.teal},line:{color:C.teal,width:0}});
+  s1.addShape("rect",{x:0.28,y:0,w:9.72,h:0.04,fill:{color:C.teal},line:{color:C.teal,width:0}});
+  s1.addText("JSN MADE",{x:0.55,y:0.25,w:4,h:0.35,fontSize:9,fontFace:"Courier New",bold:true,color:C.teal,charSpacing:5,align:"left",margin:0});
+  s1.addText("AI READINESS AUDIT",{x:0.55,y:0.62,w:5,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.dim,charSpacing:4,align:"left",margin:0});
+  s1.addText("AI Tools\nAssessment",{x:0.55,y:1.3,w:7.5,h:1.9,fontSize:52,fontFace:"Georgia",bold:false,color:C.white,align:"left",valign:"top",margin:0});
+  s1.addText("Report",{x:0.55,y:3.1,w:4,h:0.7,fontSize:40,fontFace:"Georgia",italic:true,color:C.teal,align:"left",margin:0});
+  s1.addShape("rect",{x:0.55,y:3.9,w:3.5,h:0.02,fill:{color:C.border},line:{color:C.border,width:0}});
+  s1.addText([{text:"Prepared for  ",options:{color:C.dim,fontSize:10,fontFace:"Courier New"}},{text:c.name,options:{color:C.white,fontSize:10,fontFace:"Courier New",bold:true}}],{x:0.55,y:4.08,w:8,h:0.26,margin:0});
+  s1.addText([{text:"Assessment Date  ",options:{color:C.dim,fontSize:10,fontFace:"Courier New"}},{text:c.date,options:{color:C.white,fontSize:10,fontFace:"Courier New",bold:true}}],{x:0.55,y:4.36,w:8,h:0.26,margin:0});
+  s1.addText([{text:"AIQ Score  ",options:{color:C.dim,fontSize:10,fontFace:"Courier New"}},{text:c.score+"/100",options:{color:C.teal,fontSize:10,fontFace:"Courier New",bold:true}},{text:"   "+c.level,options:{color:C.dim,fontSize:10,fontFace:"Courier New"}}],{x:0.55,y:4.64,w:8,h:0.26,margin:0});
+  s1.addText("Delivered within 48 hours of assessment completion.",{x:0.55,y:5.22,w:9,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.dim,align:"left",margin:0});
+
+  // SLIDE 2 Executive Summary
+  const s2 = pres.addSlide();
+  s2.background={color:C.navy}; topBar(s2);
+  eyebrow(s2,"// EXECUTIVE SUMMARY",0.5,0.18);
+  s2.addText("The Opportunity",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  // Pain card
+  s2.addShape("rect",{x:0.5,y:1.15,w:4.3,h:1.6,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+  bar(s2,0.5,1.15,1.6,C.orange);
+  s2.addText("PAIN",{x:0.65,y:1.24,w:4,h:0.2,fontSize:7.5,fontFace:"Courier New",color:C.orange,charSpacing:3,margin:0});
+  s2.addText(c.painSummary,{x:0.65,y:1.5,w:4.0,h:1.1,fontSize:11,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
+  // Outcome card
+  s2.addShape("rect",{x:5.2,y:1.15,w:4.3,h:1.6,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+  bar(s2,5.2,1.15,1.6,C.teal);
+  s2.addText("OUTCOME",{x:5.35,y:1.24,w:4,h:0.2,fontSize:7.5,fontFace:"Courier New",color:C.teal,charSpacing:3,margin:0});
+  s2.addText(c.outcomeSummary,{x:5.35,y:1.5,w:4.0,h:1.1,fontSize:11,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
+  // Glance stats
+  eyebrow(s2,"// THE OPPORTUNITY AT A GLANCE",0.5,2.92);
+  [{label:"Hours Reclaimed Weekly",value:c.hoursReclaimed,col:C.teal},{label:"Primary Focus",value:c.primaryFocus,col:C.orange},{label:"Maturity Level",value:c.level,col:C.green}].forEach((item,i)=>{
+    const x=0.5+i*3.1;
+    s2.addShape("rect",{x,y:3.18,w:2.9,h:1.95,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    bar(s2,x,3.18,1.95,item.col);
+    s2.addText(item.value,{x:x+0.15,y:3.32,w:2.6,h:0.8,fontSize:22,fontFace:"Georgia",color:item.col,align:"left",valign:"middle",wrap:true,margin:0});
+    s2.addText(item.label,{x:x+0.15,y:4.15,w:2.6,h:0.6,fontSize:8.5,fontFace:"Arial",color:C.dim,align:"left",valign:"top",wrap:true,margin:0});
+  });
+
+  // SLIDE 3 Domain Scores
+  const s3 = pres.addSlide();
+  s3.background={color:C.navy}; topBar(s3);
+  eyebrow(s3,"// AIQ ASSESSMENT RESULTS",0.5,0.18);
+  s3.addText("Domain Scores",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  s3.addText("Each domain scored out of 100. Scores below 50 represent priority gaps for immediate action.",{x:0.5,y:1.08,w:9,h:0.26,fontSize:10,fontFace:"Arial",color:C.dim,align:"left",margin:0});
+  c.domains.forEach((d,i)=>{
+    const y=1.5+i*0.76, score=Math.max(0,Math.min(100,d.score));
+    const bW=Math.max(0.05,(score/100)*7.8);
+    const bCol=score<50?C.orange:score<75?C.teal:C.green;
+    const isGap=score<50;
+    s3.addShape("rect",{x:0.5,y,w:9,h:0.62,fill:{color:C.surface},line:{color:isGap?"2A1A0E":C.border,width:0.5}});
+    s3.addText(d.name,{x:0.65,y:y+0.07,w:3.5,h:0.24,fontSize:10,fontFace:"Arial",bold:true,color:C.white,align:"left",margin:0});
+    s3.addText(String(score),{x:8.8,y:y+0.07,w:0.65,h:0.24,fontSize:10,fontFace:"Courier New",bold:true,color:bCol,align:"right",margin:0});
+    s3.addShape("rect",{x:0.65,y:y+0.38,w:7.8,h:0.1,fill:{color:C.border},line:{color:C.border,width:0}});
+    s3.addShape("rect",{x:0.65,y:y+0.38,w:bW,h:0.1,fill:{color:bCol},line:{color:bCol,width:0}});
+    if(isGap) s3.addText("PRIORITY GAP",{x:4.5,y:y+0.07,w:3.5,h:0.22,fontSize:7,fontFace:"Courier New",color:C.orange,charSpacing:2,align:"right",margin:0});
+  });
+
+  // SLIDE 4 Quick Wins
+  const s4 = pres.addSlide();
+  s4.background={color:C.navy}; topBar(s4);
+  eyebrow(s4,"// RECOMMENDED SOLUTIONS",0.5,0.18);
+  s4.addText("Quick Wins",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  const numCols=[C.teal,C.teal,C.orange,C.orange];
+  c.quickWins.slice(0,4).forEach((w,i)=>{
+    const y=1.1+i*1.08;
+    s4.addShape("rect",{x:0.5,y,w:9,h:1.02,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    bar(s4,0.5,y,1.02,numCols[i]);
+    s4.addText(String(i+1),{x:0.58,y:y+0.06,w:0.3,h:0.38,fontSize:18,fontFace:"Georgia",color:numCols[i],align:"left",margin:0});
+    s4.addText(w.pain,{x:0.96,y:y+0.08,w:5.5,h:0.24,fontSize:11,fontFace:"Arial",bold:true,color:C.white,align:"left",margin:0});
+    s4.addText(w.tool,{x:0.96,y:y+0.33,w:3.5,h:0.2,fontSize:9.5,fontFace:"Courier New",color:C.teal,align:"left",margin:0});
+    s4.addText(w.why,{x:0.96,y:y+0.54,w:5.3,h:0.42,fontSize:9,fontFace:"Arial",color:C.dim,align:"left",wrap:true,margin:0});
+    [{label:"Complexity",val:w.complexity},{label:"Cost",val:w.cost},{label:"Setup",val:w.setup},{label:"Time Saved",val:w.saved}].forEach((m,mi)=>{
+      const mx=6.55+(mi%2)*1.5, my=y+0.1+Math.floor(mi/2)*0.44;
+      s4.addText(m.label.toUpperCase(),{x:mx,y:my,w:1.4,h:0.16,fontSize:6.5,fontFace:"Courier New",color:C.dim,charSpacing:1.5,margin:0});
+      s4.addText(m.val,{x:mx,y:my+0.17,w:1.4,h:0.22,fontSize:9,fontFace:"Courier New",bold:true,color:C.white,margin:0});
+    });
+  });
+
+  // SLIDE 5 4-Day Plan
+  const s5 = pres.addSlide();
+  s5.background={color:C.navy}; topBar(s5);
+  eyebrow(s5,"// IMPLEMENTATION PLAN",0.5,0.18);
+  s5.addText("Your 4-Day Quick Wins Plan",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  s5.addText("Each task is designed to be completed by a non-technical team member in under 2 hours.",{x:0.5,y:1.06,w:9,h:0.26,fontSize:10,fontFace:"Arial",color:C.dim,align:"left",margin:0});
+  c.plan.slice(0,4).forEach((p,i)=>{
+    const x=0.5+i*2.3, cW=2.1;
+    s5.addShape("rect",{x,y:1.5,w:cW,h:3.62,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    s5.addShape("rect",{x,y:1.5,w:cW,h:0.04,fill:{color:C.teal},line:{color:C.teal,width:0}});
+    s5.addText(p.day.toUpperCase(),{x:x+0.14,y:1.6,w:cW-0.28,h:0.22,fontSize:8,fontFace:"Courier New",color:C.teal,charSpacing:3,align:"left",margin:0});
+    s5.addText(String(i+1),{x:x+0.14,y:1.84,w:cW-0.28,h:0.9,fontSize:60,fontFace:"Georgia",color:C.border,align:"left",valign:"middle",margin:0});
+    s5.addText(p.task,{x:x+0.14,y:2.85,w:cW-0.28,h:1.4,fontSize:10,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
+    s5.addShape("rect",{x:x+0.14,y:4.76,w:cW-0.28,h:0.22,fill:{color:C.card},line:{color:C.teal,width:0.5}});
+    s5.addText(p.tool,{x:x+0.14,y:4.76,w:cW-0.28,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.teal,align:"center",valign:"middle",margin:0});
+  });
+
+  // SLIDE 6 Phase 2
+  const s6 = pres.addSlide();
+  s6.background={color:C.navy}; topBar(s6);
+  eyebrow(s6,"// AFTER QUICK WINS",0.5,0.18);
+  s6.addText("What Comes Next",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  s6.addText("Once Quick Wins are in place and producing results, these Phase 2 initiatives build on that foundation.",{x:0.5,y:1.06,w:9,h:0.26,fontSize:10,fontFace:"Arial",color:C.dim,align:"left",margin:0});
+  const p2Cols=[C.teal,C.orange,C.green];
+  c.phase2.slice(0,3).forEach((item,i)=>{
+    const y=1.52+i*1.2;
+    s6.addShape("rect",{x:0.5,y,w:9,h:1.0,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    bar(s6,0.5,y,1.0,p2Cols[i]);
+    s6.addText("0"+(i+1),{x:0.65,y:y+0.14,w:0.55,h:0.55,fontSize:26,fontFace:"Georgia",color:p2Cols[i],align:"left",margin:0});
+    s6.addText(item,{x:1.3,y:y+0.22,w:8.0,h:0.58,fontSize:11.5,fontFace:"Arial",color:C.white,align:"left",valign:"middle",wrap:true,margin:0});
+  });
+
+  // SLIDE 7 Financial Impact
+  const s7 = pres.addSlide();
+  s7.background={color:C.navy}; topBar(s7);
+  eyebrow(s7,"// FINANCIAL IMPACT",0.5,0.18);
+  s7.addText("The Numbers",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  [{label:"Weekly Hours Reclaimed",value:c.weeklyHours+" hrs",col:C.teal,sub:"per week, every week"},{label:"Monthly Net ROI",value:c.monthlyROI,col:C.green,sub:"after tool costs"},{label:"Monthly Tool Cost",value:c.monthlyTools,col:C.orange,sub:"total new spend"}].forEach((stat,i)=>{
+    const x=0.5+i*3.1;
+    s7.addShape("rect",{x,y:1.18,w:2.9,h:2.5,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    s7.addShape("rect",{x,y:1.18,w:2.9,h:0.06,fill:{color:stat.col},line:{color:stat.col,width:0}});
+    s7.addText(stat.value,{x:x+0.2,y:1.55,w:2.5,h:0.85,fontSize:36,fontFace:"Georgia",color:stat.col,align:"left",valign:"middle",margin:0});
+    s7.addText(stat.label.toUpperCase(),{x:x+0.2,y:2.45,w:2.5,h:0.28,fontSize:7.5,fontFace:"Courier New",color:C.dim,charSpacing:1.5,align:"left",margin:0});
+    s7.addText(stat.sub,{x:x+0.2,y:2.76,w:2.5,h:0.25,fontSize:9,fontFace:"Arial",color:C.dim,align:"left",margin:0});
+  });
+  s7.addShape("rect",{x:0.5,y:3.88,w:9,h:1.32,fill:{color:C.card},line:{color:C.teal,width:0.5}});
+  bar(s7,0.5,3.88,1.32,C.teal);
+  s7.addText("What This Means",{x:0.65,y:3.96,w:8,h:0.26,fontSize:8,fontFace:"Courier New",color:C.teal,charSpacing:2,margin:0});
+  s7.addText("These projections are based on industry benchmarks for similar tool implementations and the time costs identified in the assessment. Actual results depend on adoption speed and team consistency. Most clients see measurable impact within the first 30 days.",{x:0.65,y:4.25,w:8.6,h:0.85,fontSize:10,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
+
+  // SLIDE 8 Next Steps
+  const s8 = pres.addSlide();
+  s8.background={color:C.navy}; topBar(s8);
+  eyebrow(s8,"// YOUR NEXT STEPS",0.5,0.18);
+  s8.addText("How We Move Forward",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
+  [{num:"01",title:"Implement the 4 Quick Wins",body:"Follow the 4-Day Plan exactly as outlined. Each task is self-contained and does not require technical support. Completing all four sets the foundation for Phase 2.",col:C.teal},{num:"02",title:"Schedule a 30-Minute Review Call",body:"After 30 days, we review results together: what is working, what needs adjustment, and whether Phase 2 initiatives are warranted. This call is included in your audit.",col:C.orange}].forEach((step,i)=>{
+    const y=1.25+i*1.85;
+    s8.addShape("rect",{x:0.5,y,w:9,h:1.65,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
+    bar(s8,0.5,y,1.65,step.col);
+    s8.addText(step.num,{x:0.65,y:y+0.16,w:0.7,h:0.7,fontSize:36,fontFace:"Georgia",color:step.col,align:"left",margin:0});
+    s8.addText(step.title,{x:1.5,y:y+0.22,w:7.8,h:0.3,fontSize:13,fontFace:"Arial",bold:true,color:C.white,align:"left",margin:0});
+    s8.addText(step.body,{x:1.5,y:y+0.58,w:7.8,h:0.88,fontSize:10.5,fontFace:"Arial",color:C.dim,align:"left",valign:"top",wrap:true,margin:0});
+  });
+  s8.addShape("rect",{x:0.5,y:5.04,w:9,h:0.38,fill:{color:C.card},line:{color:C.border,width:0.5}});
+  s8.addText([{text:"Questions?  ",options:{color:C.dim,fontSize:9,fontFace:"Courier New"}},{text:"jsnmade.com",options:{color:C.teal,fontSize:9,fontFace:"Courier New",bold:true}},{text:"   ·   Prepared by JSN Made   ·   AI Readiness Audit",options:{color:C.dim,fontSize:9,fontFace:"Courier New"}}],{x:0.65,y:5.07,w:8.7,h:0.3,valign:"middle",margin:0});
+
+  // Download
+  const safeName = (c.name || "Client").replace(/[^a-zA-Z0-9]/g, "-");
+  await pres.writeFile({ fileName: "JSN-Made-Audit-" + safeName + ".pptx" });
+}
 </script>
 </body>
 </html>
