@@ -460,6 +460,7 @@ function renderLeads() {
             <button class="action-btn" onclick="copySummary(\`${summaryText.replace(/`/g, "'")}\`)">Copy Summary</button>
             <button class="action-btn orange" onclick="window.open('https://calendly.com/jsnmade-pm/30min','_blank')">Book Discovery Call</button>
             <button class="action-btn" onclick="window.open('mailto:${lead.email}','_blank')">Send Email</button>
+            <button class="action-btn" style="border-color:rgba(255,107,43,0.4);color:var(--orange)" onclick="window.open('mailto:${lead.email}?subject=Your JSN AIQ Audit&body=Hi ${lead.name},%0D%0A%0D%0AThank you for completing the AI Readiness Assessment. Based on your results, I would love to schedule your full AI Readiness Audit.%0D%0A%0D%0AYou can complete your payment here:%0D%0Ahttps://buy.stripe.com/8x2aEXaTmfWEf2h6o50kE06%0D%0A%0D%0AOnce payment is confirmed I will reach out to schedule your audit session.%0D%0A%0D%0A-- JSN Made','_blank')">Send Audit Link</button>
             <button class="action-btn" style="border-color:rgba(29,198,194,0.4);color:var(--accent)" onclick="openAudit(${i})">Generate Audit Report</button>
           </div>
         </div>
