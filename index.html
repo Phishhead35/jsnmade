@@ -419,6 +419,7 @@
       .cred-grid { grid-template-columns: 1fr; gap: 14px; }
       .access { padding: 80px 24px; }
       footer { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
+      .product-cards-grid { grid-template-columns: 1fr !important; }
     }
 
     @media (max-width: 560px) {
@@ -503,18 +504,18 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
       <span class="section-eyebrow" style="display:block;text-align:center">Get Started</span>
       <h2 class="access-headline">Pick your<br><span>product.</span></h2>
       <p class="access-body">Two distinct tools. Both built for the businesses the big guys skip. Start with the one that matches where you are right now.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;text-align:left">
-        <div style="background:rgba(255,107,43,0.06);border:1px solid rgba(255,107,43,0.2);padding:32px">
+      <div class="product-cards-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:40px;text-align:left;align-items:stretch">
+        <div style="background:rgba(255,107,43,0.06);border:1px solid rgba(255,107,43,0.2);padding:32px;display:flex;flex-direction:column">
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);margin-bottom:12px">JSN REPS</div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;color:var(--white);margin-bottom:12px">Real Estate AI Suite</div>
-          <p style="font-size:13px;color:var(--white);line-height:1.7;margin-bottom:24px">Seven AI tools for agents and brokers. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. One login.</p>
-          <a href="reps/index.html" class="btn-primary" style="text-decoration:none;background:var(--orange);display:inline-block">Explore REPS &rarr;</a>
+          <p style="font-size:13px;color:var(--white);line-height:1.7;margin-bottom:24px;flex:1">Seven AI tools for agents and brokers. Pipeline intelligence, deal analysis, listing copy, client communications, and field training. One login.</p>
+          <a href="reps/" class="btn-primary" style="text-decoration:none;background:var(--orange);display:block;text-align:center">Explore REPS &rarr;</a>
         </div>
-        <div style="background:rgba(0,212,200,0.06);border:1px solid rgba(0,212,200,0.2);padding:32px">
+        <div style="background:rgba(0,212,200,0.06);border:1px solid rgba(0,212,200,0.2);padding:32px;display:flex;flex-direction:column">
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px">AIQ</div>
           <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;color:var(--white);margin-bottom:12px">AI Readiness Training</div>
-          <p style="font-size:13px;color:var(--white);line-height:1.7;margin-bottom:24px">Free 25-question assessment, personalized maturity score, and a four-track training program that takes you from AI curious to AI operational.</p>
-          <a href="aiq/index.html" class="btn-primary" style="text-decoration:none;background:var(--cyan);color:var(--navy);display:inline-block">Take the Free Assessment &rarr;</a>
+          <p style="font-size:13px;color:var(--white);line-height:1.7;margin-bottom:24px;flex:1">Free 25-question assessment, personalized maturity score, and a four-track training program that takes you from AI curious to AI operational.</p>
+          <a href="aiq/index.html" class="btn-primary" style="text-decoration:none;background:var(--cyan);color:var(--navy);display:block;text-align:center">Take Free Assessment &rarr;</a>
         </div>
       </div>
       <p style="margin-top:24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);text-align:center">No spam. No pitch decks. Start free.</p>
