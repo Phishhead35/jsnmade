@@ -252,6 +252,18 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
       <div style="font-size:11px;color:#FFFFFF;font-family:var(--mono);margin-bottom:12px">Tracks 2, 3 &amp; 4 &middot; Save $40</div>
       <a class="btn-paywall-secondary" href="https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01">Get Full Program &rarr;</a>
       <div class="paywall-secure">&#128274;&nbsp; Secured by Stripe</div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px">Have a promo code?</div>
+        <div style="display:flex;gap:8px">
+          <input id="promo-input" type="text" placeholder="Enter code" maxlength="20"
+            style="flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--border2);padding:10px 12px;font-family:var(--mono);font-size:11px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.1em;outline:none"
+            onkeydown="if(event.key==='Enter')redeemPromo()" />
+          <button onclick="redeemPromo()"
+            style="background:var(--accent);color:#0b1120;border:none;padding:10px 16px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:opacity 0.15s;white-space:nowrap"
+            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Apply</button>
+        </div>
+        <div id="promo-msg" style="font-family:var(--mono);font-size:10px;margin-top:8px;display:none"></div>
+      </div>
       <div class="paywall-track1"><a href="aiq-training.html">Return to Track 1 &rarr;</a> &nbsp;&middot;&nbsp; <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" style="color:var(--accent)">Have Track 2? Upgrade for $118 &rarr;</a></div>
     </div>
   </div>
@@ -521,6 +533,51 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 // To update the payment link, change this one value only.
 // ============================================================
 const STRIPE_LINK = "https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01";
+const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev";
+
+async function redeemPromo() {
+  const input = document.getElementById('promo-input');
+  const msg = document.getElementById('promo-msg');
+  const code = input.value.trim().toUpperCase();
+  if (!code) return;
+
+  msg.style.display = 'block';
+  msg.style.color = '#FFFFFF';
+  msg.textContent = 'Checking code...';
+  input.disabled = true;
+
+  try {
+    const res = await fetch(KV_WORKER + '/promo/redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+
+    if (data.valid) {
+      msg.style.color = 'var(--accent)';
+      msg.textContent = 'Code accepted. Unlocking full program...';
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        params.set('paid', 'true');
+        params.set('promo', 'true');
+        window.location.search = params.toString();
+      }, 1000);
+    } else if (data.reason === 'expired') {
+      msg.style.color = '#ff6b6b';
+      msg.textContent = 'This code has reached its usage limit.';
+      input.disabled = false;
+    } else {
+      msg.style.color = '#ff6b6b';
+      msg.textContent = 'Invalid code. Please check and try again.';
+      input.disabled = false;
+    }
+  } catch (err) {
+    msg.style.color = '#ff6b6b';
+    msg.textContent = 'Something went wrong. Please try again.';
+    input.disabled = false;
+  }
+}
 
 const QUIZ = [
   {q:"Which of the following is NOT one of the three criteria for a good first AI pilot project?",opts:["High repetition: the task happens frequently","Measurable outcome: success can be defined in a number","Low failure risk: consequences of errors are manageable","High complexity: the task requires significant human expertise"],correct:3,feedback:"High complexity is actually a warning sign for a first pilot, not a criterion. The best first projects are high repetition, measurable, and low risk if the AI makes a mistake."},
