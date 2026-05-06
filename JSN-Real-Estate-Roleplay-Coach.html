@@ -4574,7 +4574,7 @@ async function send(){
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1024,
-        stream:true,
+        stream:false,
         system:getSys(),
         messages:buildMessages()
       })
