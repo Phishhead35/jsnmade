@@ -985,7 +985,7 @@ function renderOutput(r, mode, fromHistory) {
     }
 
     if (status.allowed) {
-      enableTool();
+      enableTool(status.email);
     }
 
     document.getElementById("jsn-nav-signout").addEventListener("click", async () => {
@@ -997,7 +997,7 @@ function renderOutput(r, mode, fromHistory) {
       if (session) {
         const fresh = await JSNPaywall.check(TOOL_ID);
         updateNav(fresh);
-        if (fresh.allowed) enableTool();
+        if (fresh.allowed) enableTool(fresh.email);
       }
     });
   }
@@ -1012,9 +1012,31 @@ function renderOutput(r, mode, fromHistory) {
     navUser.style.display = "flex";
   }
 
-  function enableTool() {
+  function enableTool(email) {
     const overlay = document.getElementById("tool-disabled-overlay");
     if (overlay) overlay.remove();
+
+    // Auto-bypass the internal login screen using the Supabase email
+    const loginScreen = document.getElementById("login-screen");
+    const app = document.getElementById("app");
+
+    if (loginScreen && app) {
+      // Build agent profile from email if not already set
+      if (!agentProfile) {
+        const name = email ? email.split("@")[0].replace(/[._]/g, " ") : "Agent";
+        agentProfile = {
+          name: name.charAt(0).toUpperCase() + name.slice(1),
+          office: "",
+          role: "agent",
+          loginTime: new Date().toISOString()
+        };
+        localStorage.setItem("jsn_agent_profile", JSON.stringify(agentProfile));
+      }
+      applyProfile();
+      loginScreen.style.display = "none";
+      app.style.display = "block";
+      loadPersistedData();
+    }
   }
 
   initTool().catch(console.error);
