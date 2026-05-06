@@ -14,6 +14,10 @@
  */
 
 (async function() {
+  // If JSNAuth paywall system is present, it handles all auth and nav.
+  // Skip jsn-nav.js entirely to avoid conflicts.
+  if (window.JSNAuth || window.JSNPaywall) return;
+
   const SUPABASE_URL     = 'https://vmuvgdtfsdydvpxvdgso.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl';
   const LOGIN_URL        = '/login.html';
