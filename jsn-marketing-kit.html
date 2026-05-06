@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="sb-anon-key" content="sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/reps/auth.js"></script>
+<script src="/reps/paywall.js"></script>
 <title>JSN Marketing Kit Generator</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -187,6 +192,20 @@
 </head>
 <body>
 
+<div id="jsn-topnav">
+  <a href="/" class="jsn-nav-logo">
+    <span class="jsn-logo-jsn">JSN</span><span class="jsn-logo-made">Made</span>
+    <span class="jsn-logo-sep">/</span>
+    <span class="jsn-logo-product">REPS</span>
+  </a>
+  <div class="jsn-nav-right">
+    <div class="jsn-nav-user" id="jsn-nav-user" style="display:none">
+      <span class="jsn-nav-email" id="jsn-nav-email"></span>
+      <span class="jsn-nav-tier" id="jsn-nav-tier"></span>
+      <button class="jsn-nav-signout" id="jsn-nav-signout">Sign Out</button>
+    </div>
+  </div>
+</div>
 <header>
   <div class="logo">
     <span class="logo-jsn">JSN</span>
@@ -930,5 +949,51 @@ function esc(s) {
   Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
 </div>
 <script src="/jsn-nav.js"></script>
+<script>
+  const TOOL_ID = "reps_contract";
+
+  async function initTool() {
+    await JSNAuth.init();
+    const status = await JSNPaywall.check(TOOL_ID);
+
+    if (status && status.email) {
+      updateNav(status);
+    }
+
+    if (status.allowed) {
+      enableTool();
+    }
+
+    document.getElementById("jsn-nav-signout").addEventListener("click", async () => {
+      await JSNAuth.signOut();
+      window.location.reload();
+    });
+
+    JSNAuth.onAuthChange(async ({ session }) => {
+      if (session) {
+        const fresh = await JSNPaywall.check(TOOL_ID);
+        updateNav(fresh);
+        if (fresh.allowed) enableTool();
+      }
+    });
+  }
+
+  function updateNav(status) {
+    const navUser = document.getElementById("jsn-nav-user");
+    const navEmail = document.getElementById("jsn-nav-email");
+    const navTier = document.getElementById("jsn-nav-tier");
+    navEmail.textContent = status.email || "";
+    navTier.textContent = (status.tier || "free").toUpperCase();
+    navTier.setAttribute("data-tier", status.tier || "free");
+    navUser.style.display = "flex";
+  }
+
+  function enableTool() {
+    const overlay = document.getElementById("tool-disabled-overlay");
+    if (overlay) overlay.remove();
+  }
+
+  initTool().catch(console.error);
+</script>
 </body>
 </html>
