@@ -163,6 +163,56 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
   align-items:center;
   margin-right:8px;
 }
+  /* JSN Top Nav */
+  #jsn-topnav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(11,17,32,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 9000;
+  }
+  .jsn-nav-logo {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 18px; font-weight: 800;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .jsn-logo-jsn   { color: #00d4c8; }
+  .jsn-logo-made  { color: #ffffff; }
+  .jsn-logo-sep   { color: rgba(255,255,255,0.2); margin: 0 4px; }
+  .jsn-logo-product { color: rgba(255,255,255,0.55); font-weight: 600; }
+  .jsn-nav-right  { display: flex; align-items: center; gap: 12px; }
+  .jsn-nav-user   { display: flex; align-items: center; gap: 10px; }
+  .jsn-nav-email  { font-family: "DM Mono", monospace; font-size: 11px; color: rgba(255,255,255,0.45); }
+  .jsn-nav-tier   {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 100px;
+    background: rgba(0,212,200,0.12);
+    border: 1px solid rgba(0,212,200,0.3);
+    color: #00d4c8;
+  }
+  .jsn-nav-tier[data-tier="pro"]  { background: rgba(255,107,43,0.12); border-color: rgba(255,107,43,0.3); color: #ff6b2b; }
+  .jsn-nav-tier[data-tier="team"] { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); color: #ffd700; }
+  .jsn-nav-signout {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.4);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 5px 10px; cursor: pointer; transition: all 0.2s;
+  }
+  .jsn-nav-signout:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); }
 </style>
 </head>
 <body>
@@ -4594,53 +4644,19 @@ async function send(){
       return;
     }
 
-    // Create the assistant bubble immediately for streaming
+    // Parse JSON response (stream:false)
     rmTyping();
+    const json=await r.json();
+    const fullText=(json.content||[]).map(b=>b.text||'').join('');
+
     const msgs=document.getElementById('msgs');
     const div=document.createElement('div');
     div.className='msg assistant';
-    div.innerHTML=`<div class="av" aria-hidden="true">C</div><div class="bubble stream-bubble" id="stream-bubble" aria-live="polite" aria-label="Coach response"></div>`;
+    div.innerHTML=`<div class="av" aria-hidden="true">C</div><div class="bubble" aria-live="polite" aria-label="Coach response"></div>`;
     msgs.appendChild(div);
-    msgs.scrollTop=msgs.scrollHeight;
-
-    const bubble=document.getElementById('stream-bubble');
-    let fullText='';
-    let renderBuffer='';
-    let renderTimer=null;
-
-    const reader=r.body.getReader();
-    const decoder=new TextDecoder();
-
-    while(true){
-      const {done,value}=await reader.read();
-      if(done)break;
-      const chunk=decoder.decode(value,{stream:true});
-      const lines=chunk.split('\n');
-      for(const line of lines){
-        if(!line.startsWith('data:'))continue;
-        const data=line.slice(5).trim();
-        if(data==='[DONE]')break;
-        try{
-          const parsed=JSON.parse(data);
-          if(parsed.type==='content_block_delta'&&parsed.delta?.type==='text_delta'){
-            fullText+=parsed.delta.text;
-            renderBuffer+=parsed.delta.text;
-            // Throttle DOM updates for performance
-            if(!renderTimer){
-              renderTimer=setTimeout(()=>{
-                bubble.innerHTML=fmt(fullText);
-                msgs.scrollTop=msgs.scrollHeight;
-                renderTimer=null;
-              },30);
-            }
-          }
-        }catch(e){}
-      }
-    }
-    // Final render
-    clearTimeout(renderTimer);
+    const bubble=div.querySelector('.bubble');
     bubble.innerHTML=fmt(fullText);
-    bubble.removeAttribute('id');
+    msgs.scrollTop=msgs.scrollHeight;
 
     // Apply roleplay/coach tag styling
     const isRP=fullText.includes('[PROSPECT]');
