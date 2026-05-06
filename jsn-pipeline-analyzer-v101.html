@@ -680,20 +680,7 @@
 </head>
 <body>
 
-<div id="jsn-topnav">
-  <a href="/" class="jsn-nav-logo">
-    <span class="jsn-logo-jsn">JSN</span><span class="jsn-logo-made">Made</span>
-    <span class="jsn-logo-sep">/</span>
-    <span class="jsn-logo-product">REPS</span>
-  </a>
-  <div class="jsn-nav-right">
-    <div class="jsn-nav-user" id="jsn-nav-user" style="display:none">
-      <span class="jsn-nav-email" id="jsn-nav-email"></span>
-      <span class="jsn-nav-tier" id="jsn-nav-tier"></span>
-      <button class="jsn-nav-signout" id="jsn-nav-signout">Sign Out</button>
-    </div>
-  </div>
-</div>
+
 <a class="skip-link" href="#outputBody">Skip to output</a>
 <div class="panel-overlay" id="panelOverlay" onclick="closeSidebar()"></div>
 
@@ -1392,36 +1379,16 @@ document.addEventListener('keydown', e => {
     await JSNAuth.init();
     const status = await JSNPaywall.check(TOOL_ID);
 
-    if (status && status.email) {
-      updateNav(status);
-    }
-
     if (status.allowed) {
       enableTool();
     }
 
-    document.getElementById("jsn-nav-signout").addEventListener("click", async () => {
-      await JSNAuth.signOut();
-      window.location.reload();
-    });
-
     JSNAuth.onAuthChange(async ({ session }) => {
       if (session) {
         const fresh = await JSNPaywall.check(TOOL_ID);
-        updateNav(fresh);
         if (fresh.allowed) enableTool();
       }
     });
-  }
-
-  function updateNav(status) {
-    const navUser = document.getElementById("jsn-nav-user");
-    const navEmail = document.getElementById("jsn-nav-email");
-    const navTier = document.getElementById("jsn-nav-tier");
-    navEmail.textContent = status.email || "";
-    navTier.textContent = (status.tier || "free").toUpperCase();
-    navTier.setAttribute("data-tier", status.tier || "free");
-    navUser.style.display = "flex";
   }
 
   function enableTool() {
