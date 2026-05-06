@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="sb-anon-key" content="YOUR_PUBLISHABLE_KEY_HERE" />
+<meta name="sb-anon-key" content="sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/reps/auth.js"></script>
@@ -4568,9 +4568,9 @@ async function send(){
 
   // ── STREAMING ──────────────────────────────────────────────────────────────
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
+    const r=await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-tool-id':'reps_roleplay'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1024,

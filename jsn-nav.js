@@ -60,11 +60,11 @@
   // ── GET USER PROFILE ────────────────────────────────────────
   let profile = { full_name: '', plan_tier: 'free', role: 'agent' };
   try {
-    const { data } = await sb.from('users')
-      .select('full_name, plan_tier, role')
+    const { data } = await sb.from('profiles')
+      .select('email, tier_id')
       .eq('id', session.user.id)
       .single();
-    if (data) profile = data;
+    if (data) profile = { full_name: data.email, plan_tier: data.tier_id, role: 'agent' };
   } catch(e) {}
 
   const firstName   = (profile.full_name || session.user.email || '').split(' ')[0];
