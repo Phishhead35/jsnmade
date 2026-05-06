@@ -773,6 +773,7 @@ ${draft}`;
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         app:      'messaging',
+	stream:   false,
         system:   SYSTEM,
         messages: [{ role: 'user', content: userMsg }],
         agentName:    agentProfile ? agentProfile.name : 'Unknown',
