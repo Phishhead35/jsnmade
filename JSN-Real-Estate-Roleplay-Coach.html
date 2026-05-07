@@ -4776,6 +4776,15 @@ function exportChat(){
       enableTool();
     }
 
+    // Load jsn-nav.js after auth is ready so session is guaranteed available
+    await new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.src = '/jsn-nav.js';
+      s.onload = resolve;
+      s.onerror = resolve;
+      document.body.appendChild(s);
+    });
+
     JSNAuth.onAuthChange(async ({ session }) => {
       if (session) {
         const fresh = await JSNPaywall.check(TOOL_ID);
