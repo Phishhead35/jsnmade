@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to REPS | JSN Made</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0b1120;
+      --card: #0f1929;
+      --teal: #00d4c8;
+      --orange: #ff6b2b;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.1);
+      --border-teal: rgba(0,212,200,0.25);
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -5%, rgba(0,212,200,0.1) 0%, transparent 65%),
+        var(--navy);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border-teal);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-jsn  { color: var(--teal); }
+    .logo-made { color: var(--white); margin-left: 4px; }
+
+    .welcome-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .badge {
+      display: inline-block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .badge-pro {
+      background: rgba(0,212,200,0.12);
+      border: 1px solid rgba(0,212,200,0.35);
+      color: var(--teal);
+    }
+    .badge-team {
+      background: rgba(255,215,0,0.1);
+      border: 1px solid rgba(255,215,0,0.35);
+      color: #ffd700;
+    }
+
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 10px;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+    .field label {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 12px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field input:focus {
+      border-color: var(--teal);
+      background: rgba(0,212,200,0.04);
+    }
+    .field input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .email-hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 5px;
+    }
+
+    .error {
+      color: var(--orange);
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      min-height: 18px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--teal);
+      color: var(--navy);
+      border: none;
+      border-radius: 9px;
+      padding: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:hover { background: #00bfb4; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .existing-link {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .existing-link a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .existing-link a:hover { color: var(--white); }
+
+    /* Sign in panel */
+    #signin-panel { display: none; }
+
+    /* Success state */
+    #success-state { display: none; text-align: center; }
+    .success-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(0,212,200,0.12);
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      font-size: 28px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .success-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .success-msg {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <span class="logo-jsn">JSN</span><span class="logo-made">Made</span>
+    </div>
+
+    <!-- Signup panel -->
+    <div id="signup-panel">
+      <div class="welcome-badge">
+        <span class="badge badge-pro" id="tier-badge">Pro</span>
+      </div>
+      <h1>Payment Confirmed</h1>
+      <p class="subtitle">Create your account to activate your plan and access all REPS tools.</p>
+
+      <p class="section-label">Create Your Account</p>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="Use the email you paid with" autocomplete="email" />
+        <p class="email-hint">Use the same email address you used at checkout.</p>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="Min 8 characters" autocomplete="new-password" />
+      </div>
+
+      <div class="error" id="signup-error"></div>
+      <button class="btn" id="signup-btn">Create Account and Activate</button>
+
+      <p class="existing-link">Already have an account? <a onclick="showSignin()">Sign in instead</a></p>
+    </div>
+
+    <!-- Sign in panel -->
+    <div id="signin-panel">
+      <div class="welcome-badge">
+        <span class="badge badge-pro" id="tier-badge-2">Pro</span>
+      </div>
+      <h1>Activate Your Plan</h1>
+      <p class="subtitle">Sign in to link your payment and activate your plan.</p>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signin-email" placeholder="you@company.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signin-password" placeholder="Password" autocomplete="current-password" />
+      </div>
+
+      <div class="error" id="signin-error"></div>
+      <button class="btn" id="signin-btn">Sign In and Activate</button>
+
+      <p class="existing-link">New here? <a onclick="showSignup()">Create an account</a></p>
+    </div>
+
+    <!-- Success state -->
+    <div id="success-state">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-title">You're All Set</div>
+      <p class="success-msg" id="success-msg">Your plan is active. Welcome to REPS.</p>
+      <a href="/reps/" class="btn" style="display:block;text-decoration:none;text-align:center;">Open REPS</a>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL      = 'https://vmuvgdtfsdydvpxvdgso.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl';
+    const WORKER_URL        = 'https://jsn-reps-paywall.wewearsmiles.workers.dev';
+
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Get tier from URL param e.g. ?tier=pro or ?tier=team
+    const params = new URLSearchParams(window.location.search);
+    const tier   = params.get('tier') || 'pro';
+
+    // Set badge labels
+    const label = tier === 'team' ? 'Team' : 'Pro';
+    document.getElementById('tier-badge').textContent   = label;
+    document.getElementById('tier-badge-2').textContent = label;
+    if (tier === 'team') {
+      document.querySelectorAll('.badge').forEach(b => {
+        b.classList.remove('badge-pro');
+        b.classList.add('badge-team');
+      });
+    }
+
+    function showSignin() {
+      document.getElementById('signup-panel').style.display = 'none';
+      document.getElementById('signin-panel').style.display = 'block';
+    }
+
+    function showSignup() {
+      document.getElementById('signin-panel').style.display = 'none';
+      document.getElementById('signup-panel').style.display = 'block';
+    }
+
+    function showSuccess(email) {
+      document.getElementById('signup-panel').style.display = 'none';
+      document.getElementById('signin-panel').style.display = 'none';
+      document.getElementById('success-state').style.display = 'block';
+      document.getElementById('success-msg').textContent =
+        `Your ${label} plan is active. Welcome to REPS, ${email.split('@')[0]}.`;
+    }
+
+    async function activateTier(session) {
+      // Update tier in Supabase directly
+      const { error } = await sb
+        .from('profiles')
+        .update({
+          tier_id: tier,
+          subscription_status: 'active'
+        })
+        .eq('id', session.user.id);
+
+      if (error) console.error('Tier update error:', error);
+      showSuccess(session.user.email);
+    }
+
+    // Sign up
+    document.getElementById('signup-btn').addEventListener('click', async () => {
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const errorEl  = document.getElementById('signup-error');
+      errorEl.textContent = '';
+
+      if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; return; }
+      if (password.length < 8) { errorEl.textContent = 'Password must be at least 8 characters.'; return; }
+
+      const btn = document.getElementById('signup-btn');
+      btn.disabled = true; btn.textContent = 'Creating Account...';
+
+      const { data, error } = await sb.auth.signUp({ email, password });
+
+      if (error) {
+        errorEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Create Account and Activate';
+        return;
+      }
+
+      // If email confirmation is required, show a message
+      if (data.user && !data.session) {
+        errorEl.style.color = '#00d4c8';
+        errorEl.textContent = 'Check your inbox to confirm your email, then come back and sign in.';
+        btn.disabled = false; btn.textContent = 'Create Account and Activate';
+        return;
+      }
+
+      await activateTier(data.session);
+    });
+
+    // Sign in
+    document.getElementById('signin-btn').addEventListener('click', async () => {
+      const email    = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+      const errorEl  = document.getElementById('signin-error');
+      errorEl.textContent = '';
+
+      if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; return; }
+
+      const btn = document.getElementById('signin-btn');
+      btn.disabled = true; btn.textContent = 'Signing In...';
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        errorEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Sign In and Activate';
+        return;
+      }
+
+      await activateTier(data.session);
+    });
+
+    // Enter key support
+    ['signup-email','signup-password'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('signup-btn').click();
+      });
+    });
+    ['signin-email','signin-password'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('signin-btn').click();
+      });
+    });
+  </script>
+</body>
+</html>
