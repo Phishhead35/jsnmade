@@ -1168,6 +1168,7 @@ async function analyze() {
       `<div class="response-content">${renderMarkdown(fullText)}</div>`;
 
     addToHistory(input.substring(0, 48) + (input.length > 48 ? '…' : ''), input, currentMode);
+    await JSNPaywall.recordUse(TOOL_ID);
 
   } catch(err) {
     const errMsgs = {

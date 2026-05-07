@@ -646,6 +646,7 @@ ${facts}`;
     try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
     catch(e) { throw new Error('Response could not be parsed. Try again.'); }
     currentResults = { mode:'generate', data: parsed };
+    await JSNPaywall.recordUse(TOOL_ID);
     renderGenerate(parsed);
   } catch(err) { showError(err.message); }
   finally { setLoading(false); }
@@ -721,6 +722,7 @@ Return ONE valid JSON object. No markdown, no preamble.
     try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
     catch(e) { throw new Error('Response could not be parsed. Try again.'); }
     currentResults = { mode:'audit', data: parsed };
+    await JSNPaywall.recordUse(TOOL_ID);
     renderAudit(parsed);
   } catch(err) { showError(err.message); }
   finally { setLoading(false); }
@@ -939,7 +941,7 @@ function esc(s) {
 </div>
 <script src="/jsn-nav.js"></script>
 <script>
-  const TOOL_ID = "reps_contract";
+  const TOOL_ID = "reps_followup";
 
   async function initTool() {
     await JSNAuth.init();

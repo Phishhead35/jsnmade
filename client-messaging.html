@@ -828,6 +828,7 @@ ${draft}`;
 
     renderHistory();
     renderOutput(result, mode, false);
+    await JSNPaywall.recordUse(TOOL_ID);
   } catch (e) {
     document.getElementById('output-area').innerHTML = `
       <div class="card">

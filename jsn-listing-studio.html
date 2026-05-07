@@ -814,6 +814,7 @@ ${sanitized}`;
     cursor.remove();
     updateStats(fullOutput);
     addToHistory(currentMode, platform, fullOutput);
+    await JSNPaywall.recordUse(TOOL_ID);
     renderFormattedOutput(fullOutput);
 
   } catch (err) {

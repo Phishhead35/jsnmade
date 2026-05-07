@@ -1413,6 +1413,7 @@ async function runAnalysis() {
 
     renderResult(inputs, fullText);
     await saveHistory(inputs, fullText);
+    await JSNPaywall.recordUse(TOOL_ID);
     renderHistory();
 
   } catch (err) {
@@ -1781,7 +1782,7 @@ document.addEventListener('keydown', e => {
 </div>
 <script src="/jsn-nav.js"></script>
 <script>
-  const TOOL_ID = "reps_contract";
+  const TOOL_ID = "reps_objection";
 
   async function initTool() {
     await JSNAuth.init();

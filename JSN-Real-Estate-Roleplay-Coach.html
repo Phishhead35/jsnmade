@@ -4601,6 +4601,7 @@ async function send(){
     const isCO=fullText.includes('[COACH]');
     if(isRP){bubble.classList.add('rp');bubble.innerHTML=`<span class="tag rp-tag">▶ PROSPECT</span>${fmt(fullText.replace('[PROSPECT]','').trim())}`;}
     else if(isCO){bubble.innerHTML=`<span class="tag co-tag">◈ COACHING</span>${fmt(fullText.replace('[COACH]','').trim())}`;}
+    await JSNPaywall.recordUse(TOOL_ID);
 
     history.push({role:'assistant',content:fullText});
     trimHistory();
@@ -4765,7 +4766,7 @@ function exportChat(){
 })();
 </script>
 <script>
-  const TOOL_ID = "reps_contract";
+  const TOOL_ID = "reps_roleplay";
 
   async function initTool() {
     await JSNAuth.init();
