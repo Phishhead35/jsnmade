@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to AIQ | JSN Made</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0b1120; --card: #0f1929; --teal: #00d4c8;
+      --orange: #ff6b2b; --white: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.1);
+      --border-teal: rgba(0,212,200,0.25);
+    }
+    html, body {
+      min-height: 100vh; background: var(--navy);
+      color: var(--white); font-family: 'Barlow', sans-serif;
+    }
+    body {
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      background: radial-gradient(ellipse 80% 50% at 50% -5%, rgba(0,212,200,0.1) 0%, transparent 65%), var(--navy);
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border-teal);
+      border-radius: 20px; padding: 48px 40px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+    .logo {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 28px;
+      font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase;
+      text-align: center; margin-bottom: 28px;
+    }
+    .logo-jsn { color: var(--teal); }
+    .logo-made { color: var(--white); margin-left: 4px; }
+    .badge {
+      display: inline-block; font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+      background: rgba(0,212,200,0.12); border: 1px solid rgba(0,212,200,0.35);
+      color: var(--teal); margin: 0 auto 20px; display: block; width: fit-content;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 28px;
+      font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 10px; text-align: center;
+    }
+    .subtitle {
+      font-size: 14px; color: var(--muted); text-align: center;
+      margin-bottom: 32px; line-height: 1.6;
+    }
+    .unlocks {
+      background: rgba(0,212,200,0.06); border: 1px solid rgba(0,212,200,0.15);
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 28px;
+    }
+    .unlocks-label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .unlock-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--white); padding: 4px 0;
+    }
+    .unlock-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal); flex-shrink: 0;
+    }
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px;
+    }
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block; font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
+    }
+    .field input {
+      width: 100%; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); border-radius: 9px; padding: 12px 14px;
+      font-family: 'DM Mono', monospace; font-size: 14px; color: var(--white);
+      outline: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .field input:focus { border-color: var(--teal); background: rgba(0,212,200,0.04); }
+    .field input::placeholder { color: rgba(255,255,255,0.2); }
+    .email-hint { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 5px; }
+    .error { color: var(--orange); font-family: 'Barlow', sans-serif; font-size: 13px; min-height: 18px; margin-bottom: 12px; text-align: center; }
+    .btn {
+      width: 100%; background: var(--teal); color: var(--navy); border: none;
+      border-radius: 9px; padding: 14px;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 16px;
+      font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
+    }
+    .btn:hover { background: #00bfb4; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .existing-link { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); }
+    .existing-link a { color: rgba(255,255,255,0.6); text-decoration: underline; cursor: pointer; }
+    .existing-link a:hover { color: var(--white); }
+    #signin-panel { display: none; }
+    #success-state { display: none; text-align: center; }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(0,212,200,0.12); border: 2px solid var(--teal);
+      color: var(--teal); font-size: 28px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .success-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 24px;
+      font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase;
+      color: var(--white); margin-bottom: 10px;
+    }
+    .success-msg { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo"><span class="logo-jsn">AIQ</span><span class="logo-made"> by JSN Made</span></div>
+
+    <!-- Signup panel -->
+    <div id="signup-panel">
+      <div class="badge" id="product-badge">Track 2 Unlocked</div>
+      <h1>Payment Confirmed</h1>
+      <p class="subtitle">Create your account to access your content.</p>
+
+      <div class="unlocks" id="unlocks-list"></div>
+
+      <p class="section-label">Create Your Account</p>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="Use the email you paid with" autocomplete="email" />
+        <p class="email-hint">Use the same email address you used at checkout.</p>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="Min 8 characters" autocomplete="new-password" />
+      </div>
+      <div class="error" id="signup-error"></div>
+      <button class="btn" id="signup-btn">Create Account and Unlock</button>
+      <p class="existing-link">Already have an account? <a onclick="showSignin()">Sign in instead</a></p>
+    </div>
+
+    <!-- Sign in panel -->
+    <div id="signin-panel">
+      <div class="badge" id="product-badge-2">Track 2 Unlocked</div>
+      <h1>Activate Your Access</h1>
+      <p class="subtitle">Sign in to link your payment and unlock your content.</p>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signin-email" placeholder="you@company.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signin-password" placeholder="Password" autocomplete="current-password" />
+      </div>
+      <div class="error" id="signin-error"></div>
+      <button class="btn" id="signin-btn">Sign In and Unlock</button>
+      <p class="existing-link">New here? <a onclick="showSignup()">Create an account</a></p>
+    </div>
+
+    <!-- Success state -->
+    <div id="success-state">
+      <div class="success-icon">&#10003;</div>
+      <div class="success-title">You're In</div>
+      <p class="success-msg" id="success-msg">Your content is unlocked and ready.</p>
+      <a href="/aiq/" class="btn" id="start-btn" style="display:block;text-decoration:none;text-align:center;">Start Learning</a>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL      = 'https://vmuvgdtfsdydvpxvdgso.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl';
+
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params  = new URLSearchParams(window.location.search);
+    const product = params.get('product') || 'track_2';
+
+    const PRODUCT_INFO = {
+      track_2:      { label: 'Track 2 Unlocked',        unlocks: ['AI Tools and Workflows (Track 2)', 'Track 2 AI Coach', 'Track 2 Quiz'], redirect: '/aiq/aiq-training-track2.html' },
+      track_3:      { label: 'Track 3 Unlocked',        unlocks: ['Advanced AI Integration (Track 3)', 'Track 3 AI Coach', 'Track 3 Quiz'], redirect: '/aiq/aiq-training-track3.html' },
+      track_4:      { label: 'Track 4 Unlocked',        unlocks: ['AI Leadership and Scale (Track 4)', 'Track 4 AI Coach', 'Track 4 Quiz'], redirect: '/aiq/aiq-training-track4.html' },
+      tracks_3_4:   { label: 'Tracks 3 + 4 Unlocked',  unlocks: ['Advanced AI Integration (Track 3)', 'AI Leadership and Scale (Track 4)', 'AI Coaches for both tracks', 'Quizzes for both tracks'], redirect: '/aiq/aiq-training-track3.html' },
+      full_program: { label: 'Full Program Unlocked',   unlocks: ['All 4 Tracks unlocked', 'AI Coach for every track', 'All quizzes', 'Priority support'], redirect: '/aiq/aiq-training-track2.html' },
+    };
+
+    const info = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
+
+    // Set badge labels
+    document.getElementById('product-badge').textContent   = info.label;
+    document.getElementById('product-badge-2').textContent = info.label;
+
+    // Build unlocks list
+    const unlocksList = document.getElementById('unlocks-list');
+    unlocksList.innerHTML = `
+      <div class="unlocks-label">What you just unlocked</div>
+      ${info.unlocks.map(u => `<div class="unlock-item"><div class="unlock-dot"></div>${u}</div>`).join('')}
+    `;
+
+    function showSignin() {
+      document.getElementById('signup-panel').style.display = 'none';
+      document.getElementById('signin-panel').style.display = 'block';
+    }
+    function showSignup() {
+      document.getElementById('signin-panel').style.display = 'none';
+      document.getElementById('signup-panel').style.display = 'block';
+    }
+
+    async function activateAccess(session) {
+      // Unlock tracks directly via Supabase RPC
+      const { error } = await sb.rpc('unlock_aiq_tracks', {
+        p_user_id:    session.user.id,
+        p_product:    product,
+        p_session_id: 'manual_' + Date.now()
+      });
+
+      if (error) console.error('Unlock error:', error);
+
+      document.getElementById('signup-panel').style.display  = 'none';
+      document.getElementById('signin-panel').style.display  = 'none';
+      document.getElementById('success-state').style.display = 'block';
+      document.getElementById('success-msg').textContent     = `${info.label}. You're ready to continue your AI journey.`;
+      document.getElementById('start-btn').href = info.redirect;
+    }
+
+    document.getElementById('signup-btn').addEventListener('click', async () => {
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const errorEl  = document.getElementById('signup-error');
+      errorEl.textContent = '';
+
+      if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; return; }
+      if (password.length < 8) { errorEl.textContent = 'Password must be at least 8 characters.'; return; }
+
+      const btn = document.getElementById('signup-btn');
+      btn.disabled = true; btn.textContent = 'Creating Account...';
+
+      const { data, error } = await sb.auth.signUp({ email, password });
+
+      if (error) {
+        errorEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Create Account and Unlock';
+        return;
+      }
+
+      if (data.user && !data.session) {
+        errorEl.style.color = '#00d4c8';
+        errorEl.textContent = 'Check your inbox to confirm your email, then come back and sign in.';
+        btn.disabled = false; btn.textContent = 'Create Account and Unlock';
+        return;
+      }
+
+      await activateAccess(data.session);
+    });
+
+    document.getElementById('signin-btn').addEventListener('click', async () => {
+      const email    = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+      const errorEl  = document.getElementById('signin-error');
+      errorEl.textContent = '';
+
+      if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; return; }
+
+      const btn = document.getElementById('signin-btn');
+      btn.disabled = true; btn.textContent = 'Signing In...';
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        errorEl.textContent = error.message;
+        btn.disabled = false; btn.textContent = 'Sign In and Unlock';
+        return;
+      }
+
+      await activateAccess(data.session);
+    });
+
+    ['signup-email','signup-password'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('signup-btn').click();
+      });
+    });
+    ['signin-email','signin-password'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('signin-btn').click();
+      });
+    });
+  </script>
+</body>
+</html>
