@@ -188,9 +188,10 @@
     const params  = new URLSearchParams(window.location.search);
     const product = params.get('product') || localStorage.getItem('aiq_pending_product') || 'track_2';
 
-    // If Supabase redirected back here after email confirmation, a session will exist
-    sb.auth.getSession().then(async ({ data: { session } }) => {
-      if (session) {
+    // Listen for auth state changes -- catches the confirmation redirect
+    // Supabase processes the #access_token hash and fires SIGNED_IN automatically
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
         const pending = localStorage.getItem('aiq_pending_product');
         if (pending) {
           localStorage.removeItem('aiq_pending_product');
@@ -231,7 +232,10 @@
     }
 
     async function activateAccess(session) {
-      // Unlock tracks directly via Supabase RPC
+      // Get redirect from localStorage if product param was lost during confirmation redirect
+      const pendingRedirect = localStorage.getItem('aiq_pending_redirect') || info.redirect;
+      localStorage.removeItem('aiq_pending_redirect');
+
       const { error } = await sb.rpc('unlock_aiq_tracks', {
         p_user_id:    session.user.id,
         p_product:    product,
@@ -244,7 +248,7 @@
       document.getElementById('signin-panel').style.display  = 'none';
       document.getElementById('success-state').style.display = 'block';
       document.getElementById('success-msg').textContent     = `${info.label}. You're ready to continue your AI journey.`;
-      document.getElementById('start-btn').href = info.redirect;
+      document.getElementById('start-btn').href = pendingRedirect;
     }
 
     document.getElementById('signup-btn').addEventListener('click', async () => {
@@ -271,6 +275,7 @@
       if (data.user && !data.session) {
         localStorage.setItem('aiq_pending_product', product);
         localStorage.setItem('aiq_pending_email', email);
+        localStorage.setItem('aiq_pending_redirect', info.redirect);
         errorEl.style.color = '#00d4c8';
         errorEl.textContent = 'Check your inbox to confirm your email. You will be brought back here automatically.';
         btn.disabled = false; btn.textContent = 'Create Account and Unlock';
