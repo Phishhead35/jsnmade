@@ -188,10 +188,9 @@
     const params  = new URLSearchParams(window.location.search);
     const product = params.get('product') || localStorage.getItem('aiq_pending_product') || 'track_2';
 
-    // Listen for auth state changes -- catches the confirmation redirect
-    // Supabase processes the #access_token hash and fires SIGNED_IN automatically
-    sb.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
+    // If Supabase redirected back here after email confirmation, a session will exist
+    sb.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
         const pending = localStorage.getItem('aiq_pending_product');
         if (pending) {
           localStorage.removeItem('aiq_pending_product');
@@ -232,7 +231,6 @@
     }
 
     async function activateAccess(session) {
-      // Get redirect from localStorage if product param was lost during confirmation redirect
       const pendingRedirect = localStorage.getItem('aiq_pending_redirect') || info.redirect;
       localStorage.removeItem('aiq_pending_redirect');
 
@@ -267,6 +265,17 @@
       const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } });
 
       if (error) {
+        // If user already exists, try signing them in directly
+        if (error.message.toLowerCase().includes('already registered') || error.message.toLowerCase().includes('already exists')) {
+          const { data: signinData, error: signinError } = await sb.auth.signInWithPassword({ email, password });
+          if (signinError) {
+            errorEl.textContent = 'Account already exists. Please use your existing password or click "Sign in instead".';
+            btn.disabled = false; btn.textContent = 'Create Account and Unlock';
+            return;
+          }
+          await activateAccess(signinData.session);
+          return;
+        }
         errorEl.textContent = error.message;
         btn.disabled = false; btn.textContent = 'Create Account and Unlock';
         return;
