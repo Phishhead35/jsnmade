@@ -1,756 +1,597 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AIQ Training. Track 2: From Pilot to Proof</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0B1121;--surface:#121C2F;--card:#151F33;--border:rgba(255,255,255,0.07);
-  --border2:rgba(29,198,194,0.25);--text:#FFFFFF;--muted:rgba(255,255,255,0.5);
-  --dim:rgba(255,255,255,0.2);--accent:#1DC6C2;--accent2:#2DD9D5;--orange:#FD6B2B;
-  --green:#5BE0A0;--red:#FF6B6B;--mono:'DM Mono',monospace;
-  --serif:'DM Serif Display',Georgia,serif;--sans:'DM Sans',sans-serif;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.4}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIQ Track 2 — Data & Infrastructure | JSN Made</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0b1120;
+      --navy-mid: #111827;
+      --navy-light: #1a2540;
+      --teal: #00d4c8;
+      --teal-dim: rgba(0, 212, 200, 0.12);
+      --orange: #ff6b2b;
+      --white: #ffffff;
+      --grey: #8a9ab5;
+      --border: rgba(0, 212, 200, 0.18);
+    }
 
-.shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:32px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
-.main{padding:48px 56px;max-width:900px}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.sidebar-brand{padding:0 28px 28px;border-bottom:1px solid var(--border)}
-.brand-back{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF;text-decoration:none;display:flex;align-items:center;gap:6px;margin-bottom:16px;transition:color 0.15s}
-.brand-back:hover{color:var(--accent)}
-.brand-name{font-family:var(--serif);font-size:18px;color:var(--accent)}
-.brand-sub{font-size:11px;color:#FFFFFF;margin-top:2px;font-family:var(--mono)}
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+    }
 
-.track-badge{margin:20px 28px;background:var(--card);border:1px solid var(--border2);padding:16px;position:relative;overflow:hidden}
-.track-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#1DC6C2,#2DD9D5)}
-.track-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:6px}
-.track-name{font-family:var(--serif);font-size:20px;line-height:1.2;color:var(--accent)}
-.track-sub{font-size:11px;color:#FFFFFF;margin-top:4px;font-family:var(--mono)}
+    /* ── ACCESS GATE OVERLAY ── */
+    #access-gate {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.nav-section{padding:20px 28px 8px;font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 28px;cursor:pointer;transition:background 0.12s;font-size:13px;color:#FFFFFF;position:relative}
-.nav-item:hover{background:rgba(255,255,255,0.03);color:var(--accent)}
-.nav-item.active{background:rgba(29,198,194,0.08);color:var(--accent)}
-.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent)}
-.nav-num{font-family:var(--mono);font-size:10px;width:20px;flex-shrink:0;color:rgba(255,255,255,0.6)}
-.nav-item.active .nav-num{color:var(--accent)}
-.nav-check{margin-left:auto;font-size:10px;color:var(--green)}
-.sidebar-footer{margin-top:auto;padding:20px 28px;border-top:1px solid var(--border);font-size:10px;color:rgba(255,255,255,0.25);font-family:var(--mono);line-height:1.6}
+    #access-gate.hidden { display: none; }
 
-/* PAYWALL */
-.paywall-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px;background:var(--bg);position:fixed;inset:0;z-index:200;overflow-y:auto}
-.paywall-wrap.hidden{display:none}
-.paywall-card{background:var(--surface);border:1px solid var(--border2);max-width:820px;width:100%;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 320px}
-.paywall-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#1DC6C2,transparent);z-index:1}
-.paywall-top{padding:32px 36px 28px}
-.paywall-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.paywall-h1{font-family:var(--serif);font-size:clamp(26px,3.5vw,38px);line-height:1.1;margin-bottom:10px;color:#FFFFFF}
-.paywall-h1 em{color:var(--accent);font-style:italic}
-.paywall-sub{font-size:13px;line-height:1.65;color:#FFFFFF;margin-bottom:20px}
-.paywall-includes-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;margin-bottom:10px}
-.paywall-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:13px;color:#FFFFFF;line-height:1.4}
-.paywall-item-icon{color:var(--accent);font-family:var(--mono);font-size:11px;flex-shrink:0;margin-top:1px;min-width:18px}
-.paywall-item strong{display:block;color:#FFFFFF;margin-bottom:1px;font-size:12px}
-.paywall-bottom{background:var(--card);border-left:1px solid var(--border);padding:32px 28px;display:flex;flex-direction:column;justify-content:center}
-.paywall-price-row{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}
-.paywall-price{font-family:var(--serif);font-size:44px;color:#FFFFFF;line-height:1}
-.paywall-price-label{font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.1em}
-.paywall-price-sub{font-size:11px;color:#FFFFFF;margin-bottom:20px;font-family:var(--mono)}
-.btn-paywall{display:block;width:100%;background:var(--orange);color:#FFFFFF;border:none;padding:14px 20px;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:opacity 0.15s;margin-bottom:10px}
-.btn-paywall:hover{opacity:0.88}
-.btn-paywall-secondary{display:block;width:100%;background:transparent;color:#FFFFFF;border:1px solid var(--border2);padding:12px 20px;font-family:var(--mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:all 0.15s;margin-bottom:12px}
-.btn-paywall-secondary:hover{border-color:var(--accent);color:var(--accent)}
-.paywall-secure{font-size:10px;color:#FFFFFF;text-align:center;font-family:var(--mono)}
-.paywall-track1{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:#FFFFFF;font-family:var(--mono)}
-.paywall-track1 a{color:var(--accent);text-decoration:none}
-.paywall-track1 a:hover{text-decoration:underline}
-@media(max-width:640px){
-  .paywall-card{grid-template-columns:1fr}
-  .paywall-bottom{border-left:none;border-top:1px solid var(--border)}
-}
+    .gate-inner {
+      text-align: center;
+      padding: 2rem;
+    }
 
-/* GATE */
-.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:var(--bg);position:fixed;inset:0;z-index:100;transition:opacity 0.4s}
-.gate-wrap.hidden{opacity:0;pointer-events:none}
-.gate-card{background:var(--surface);border:1px solid var(--border2);padding:52px 48px;max-width:520px;width:100%;position:relative}
-.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#1DC6C2,transparent)}
-.gate-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:16px}
-.gate-h1{font-family:var(--serif);font-size:clamp(28px,4vw,42px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
-.gate-h1 em{color:var(--accent);font-style:italic}
-.gate-body{font-size:14px;line-height:1.75;color:#FFFFFF;margin-bottom:32px}
-.gate-track-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--card);border:1px solid var(--border);margin-bottom:32px}
-.gate-track-num{font-family:var(--serif);font-size:48px;line-height:1;color:var(--accent)}
-.gate-track-info{font-size:12px;color:#FFFFFF;line-height:1.5}
-.gate-track-info strong{display:block;color:#FFFFFF;font-size:13px;margin-bottom:2px}
-.gate-input{width:100%;background:var(--card);border:1px solid var(--border2);color:#FFFFFF;padding:14px 16px;font-family:var(--mono);font-size:13px;margin-bottom:10px;outline:none;transition:border-color 0.15s}
-.gate-input:focus{border-color:var(--accent)}
-.gate-input::placeholder{color:rgba(255,255,255,0.4)}
-.btn-primary{background:var(--orange);color:#FFFFFF;border:none;padding:15px 36px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;width:100%;transition:opacity 0.15s}
-.btn-primary:hover{opacity:0.88}
-.gate-privacy{font-size:10px;color:rgba(255,255,255,0.6);text-align:center;margin-top:12px;font-family:var(--mono)}
-#gate-error{display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-top:10px;font-family:var(--mono)}
+    .gate-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--teal-dim);
+      border-top-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
 
-.page{display:none;animation:fadeUp 0.3s ease}
-.page.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-.lesson-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px;display:flex;align-items:center;gap:10px}
-.lesson-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
-.lesson-title{font-family:var(--serif);font-size:clamp(28px,4vw,44px);line-height:1.15;margin-bottom:16px;color:#FFFFFF}
-.lesson-title em{color:var(--accent);font-style:italic}
-.lesson-meta{display:flex;gap:20px;font-family:var(--mono);font-size:10px;color:#FFFFFF;letter-spacing:0.08em;margin-bottom:40px}
-.lesson-body{font-size:15px;line-height:1.8;color:#FFFFFF}
-.lesson-body p{margin-bottom:20px}
-.lesson-body h3{font-family:var(--serif);font-size:22px;color:#FFFFFF;margin:36px 0 14px}
-.lesson-body h3 em{color:var(--accent);font-style:italic}
+    .gate-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--grey);
+      letter-spacing: 0.05em;
+    }
 
-.callout{background:var(--card);border-left:3px solid #1DC6C2;padding:20px 24px;margin:28px 0}
-.callout-label{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#1DC6C2;margin-bottom:8px}
-.callout p{font-size:14px;color:#FFFFFF;line-height:1.7;margin:0}
+    /* ── NAV ── */
+    nav {
+      background: rgba(11, 17, 32, 0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:28px 0}
-.stat-card{background:var(--card);border:1px solid var(--border);padding:20px}
-.stat-num{font-family:var(--serif);font-size:32px;color:#1DC6C2;line-height:1;margin-bottom:6px}
-.stat-label{font-size:12px;color:#FFFFFF;line-height:1.4}
+    .nav-brand {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+    }
 
-.example-box{background:var(--card);border:1px solid var(--border2);padding:24px;margin:28px 0}
-.example-label{font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:12px}
-.example-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.example-item{padding:12px;background:var(--surface);font-size:13px;color:#FFFFFF;line-height:1.5}
-.example-item strong{display:block;color:#FFFFFF;font-size:12px;margin-bottom:4px;font-family:var(--mono)}
+    .nav-brand span { color: var(--teal); }
 
-.matrix{width:100%;border-collapse:collapse;margin:24px 0}
-.matrix th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#1DC6C2;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border2)}
-.matrix td{font-size:13px;color:#FFFFFF;padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
-.matrix tr:last-child td{border-bottom:none}
-.matrix .good{color:var(--green)}
-.matrix .bad{color:#FF6B6B}
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      list-style: none;
+    }
 
-.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
-.btn-nav{background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:12px 24px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
-.btn-nav:hover{border-color:var(--accent);color:var(--accent)}
-.btn-nav-primary{background:var(--orange);color:#FFFFFF;border:1px solid var(--orange);padding:12px 28px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;font-weight:500;transition:opacity 0.15s}
-.btn-nav-primary:hover{opacity:0.88}
+    .nav-links a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
 
-.quiz-progress{height:1px;background:var(--border);margin-bottom:32px}
-.quiz-progress-fill{height:100%;background:#1DC6C2;transition:width 0.4s ease}
-.quiz-q{font-family:var(--serif);font-size:clamp(18px,3vw,26px);line-height:1.45;margin-bottom:28px;min-height:60px;color:#FFFFFF}
-.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.quiz-option{background:var(--card);border:1px solid var(--border);padding:16px 20px;cursor:pointer;font-size:14px;color:#FFFFFF;text-align:left;font-family:var(--sans);transition:all 0.12s;display:flex;align-items:center;gap:14px}
-.quiz-option:hover{background:rgba(29,198,194,0.05);border-color:rgba(29,198,194,0.3)}
-.quiz-option.correct{border-color:#1DC6C2;background:rgba(29,198,194,0.08)}
-.quiz-option.wrong{border-color:var(--red);background:rgba(255,107,107,0.08)}
-.quiz-opt-letter{font-family:var(--mono);font-size:11px;width:22px;height:22px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#FFFFFF}
-.quiz-option.correct .quiz-opt-letter{border-color:#1DC6C2;color:#1DC6C2}
-.quiz-option.wrong .quiz-opt-letter{border-color:var(--red);color:var(--red)}
-.quiz-feedback{padding:16px 20px;margin-bottom:24px;font-size:13px;line-height:1.6;display:none;color:#FFFFFF}
-.quiz-feedback.show{display:block}
-.quiz-feedback.correct{background:rgba(29,198,194,0.08);border-left:3px solid #1DC6C2}
-.quiz-feedback.wrong{background:rgba(255,107,107,0.08);border-left:3px solid var(--red)}
-.quiz-score-final{text-align:center;padding:48px 0}
-.quiz-score-circle{width:120px;height:120px;border:2px solid #1DC6C2;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 24px;font-family:var(--serif)}
-.quiz-score-circle .big{font-size:40px;color:#1DC6C2;line-height:1}
-.quiz-score-circle .small{font-size:12px;color:#FFFFFF;font-family:var(--mono)}
-.quiz-result-title{font-family:var(--serif);font-size:28px;margin-bottom:12px;color:#FFFFFF}
-.quiz-result-body{font-size:14px;color:#FFFFFF;max-width:400px;margin:0 auto 32px;line-height:1.7}
+    .nav-links a:hover { color: var(--white); background: var(--teal-dim); }
+    .nav-links a.active { color: var(--teal); }
 
-.chat-container{background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;height:520px}
-.chat-messages{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px}
-.chat-messages::-webkit-scrollbar{width:4px}
-.chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
-.msg{display:flex;gap:12px;align-items:flex-start;animation:fadeUp 0.2s ease}
-.msg-avatar{width:28px;height:28px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:500;margin-top:2px}
-.msg-avatar.ai{background:rgba(29,198,194,0.12);border:1px solid rgba(29,198,194,0.3);color:#1DC6C2}
-.msg-avatar.user{background:rgba(253,107,43,0.12);border:1px solid rgba(253,107,43,0.3);color:var(--orange)}
-.msg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px}
-.msg-text{font-size:14px;line-height:1.7;color:#FFFFFF}
-.msg-text p{margin-bottom:8px}
-.msg-text p:last-child{margin-bottom:0}
-.msg.user .msg-bubble{text-align:right}
-.msg.user .msg-name{text-align:right}
-.msg.user .msg-text{background:rgba(253,107,43,0.08);border:1px solid rgba(253,107,43,0.15);padding:12px 16px;display:inline-block;text-align:left}
-.typing{display:flex;gap:4px;align-items:center;padding:4px 0}
-.typing span{width:6px;height:6px;background:rgba(255,255,255,0.4);border-radius:50%;animation:bounce 1.2s infinite}
-.typing span:nth-child(2){animation-delay:0.15s}
-.typing span:nth-child(3){animation-delay:0.3s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-.chat-input-row{border-top:1px solid var(--border);padding:16px 20px;display:flex;gap:12px;align-items:flex-end}
-.chat-input{flex:1;background:transparent;border:none;color:#FFFFFF;font-family:var(--sans);font-size:14px;resize:none;outline:none;min-height:36px;max-height:120px;line-height:1.5}
-.chat-input::placeholder{color:rgba(255,255,255,0.4)}
-.chat-send{background:var(--orange);border:none;color:#FFFFFF;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:opacity 0.15s}
-.chat-send:hover{opacity:0.88}
-.chat-send:disabled{opacity:0.4;cursor:not-allowed}
-.suggested-qs{margin-top:16px}
-.sq-label{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:10px}
-.sq-grid{display:flex;flex-wrap:wrap;gap:8px}
-.sq-btn{background:var(--card);border:1px solid var(--border);color:#FFFFFF;padding:8px 14px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.4}
-.sq-btn:hover{border-color:#1DC6C2;color:#1DC6C2}
+    .nav-track-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--navy);
+      background: var(--teal);
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+    }
 
-.complete-wrap{text-align:center;padding:60px 0}
-.complete-icon{font-size:48px;margin-bottom:24px}
-.complete-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);margin-bottom:16px;color:#FFFFFF}
-.complete-title em{color:var(--accent);font-style:italic}
-.complete-body{font-size:15px;color:#FFFFFF;line-height:1.7;max-width:480px;margin:0 auto 40px}
-.next-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;text-align:left}
-.track-card{background:var(--card);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden}
-.track-card.locked{opacity:0.5}
-.track-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.track-card:nth-child(1)::before{background:#1DC6C2}
-.track-card:nth-child(2)::before{background:var(--orange)}
-.track-card:nth-child(3)::before{background:var(--green)}
-.track-level{font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px}
-.track-title{font-family:var(--serif);font-size:16px;margin-bottom:6px;color:#FFFFFF}
-.track-desc{font-size:12px;color:#FFFFFF;line-height:1.5}
-.track-lock{position:absolute;top:12px;right:12px;font-size:12px;color:rgba(255,255,255,0.6)}
+    /* ── MOBILE NAV ── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 0.4rem;
+      background: none;
+      border: none;
+    }
 
-@media(max-width:768px){
-  .shell{grid-template-columns:1fr}
-  .sidebar{position:static;height:auto}
-  .main{padding:32px 20px}
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .example-grid{grid-template-columns:1fr}
-  .next-tracks{grid-template-columns:1fr}
-  .gate-card,.paywall-top{padding:28px 20px}
-  .paywall-bottom{padding:24px 20px}
-}
-</style>
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: var(--navy-mid);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: color 0.2s;
+    }
+
+    .mobile-menu a:hover { color: var(--teal); }
+    .mobile-menu a:last-child { border-bottom: none; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ── PAGE CONTENT ── */
+    #page-content {
+      display: none;
+    }
+
+    #page-content.visible {
+      display: block;
+    }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .page-header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .track-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    .page-title span { color: var(--teal); }
+
+    .page-subtitle {
+      font-family: 'Barlow', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--white);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .track-progress {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .progress-step {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--grey);
+    }
+
+    .progress-step.current {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .progress-step.done {
+      background: var(--teal-dim);
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .progress-arrow {
+      color: var(--grey);
+      font-size: 0.8rem;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .module-card {
+      background: var(--navy-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .module-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.5rem;
+    }
+
+    .module-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .module-body {
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.95rem;
+      color: var(--white);
+      line-height: 1.7;
+    }
+
+    .module-body p { margin-bottom: 1rem; }
+    .module-body p:last-child { margin-bottom: 0; }
+
+    .module-body ul {
+      padding-left: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .module-body li {
+      color: var(--white);
+      margin-bottom: 0.4rem;
+      line-height: 1.6;
+    }
+
+    .callout {
+      background: var(--teal-dim);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 6px 6px 0;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+
+    .callout p {
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.9rem;
+      color: var(--white);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .callout strong { color: var(--teal); }
+
+    /* ── TRACK NAV FOOTER ── */
+    .track-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .track-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.4rem;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      color: var(--grey);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .track-nav-btn:hover {
+      border-color: var(--white);
+      color: var(--white);
+    }
+
+    .track-nav-btn.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--navy);
+    }
+
+    .track-nav-btn.primary:hover {
+      background: #00bfb4;
+      border-color: #00bfb4;
+    }
+
+    .track-position {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--grey);
+      letter-spacing: 0.06em;
+    }
+  </style>
 </head>
 <body>
 
-<!-- PAYWALL: shown when ?paid=true is NOT in URL -->
-<div class="paywall-wrap" id="paywall">
-  <div class="paywall-card">
-    <div class="paywall-top">
-      <div class="paywall-eyebrow">// AIQ &nbsp;&middot;&nbsp; TRACK 2</div>
-      <h1 class="paywall-h1">From <em>Pilot</em><br>to Proof.</h1>
-      <p class="paywall-sub">Run your first AI initiative, measure it properly, and build the internal case to scale. Or grab the full program and go all the way from pilot to competitive advantage.</p>
-      <div class="paywall-includes-label">Track 2 includes</div>
-      <div class="paywall-item"><span class="paywall-item-icon">01</span><strong>Picking the Right First AI Project</strong></div>
-      <div class="paywall-item"><span class="paywall-item-icon">02</span><strong>Running the 90-Day Pilot</strong></div>
-      <div class="paywall-item"><span class="paywall-item-icon">03</span><strong>Measuring Results and Making the Case to Scale</strong></div>
-      <div class="paywall-item"><span class="paywall-item-icon">&#10002;</span><strong>Module Quiz</strong></div>
-      <div class="paywall-item"><span class="paywall-item-icon">&#9672;</span><strong>AI Coach</strong></div>
-    </div>
-    <div class="paywall-bottom">
-      <div class="paywall-price-row">
-        <div class="paywall-price">$79</div>
-        <div class="paywall-price-label">one-time</div>
-      </div>
-      <div class="paywall-price-sub">Track 2 only. Lifetime access.</div>
-      <a class="btn-paywall" href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02">Unlock Track 2 &rarr;</a>
-      <div style="border-top:1px solid var(--border);margin:16px 0;"></div>
-      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Full Program</div>
-      <div style="font-family:var(--serif);font-size:28px;color:#FFFFFF;line-height:1;margin-bottom:4px">$197</div>
-      <div style="font-size:11px;color:#FFFFFF;font-family:var(--mono);margin-bottom:12px">Tracks 2, 3 &amp; 4 &middot; Save $40</div>
-      <a class="btn-paywall-secondary" href="https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01">Get Full Program &rarr;</a>
-      <div class="paywall-secure">&#128274;&nbsp; Secured by Stripe</div>
-      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#FFFFFF;margin-bottom:8px">Have a promo code?</div>
-        <div style="display:flex;gap:8px">
-          <input id="promo-input" type="text" placeholder="Enter code" maxlength="20"
-            style="flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--border2);padding:10px 12px;font-family:var(--mono);font-size:11px;color:#FFFFFF;text-transform:uppercase;letter-spacing:0.1em;outline:none"
-            onkeydown="if(event.key==='Enter')redeemPromo()" />
-          <button onclick="redeemPromo()"
-            style="background:var(--accent);color:#0b1120;border:none;padding:10px 16px;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:opacity 0.15s;white-space:nowrap"
-            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Apply</button>
-        </div>
-        <div id="promo-msg" style="font-family:var(--mono);font-size:10px;margin-top:8px;display:none"></div>
-      </div>
-      <div class="paywall-track1"><a href="aiq-training.html">Return to Track 1 &rarr;</a> &nbsp;&middot;&nbsp; <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" style="color:var(--accent)">Have Track 2? Upgrade for $118 &rarr;</a></div>
+  <!-- ACCESS GATE -->
+  <div id="access-gate">
+    <div class="gate-inner">
+      <div class="gate-spinner"></div>
+      <p class="gate-text">Verifying access...</p>
     </div>
   </div>
-</div>
 
-<!-- EMAIL GATE: shown only after ?paid=true confirmed -->
-<div class="gate-wrap hidden" id="gate">
-  <div class="gate-card">
-    <div class="gate-eyebrow">// AIQ &nbsp;&middot;&nbsp; TRACK 2 &nbsp;&middot;&nbsp; ACCESS CONFIRMED</div>
-    <h1 class="gate-h1">Payment <em>Confirmed.</em><br>Let's Begin.</h1>
-    <p class="gate-body">Your Track 2 access is unlocked. Enter your details below to personalize your training and AI Coach experience.</p>
-    <div class="gate-track-row">
-      <div class="gate-track-num">02</div>
-      <div class="gate-track-info">
-        <strong>Track 2. From Pilot to Proof</strong>
-        <span>3 lessons &middot; Quiz &middot; AI Coach &middot; ~25 min</span>
-      </div>
-    </div>
-    <input class="gate-input" type="text" id="gate-name" placeholder="Your name" autocomplete="name"/>
-    <input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email"/>
-    <select class="gate-input" id="gate-industry" style="margin-bottom:20px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231DC6C2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px">
-      <option value="" disabled selected>Select your industry (optional)</option>
-      <option value="food_beverage">Food &amp; Beverage</option>
-      <option value="distribution">Distribution &amp; Supply Chain</option>
-      <option value="real_estate">Real Estate</option>
-      <option value="professional_services">Professional Services</option>
-      <option value="healthcare">Healthcare</option>
-      <option value="auto">Automotive</option>
-      <option value="fitness">Fitness &amp; Wellness</option>
-      <option value="childcare">Childcare &amp; Early Education</option>
-      <option value="general">Other / General</option>
-    </select>
-    <button class="btn-primary" id="gate-btn" onclick="unlockTraining()">Start Track 2 &rarr;</button>
-    <div id="gate-error"></div>
-    <div class="gate-privacy">Your info is never shared or sold.</div>
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-brand">JSN <span>Made</span></a>
+    <ul class="nav-links">
+      <li><a href="aiq-welcome.html">AIQ Home</a></li>
+      <li><a href="aiq-training-track1.html">Track 1</a></li>
+      <li><a href="aiq-training-track2.html" class="active">Track 2</a></li>
+      <li><a href="aiq-training-track3.html">Track 3</a></li>
+      <li><a href="aiq-training-track4.html">Track 4</a></li>
+      <li><span class="nav-track-badge">Track 2</span></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="aiq-welcome.html">AIQ Home</a>
+    <a href="aiq-training-track1.html">Track 1</a>
+    <a href="aiq-training-track2.html">Track 2</a>
+    <a href="aiq-training-track3.html">Track 3</a>
+    <a href="aiq-training-track4.html">Track 4</a>
   </div>
-</div>
 
-<!-- MAIN APP -->
-<div class="shell" id="app-shell" style="display:none">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <a href="aiq-training.html" class="brand-back">&larr; Track 1</a>
-      <div class="brand-name">AIQ <span style="color:#FFFFFF">Training</span></div>
-      <div class="brand-sub">Track 2. From Pilot to Proof</div>
-    </div>
-    <div class="track-badge">
-      <div class="track-label">Current Track</div>
-      <div class="track-name">From Pilot<br>to Proof</div>
-      <div class="track-sub" id="sb-level">.</div>
-    </div>
-    <div class="nav-section">Curriculum</div>
-    <div class="nav-item active" onclick="showPage('lesson1')" id="nav-lesson1"><span class="nav-num">01</span> Picking the Right Project</div>
-    <div class="nav-item" onclick="showPage('lesson2')" id="nav-lesson2"><span class="nav-num">02</span> Running the Pilot</div>
-    <div class="nav-item" onclick="showPage('lesson3')" id="nav-lesson3"><span class="nav-num">03</span> Measuring &amp; Scaling</div>
-    <div class="nav-item" onclick="showPage('quiz')" id="nav-quiz"><span class="nav-num">&#10002;</span> Module Quiz</div>
-    <div class="nav-item" onclick="showPage('chat')" id="nav-chat"><span class="nav-num">&#9672;</span> AI Coach</div>
-    <div class="nav-item" onclick="showPage('complete')" id="nav-complete"><span class="nav-num">&#9733;</span> Complete</div>
-    <div class="sidebar-footer">
-      <div id="sb-user-name" style="color:#FFFFFF;margin-bottom:4px"></div>
-      <div id="sb-user-email"></div>
-      <div style="margin-top:8px">Recommendations are AI-assisted and for informational purposes only. They do not constitute professional consulting advice.</div>
-    </div>
-  </aside>
+  <!-- PAGE CONTENT (hidden until access verified) -->
+  <div id="page-content">
 
-  <main class="main">
+    <div class="page-header">
+      <div class="page-header-inner">
+        <div class="track-label">AIQ Learning Track &mdash; Module 2 of 5</div>
+        <h1 class="page-title">Data &amp; <span>Infrastructure</span></h1>
+        <p class="page-subtitle">Understanding the data foundation your AI strategy actually needs to stand on.</p>
+        <div class="track-progress">
+          <span class="progress-step done">Track 1</span>
+          <span class="progress-arrow">&#8250;</span>
+          <span class="progress-step current">Track 2</span>
+          <span class="progress-arrow">&#8250;</span>
+          <span class="progress-step">Track 3</span>
+          <span class="progress-arrow">&#8250;</span>
+          <span class="progress-step">Track 4</span>
+        </div>
+      </div>
+    </div>
 
-    <!-- LESSON 1 -->
-    <div class="page active" id="page-lesson1">
-      <div class="lesson-eyebrow">// MODULE 01 OF 03</div>
-      <h1 class="lesson-title">Picking the <em>Right</em><br>First AI Project</h1>
-      <div class="lesson-meta"><span>9 min read</span><span>From Pilot to Proof</span></div>
-      <div class="lesson-body">
-        <p>The number one reason AI pilots fail is not technical. It is that they were working on the wrong problem from the start. A technically perfect AI solution to a low-value problem is still a failure. Choosing well is more important than executing well.</p>
-        <p>There are three criteria every good first AI project must meet. If your candidate project does not pass all three, move on. There are always better options.</p>
-        <h3>The Three <em>Criteria</em></h3>
-        <div class="example-box">
-          <div class="example-label">The Pilot Selection Framework</div>
-          <div class="example-grid">
-            <div class="example-item"><strong>1. High Repetition</strong>The task happens frequently. Daily, weekly, or at volume. AI ROI compounds with repetition. A task done once a quarter is a poor candidate. A task done 50 times a day is an excellent one.</div>
-            <div class="example-item"><strong>2. Measurable Outcome</strong>You can define success in a number before you start. Time saved. Error rate reduced. Cost per unit lowered. If you cannot define the metric before you begin, you will not be able to prove it worked.</div>
-            <div class="example-item"><strong>3. Low Failure Risk</strong>If the AI gets it wrong, the consequences are manageable. Document drafting, internal reporting, and customer inquiry routing are low risk. Medical diagnosis and legal determinations are high risk. Start where a mistake is recoverable.</div>
-            <div class="example-item"><strong>Bonus: Data Already Exists</strong>The best first projects have 6 to 12 months of historical data you can use immediately. You are not waiting to collect data, you are deploying against what you already have.</div>
+    <div class="content-wrap">
+
+      <div class="module-card">
+        <div class="module-number">Module 2.1</div>
+        <h2 class="module-title">Why Data Readiness Comes First</h2>
+        <div class="module-body">
+          <p>Most businesses approach AI backwards. They see a tool, they want to use it, and then they discover they don't have the data foundation to actually run it well. Data and infrastructure readiness is not a technical checkbox. It is the difference between AI that works and AI that wastes six months of your time.</p>
+          <p>Your AIQ score in this domain reflects the current state of how your data is collected, stored, cleaned, and accessed. Low scores here do not mean you cannot adopt AI. They mean you need to build the runway before the plane can take off.</p>
+          <div class="callout">
+            <p><strong>Key insight:</strong> You do not need perfect data to start. You need to understand what data you have, where it lives, and how trustworthy it is. That inventory is your starting point.</p>
           </div>
         </div>
-        <h3>The <em>Prioritization Matrix</em></h3>
-        <p>When you have multiple candidates, score each one across two dimensions: how much value does solving it create, and how easy is it to implement with AI? Projects in the top-right quadrant are your first pilots.</p>
-        <table class="matrix">
-          <thead><tr><th>Project Type</th><th>Value</th><th>Ease</th><th>Verdict</th></tr></thead>
-          <tbody>
-            <tr><td>Document drafting &amp; templates</td><td class="good">High</td><td class="good">Easy</td><td class="good">&#10003; Start here</td></tr>
-            <tr><td>Customer inquiry routing</td><td class="good">High</td><td class="good">Easy</td><td class="good">&#10003; Start here</td></tr>
-            <tr><td>Demand forecasting</td><td class="good">Very High</td><td style="color:var(--orange)">Medium</td><td style="color:var(--orange)">&rarr; Phase 2</td></tr>
-            <tr><td>Custom AI model training</td><td class="good">Very High</td><td class="bad">Hard</td><td class="bad">&#10007; Not yet</td></tr>
-            <tr><td>Internal knowledge base Q&amp;A</td><td style="color:var(--orange)">Medium</td><td class="good">Easy</td><td style="color:var(--orange)">&rarr; Quick win</td></tr>
-          </tbody>
-        </table>
-        <div class="callout">
-          <div class="callout-label">The Golden Rule</div>
-          <p>Pick the project where a 20% improvement is worth more than the cost of the pilot. That is your minimum bar. If you cannot estimate what 20% improvement in this area is worth annually, stop and do that math first.</p>
+      </div>
+
+      <div class="module-card">
+        <div class="module-number">Module 2.2</div>
+        <h2 class="module-title">The Four Data Questions</h2>
+        <div class="module-body">
+          <p>Before evaluating any AI use case, your organization needs honest answers to four questions:</p>
+          <ul>
+            <li><strong>Where does it live?</strong> Data in spreadsheets, siloed apps, and people's heads does not count. Accessible, structured data counts.</li>
+            <li><strong>How fresh is it?</strong> Stale data produces stale outputs. Real-time or near-real-time data pipelines are a competitive advantage.</li>
+            <li><strong>How clean is it?</strong> Garbage in, garbage out is not a cliche. It is a budget line item for companies that ignore it.</li>
+            <li><strong>Who owns it?</strong> Data without ownership is data without accountability. Unclear ownership is one of the most common sources of failed AI projects.</li>
+          </ul>
+          <p>Walk through these four questions for your three most important business processes. The gaps you find are the exact gaps your AI strategy needs to address first.</p>
         </div>
-        <h3>Common <em>Mistakes</em> to Avoid</h3>
-        <div class="example-box">
-          <div class="example-label">What Kills Pilots Before They Start</div>
-          <div class="example-grid">
-            <div class="example-item"><strong>No Named Owner</strong>Every pilot needs one person accountable for results. Not a committee. Not the IT team. One person whose job it is to make this work.</div>
-            <div class="example-item"><strong>Undefined Success</strong>"We will know it is working when it feels better" is not a success criterion. Define the number before day one.</div>
-            <div class="example-item"><strong>Scope Creep</strong>The pilot starts as "automate invoice processing" and becomes "rebuild our entire finance workflow." Stay on the original scope until you have proof of concept.</div>
-            <div class="example-item"><strong>Building Custom When Off-the-Shelf Exists</strong>For a first pilot, there is almost always an existing tool you can deploy in days. Custom builds are for Phase 3, not Phase 1.</div>
+      </div>
+
+      <div class="module-card">
+        <div class="module-number">Module 2.3</div>
+        <h2 class="module-title">Infrastructure: What You Actually Need</h2>
+        <div class="module-body">
+          <p>Infrastructure for AI does not require a data warehouse the size of a small country. For most small and mid-size businesses, the minimum viable infrastructure looks like this:</p>
+          <ul>
+            <li>A single source of truth for your most critical data (even if it starts as a well-maintained spreadsheet)</li>
+            <li>A consistent process for capturing new data without manual intervention where possible</li>
+            <li>Access controls so the right people can reach the right data without a helpdesk ticket</li>
+            <li>A basic audit trail so you know when data changed and who changed it</li>
+          </ul>
+          <div class="callout">
+            <p><strong>Practical step:</strong> Pick one high-value data set in your business. Map where it is created, where it is stored, who uses it, and how often it is wrong. That audit takes an afternoon and tells you more than any consultant's slide deck.</p>
           </div>
-        </div>
-        <p>In the next lesson, we will cover how to structure the 90-day pilot: timelines, checkpoints, what to measure, and how to run the review that determines whether you scale or pivot.</p>
-      </div>
-      <div class="lesson-nav"><div></div><button class="btn-nav-primary" onclick="showPage('lesson2')">Next Lesson &rarr;</button></div>
-    </div>
-
-    <!-- LESSON 2 -->
-    <div class="page" id="page-lesson2">
-      <div class="lesson-eyebrow">// MODULE 02 OF 03</div>
-      <h1 class="lesson-title">Running the <em>90-Day</em><br>Pilot</h1>
-      <div class="lesson-meta"><span>10 min read</span><span>From Pilot to Proof</span></div>
-      <div class="lesson-body">
-        <p>You have chosen your project. You have a named owner and a success metric. Now you need to run it in a way that produces clean, defensible data, because the output of a pilot is not just results, it is a business case for what comes next.</p>
-        <p>The 90-day structure is not arbitrary. Shorter pilots do not produce enough signal. Longer pilots lose momentum and accumulate scope creep. Ninety days is the window where real patterns emerge and organizational patience holds.</p>
-        <h3>The Four <em>Phases</em></h3>
-        <div class="example-box">
-          <div class="example-label">90-Day Pilot Structure</div>
-          <div class="example-grid">
-            <div class="example-item"><strong>Days 1 to 15: Setup</strong>Install the tool. Train the owner. Establish your baseline measurement: what does the process look like today, before AI? Document this rigorously. Your baseline is the foundation of your ROI calculation.</div>
-            <div class="example-item"><strong>Days 16 to 45: Run</strong>Deploy in a controlled environment. Not company-wide. A defined subset: one team, one region, one process flow. Collect data weekly. Resist the urge to declare success or failure early.</div>
-            <div class="example-item"><strong>Days 46 to 75: Measure</strong>Compare against baseline. Calculate actual vs. projected improvement. Identify the friction points: what is working, what is not, what would need to change to scale. Document everything, including the failures.</div>
-            <div class="example-item"><strong>Days 76 to 90: Decide</strong>Prepare a clean go/no-go recommendation with data. If it worked: propose Phase 2 with specific scope and budget. If it did not: document why and propose the prerequisite work. Both outcomes are valuable.</div>
-          </div>
-        </div>
-        <div class="callout">
-          <div class="callout-label">On Measuring the Baseline</div>
-          <p>Most organizations skip baseline measurement because it is tedious. This is a fatal mistake. Without a clear before picture, you cannot prove the after. Spend days 1 to 5 doing nothing but documenting the current state of the process you are improving. Time it. Count it. Cost it out.</p>
-        </div>
-        <h3>Managing <em>People</em> During the Pilot</h3>
-        <p>Technical failure is rare. People failure is common. The employees whose workflow is changing have real concerns about their jobs, about being evaluated, about learning something new. Ignoring these concerns is the fastest way to kill a pilot that would otherwise have succeeded.</p>
-        <div class="stat-grid">
-          <div class="stat-card"><div class="stat-num">70%</div><div class="stat-label">of AI pilots that fail cite employee resistance as a primary factor</div></div>
-          <div class="stat-card"><div class="stat-num">3x</div><div class="stat-label">higher success rate when employees are involved in tool selection</div></div>
-          <div class="stat-card"><div class="stat-num">Day 1</div><div class="stat-label">is when you should address job security concerns, not after they surface</div></div>
-        </div>
-        <p>Before you launch the pilot, have a direct conversation with the team: "This tool handles the repetitive parts of your job so you can focus on the work that actually requires your judgment. We are not replacing anyone. We are upgrading how the team operates." Say it once, clearly, and mean it.</p>
-        <h3>The <em>Weekly Check-In</em> Rhythm</h3>
-        <p>A 15-minute weekly check-in with the pilot owner prevents small problems from becoming pilot-killers. Ask three questions every week: What is working? What is not? What do you need to keep going? Keep it lightweight enough that people do not dread it.</p>
-        <div class="callout">
-          <div class="callout-label">What to Do When It Is Not Working</div>
-          <p>If the pilot is not producing results by day 45, do not wait until day 90 to acknowledge it. Diagnose early: is the tool wrong, or is the process wrong? A messy process fed into AI produces messy outputs faster. Fix the process first, then rerun the pilot.</p>
-        </div>
-        <p>In the final lesson, we will cover how to measure results, build the ROI case, and present the go/no-go recommendation in a way that gets leadership to say yes to scaling.</p>
-      </div>
-      <div class="lesson-nav"><button class="btn-nav" onclick="showPage('lesson1')">&larr; Previous</button><button class="btn-nav-primary" onclick="showPage('lesson3')">Next Lesson &rarr;</button></div>
-    </div>
-
-    <!-- LESSON 3 -->
-    <div class="page" id="page-lesson3">
-      <div class="lesson-eyebrow">// MODULE 03 OF 03</div>
-      <h1 class="lesson-title">Measuring Results &amp;<br><em>Making the Case</em> to Scale</h1>
-      <div class="lesson-meta"><span>8 min read</span><span>From Pilot to Proof</span></div>
-      <div class="lesson-body">
-        <p>The pilot is done. You have data. Now you need to turn that data into a decision and present it in a way that gets the right answer from leadership. This lesson is about measurement, storytelling, and the specific structure of a go/no-go recommendation that actually moves people.</p>
-        <h3>The <em>Four Numbers</em> That Matter</h3>
-        <p>You do not need a 40-slide deck. You need four numbers, clearly stated, with the math behind each one.</p>
-        <div class="example-box">
-          <div class="example-label">The ROI Calculation Framework</div>
-          <div class="example-grid">
-            <div class="example-item"><strong>1. Time Saved</strong>Hours per week x average fully-loaded hourly cost x 52 weeks. Example: 10 hours/week x $45/hour x 52 = $23,400/year per employee affected.</div>
-            <div class="example-item"><strong>2. Error Reduction</strong>Cost per error x errors per month x reduction percentage x 12. Even a 30% reduction in rework cost justifies most pilots. Errors are almost always more expensive than people think.</div>
-            <div class="example-item"><strong>3. Revenue Impact</strong>Harder to measure but most compelling to leadership. Did faster response times increase conversion? Did better data quality improve forecasting? Quantify conservatively and state your assumptions.</div>
-            <div class="example-item"><strong>4. Pilot Cost</strong>Tool cost + implementation time + training time. Be honest. Understating costs destroys credibility. Overstating them makes the ROI even more impressive when actuals come in lower.</div>
-          </div>
-        </div>
-        <div class="callout">
-          <div class="callout-label">The 10x Rule</div>
-          <p>A pilot needs to show at least 10x projected ROI to justify scaling investment. If your pilot cost $5,000 and it is producing $50,000 in annual value, that is your case. Anything below 5x is a marginal result that will struggle to get budget approval in most organizations.</p>
-        </div>
-        <h3>Structuring the <em>Go/No-Go</em> Recommendation</h3>
-        <p>The most effective recommendation follows a simple structure: one page, four sections. Leadership does not read long documents. Give them the summary and be ready for the questions.</p>
-        <table class="matrix">
-          <thead><tr><th>Section</th><th>What to Include</th></tr></thead>
-          <tbody>
-            <tr><td><strong>What We Tested</strong></td><td>One sentence. The tool, the process, the timeframe.</td></tr>
-            <tr><td><strong>What We Found</strong></td><td>The four numbers. Baseline vs. result. Clean and simple.</td></tr>
-            <tr><td><strong>The Recommendation</strong></td><td>Go or no-go. If go: proposed scope, cost, and timeline for Phase 2. If no-go: why, and what needs to change first.</td></tr>
-            <tr><td><strong>The Ask</strong></td><td>One specific decision. A budget approval, a headcount allocation, a timeline commitment. Make it easy to say yes.</td></tr>
-          </tbody>
-        </table>
-        <h3>When to <em>Scale</em> vs. When to Pause</h3>
-        <div class="example-box">
-          <div class="example-label">Scale vs. Pause Decision Framework</div>
-          <div class="example-grid">
-            <div class="example-item"><strong>Scale When:</strong>Results exceeded baseline by 20% or more. ROI is 10x or better. The team using it wants to keep using it. The process it supports is stable. You have a named owner ready to lead Phase 2.</div>
-            <div class="example-item"><strong>Pause When:</strong>Results are mixed or inconsistent. The underlying process is chaotic. Key personnel are resistant. The tool requires more customization than anticipated. Budget or leadership alignment is unclear.</div>
-          </div>
-        </div>
-        <p>Pausing is not failure. A well-documented pause that identifies what needs to change first is more valuable than a forced scale that produces mediocre results. The goal is not to prove AI works. It is to make AI work for your specific situation.</p>
-        <div class="callout">
-          <div class="callout-label">What Comes Next</div>
-          <p>Track 3, Governance and Growth, covers what happens after the pilot succeeds: data strategy, vendor evaluation at scale, change management across teams, and building the internal AI capability that makes each subsequent initiative faster and cheaper than the last.</p>
+          <p>Cloud-based tools like Airtable, Notion databases, or even Google Sheets with proper structure can serve as your starting infrastructure. The goal is to stop data from living in people's heads and inboxes.</p>
         </div>
       </div>
-      <div class="lesson-nav"><button class="btn-nav" onclick="showPage('lesson2')">&larr; Previous</button><button class="btn-nav-primary" onclick="showPage('quiz')">Take the Quiz &rarr;</button></div>
-    </div>
 
-    <!-- QUIZ -->
-    <div class="page" id="page-quiz">
-      <div class="lesson-eyebrow">// MODULE QUIZ</div>
-      <h1 class="lesson-title">Check Your <em>Understanding</em></h1>
-      <div class="lesson-meta"><span>5 min</span><span>5 questions</span></div>
-      <div id="quiz-body"></div>
-    </div>
-
-    <!-- CHAT -->
-    <div class="page" id="page-chat">
-      <div class="lesson-eyebrow">// AI COACH</div>
-      <h1 class="lesson-title">Ask Your <em>AI Coach</em></h1>
-      <p style="font-size:14px;color:#FFFFFF;margin-top:8px;line-height:1.6;margin-bottom:32px">Your AI coach knows your score, your track, and everything in Track 2. Ask anything about running your pilot, measuring results, or making the case to scale.</p>
-      <div class="chat-container">
-        <div class="chat-messages" id="chat-messages"></div>
-        <div class="chat-input-row">
-          <textarea class="chat-input" id="chat-input" placeholder="Ask your AI coach anything..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
-          <button class="chat-send" id="chat-send" onclick="sendMessage()">&rarr;</button>
+      <div class="module-card">
+        <div class="module-number">Module 2.4</div>
+        <h2 class="module-title">Connecting Infrastructure to AI Use Cases</h2>
+        <div class="module-body">
+          <p>Every AI use case has a data requirement. The smarter your use case selection, the lighter your infrastructure lift. Here is a practical framework:</p>
+          <ul>
+            <li><strong>Low data requirement:</strong> Use cases that rely on general knowledge (drafting emails, summarizing documents, answering FAQ-style questions). These work with minimal internal data.</li>
+            <li><strong>Medium data requirement:</strong> Use cases that need your company's context (proposal generation, customer segmentation, reporting summaries). These need clean, accessible internal data.</li>
+            <li><strong>High data requirement:</strong> Use cases that need real-time or historical pattern recognition (demand forecasting, predictive maintenance, churn modeling). These need serious infrastructure investment.</li>
+          </ul>
+          <p>Start in the low and medium tiers. Build wins. Use those wins to justify the infrastructure investment for the high-tier use cases that actually transform operations.</p>
         </div>
       </div>
-      <div class="suggested-qs">
-        <div class="sq-label">Suggested questions</div>
-        <div class="sq-grid">
-          <button class="sq-btn" onclick="askSuggested(this)">How do I pick my first AI project?</button>
-          <button class="sq-btn" onclick="askSuggested(this)">What does a good baseline measurement look like?</button>
-          <button class="sq-btn" onclick="askSuggested(this)">How do I handle employee resistance to AI?</button>
-          <button class="sq-btn" onclick="askSuggested(this)">What is a realistic ROI for a first pilot?</button>
-          <button class="sq-btn" onclick="askSuggested(this)">How do I present results to leadership?</button>
-          <button class="sq-btn" onclick="askSuggested(this)">When should I pause vs. scale a pilot?</button>
-        </div>
+
+      <div class="track-footer">
+        <a href="aiq-training-track1.html" class="track-nav-btn">&#8592; Back to Track 1</a>
+        <span class="track-position">Track 2 of 4</span>
+        <a href="aiq-training-track3.html" class="track-nav-btn primary">Continue to Track 3 &#8594;</a>
       </div>
+
     </div>
+  </div><!-- /page-content -->
 
-    <!-- COMPLETE -->
-    <div class="page" id="page-complete">
-      <div class="complete-wrap">
-        <div class="complete-icon">&#9733;</div>
-        <h1 class="complete-title">Track 2 <em>Complete</em></h1>
-        <p class="complete-body">You now know how to select, run, measure, and present an AI pilot. You have the framework, the metrics, and the language to get leadership to say yes to scaling.</p>
-        <div class="next-tracks">
-          <div class="track-card"><div class="track-level">Track 1</div><div class="track-title">AI Foundations</div><div class="track-desc">What AI is, where it creates value, how to build the internal case.</div></div>
-          <div class="track-card locked"><div class="track-lock">&#128274;</div><div class="track-level">Track 3</div><div class="track-title">Governance &amp; Growth</div><div class="track-desc">Data strategy, vendor evaluation, change management, and scaling AI across teams.</div></div>
-          <div class="track-card locked"><div class="track-lock">&#128274;</div><div class="track-level">Track 4</div><div class="track-title">Competitive Edge</div><div class="track-desc">Advanced AI strategy, building AI culture, and sustaining transformation at scale.</div></div>
-        </div>
-        <button class="btn-primary" style="max-width:320px;margin:0 auto;display:block" onclick="window.location.href='aiq-training-track3.html?paid=true'">Continue to Track 3 &rarr;</button>
-        <div style="margin-top:24px;background:var(--card);border:1px solid var(--border2);padding:20px;max-width:320px;margin-left:auto;margin-right:auto;text-align:left">
-          <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Upgrade to Full Program</div>
-          <div style="font-size:13px;color:#FFFFFF;line-height:1.6;margin-bottom:12px">Unlock Tracks 3 and 4 for <strong style="color:#FFFFFF">$118</strong> &mdash; that is the full program price minus what you already paid.</div>
-          <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" style="display:block;background:transparent;border:1px solid var(--border2);color:#FFFFFF;padding:10px 16px;font-family:var(--mono);font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-align:center;text-decoration:none;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='#FFFFFF'">Upgrade for $118 &rarr;</a>
-        </div>
-      </div>
-    </div>
+  <script>
+    // ── CONFIG ──
+    const WORKER_URL = 'https://jsn-reps-paywall.wewearsmiles.workers.dev';
+    const WELCOME_PAGE = 'aiq-welcome.html';
+    const TRACK_ID = 'aiq_track2';
 
-  </main>
-</div>
+    // ── MOBILE NAV ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 
-<script>
-// ============================================================
-// STRIPE CONFIG
-// To update the payment link, change this one value only.
-// ============================================================
-const STRIPE_LINK = "https://buy.stripe.com/fZudR94uYeSA3jzcMt0kE01";
-const KV_WORKER = "https://jsn-aiq-kv.wewearsmiles.workers.dev";
+    // ── ACCESS CHECK ──
+    async function checkAccess() {
+      // 1. Get token: prefer URL param, fall back to localStorage
+      const params = new URLSearchParams(window.location.search);
+      let token = params.get('token') || localStorage.getItem('aiq_token');
 
-async function redeemPromo() {
-  const input = document.getElementById('promo-input');
-  const msg = document.getElementById('promo-msg');
-  const code = input.value.trim().toUpperCase();
-  if (!code) return;
+      if (!token) {
+        redirectToWelcome('no_token');
+        return;
+      }
 
-  msg.style.display = 'block';
-  msg.style.color = '#FFFFFF';
-  msg.textContent = 'Checking code...';
-  input.disabled = true;
+      // Persist token so user doesn't need it in URL every time
+      localStorage.setItem('aiq_token', token);
 
-  try {
-    const res = await fetch(KV_WORKER + '/promo/redeem', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
-    });
-    const data = await res.json();
+      // Clean token from URL without triggering a reload
+      if (params.get('token')) {
+        const cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, '', cleanUrl);
+      }
 
-    if (data.valid) {
-      msg.style.color = 'var(--accent)';
-      msg.textContent = 'Code accepted. Unlocking full program...';
-      setTimeout(() => {
-        const params = new URLSearchParams(window.location.search);
-        params.set('paid', 'true');
-        params.set('promo', 'true');
-        window.location.search = params.toString();
-      }, 1000);
-    } else if (data.reason === 'expired') {
-      msg.style.color = '#ff6b6b';
-      msg.textContent = 'This code has reached its usage limit.';
-      input.disabled = false;
-    } else {
-      msg.style.color = '#ff6b6b';
-      msg.textContent = 'Invalid code. Please check and try again.';
-      input.disabled = false;
+      try {
+        const res = await fetch(`${WORKER_URL}/check-access`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, track: TRACK_ID })
+        });
+
+        if (!res.ok) {
+          redirectToWelcome('http_error');
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.access === true) {
+          showContent();
+        } else {
+          redirectToWelcome(data.reason || 'no_access');
+        }
+
+      } catch (err) {
+        console.error('Access check failed:', err);
+        // On network error, be lenient: show content but log
+        // Change to redirectToWelcome('network_error') if you prefer to block on error
+        showContent();
+      }
     }
-  } catch (err) {
-    msg.style.color = '#ff6b6b';
-    msg.textContent = 'Something went wrong. Please try again.';
-    input.disabled = false;
-  }
-}
 
-const QUIZ = [
-  {q:"Which of the following is NOT one of the three criteria for a good first AI pilot project?",opts:["High repetition: the task happens frequently","Measurable outcome: success can be defined in a number","Low failure risk: consequences of errors are manageable","High complexity: the task requires significant human expertise"],correct:3,feedback:"High complexity is actually a warning sign for a first pilot, not a criterion. The best first projects are high repetition, measurable, and low risk if the AI makes a mistake."},
-  {q:"What is the primary purpose of the baseline measurement phase (Days 1 to 15) of a 90-day pilot?",opts:["To train employees on the new AI tool","To document the current state so you can calculate ROI after the pilot","To get leadership buy-in before the pilot begins","To identify which vendor to use for the implementation"],correct:1,feedback:"Without a clear before picture, you cannot prove the after. The baseline measurement is the foundation of your entire ROI calculation and business case."},
-  {q:"According to the prioritization matrix, which type of project should be your first pilot?",opts:["High value, hard to implement: worth the effort","High value, easy to implement: best ROI for least risk","Medium value, easy to implement: build confidence first","Very high value, very hard to implement: maximize impact"],correct:1,feedback:"High value and easy to implement is the top-right quadrant of the matrix. These projects deliver meaningful ROI without requiring extensive technical work."},
-  {q:"What is the 10x Rule as described in this module?",opts:["You need 10 successful pilots before scaling company-wide","A pilot needs to show at least 10x projected ROI to justify scaling investment","You should test 10 different tools before committing to one","The pilot should run for 10 weeks minimum before drawing conclusions"],correct:1,feedback:"A pilot that cost $5,000 in time and tools should be producing $50,000 or more in annual value to justify scaling investment. Anything below 5x will struggle to get budget approval."},
-  {q:"When should you pause rather than scale a pilot?",opts:["When results exceeded baseline by only 15% instead of 20%","When the underlying process is chaotic and the team is resistant","When the pilot took longer than 90 days to complete","When leadership asks too many questions about the methodology"],correct:1,feedback:"A chaotic process fed into AI produces chaotic outputs faster. If the underlying process needs fixing or the team is resistant, scaling will amplify those problems, not solve them."}
-];
+    function showContent() {
+      document.getElementById('access-gate').classList.add('hidden');
+      document.getElementById('page-content').classList.add('visible');
+    }
 
-const MATURITY=[{min:0,max:20,level:1,name:"Unaware"},{min:21,max:40,level:2,name:"Aware"},{min:41,max:60,level:3,name:"Experimenting"},{min:61,max:80,level:4,name:"Scaling"},{min:81,max:100,level:5,name:"Transforming"}];
+    function redirectToWelcome(reason) {
+      window.location.href = `${WELCOME_PAGE}?reason=${reason}`;
+    }
 
-let userScore=50,userLevel="Experimenting",userName="",userEmail="",chatHistory=[],quizState={current:0,answers:[],complete:false},domainScores={},userIndustry="general";
-
-window.onload=()=>{
-  const params=new URLSearchParams(window.location.search);
-  const s=parseInt(params.get("score"));
-  if(!isNaN(s)&&s>=0&&s<=100)userScore=s;
-  ["data","strategy","talent","current","governance"].forEach(id=>{const v=parseInt(params.get(id));if(!isNaN(v))domainScores[id]=v;});
-  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
-  userLevel=m.name;
-
-  if(params.get("paid")==="true"){
-    // Payment confirmed: hide paywall, show email gate
-    document.getElementById("paywall").classList.add("hidden");
-    document.getElementById("gate").classList.remove("hidden");
-  }
-  // else: paywall stays visible (default)
-};
-
-async function unlockTraining(){
-  const fullName=document.getElementById("gate-name").value.trim();
-  const e=document.getElementById("gate-email").value.trim();
-  const errEl=document.getElementById("gate-error");
-  const btn=document.getElementById("gate-btn");
-  errEl.style.display="none";
-  if(!fullName){errEl.textContent="Please enter your name.";errEl.style.display="block";return;}
-  if(!e||!e.includes("@")){errEl.textContent="Please enter a valid email address.";errEl.style.display="block";return;}
-  userName=fullName;userEmail=e;
-  userIndustry=document.getElementById("gate-industry").value||"general";
-  btn.textContent="Loading...";btn.disabled=true;
-
-  const KV_WORKER="https://jsn-aiq-kv.wewearsmiles.workers.dev/submit";
-  try{
-    await fetch(KV_WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:fullName,email:e,score:userScore,level:userLevel,track:"Track 2 - From Pilot to Proof",paid:true,domainScores,timestamp:new Date().toISOString()})});
-  }catch(err){console.warn("KV update failed silently:",err);}
-
-  btn.textContent="Start Track 2 \u2192";btn.disabled=false;
-  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
-  document.getElementById("sb-level").textContent="Level "+m.level+": "+m.name;
-  document.getElementById("sb-user-name").textContent=fullName;
-  document.getElementById("sb-user-email").textContent=e;
-  const gate=document.getElementById("gate");
-  gate.classList.add("hidden");
-  setTimeout(()=>gate.style.display="none",400);
-  document.getElementById("app-shell").style.display="grid";
-  initChat();renderQuiz();
-}
-
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  document.getElementById("page-"+id).classList.add("active");
-  const nav=document.getElementById("nav-"+id);
-  if(nav)nav.classList.add("active");
-  window.scrollTo(0,0);
-}
-
-function renderQuiz(){
-  const body=document.getElementById("quiz-body");
-  if(quizState.complete){renderQuizComplete();return;}
-  const q=QUIZ[quizState.current];
-  const letters=["A","B","C","D"];
-  body.innerHTML=`<div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div><div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div><div class="quiz-q">${q.q}</div><div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join("")}</div><div class="quiz-feedback" id="quiz-feedback"></div><div id="quiz-next-btn"></div>`;
-}
-
-function selectAnswer(i){
-  const q=QUIZ[quizState.current];
-  const opts=document.querySelectorAll(".quiz-option");
-  opts.forEach(o=>o.style.pointerEvents="none");
-  opts[i].classList.add(i===q.correct?"correct":"wrong");
-  if(i!==q.correct)opts[q.correct].classList.add("correct");
-  quizState.answers.push(i);
-  const fb=document.getElementById("quiz-feedback");
-  fb.className="quiz-feedback show "+(i===q.correct?"correct":"wrong");
-  fb.textContent=(i===q.correct?"Correct. ":"Not quite. ")+q.feedback;
-  document.getElementById("quiz-next-btn").innerHTML=`<button class="btn-nav-primary" style="margin-top:8px" onclick="nextQuestion()">${quizState.current<QUIZ.length-1?"Next Question \u2192":"See Results \u2192"}</button>`;
-}
-
-function nextQuestion(){
-  quizState.current++;
-  if(quizState.current>=QUIZ.length){quizState.complete=true;renderQuizComplete();}
-  else renderQuiz();
-}
-
-function renderQuizComplete(){
-  const correct=quizState.answers.filter((a,i)=>a===QUIZ[i].correct).length;
-  const pct=Math.round((correct/QUIZ.length)*100);
-  const msg=pct>=80?"Strong understanding. You are ready for the AI Coach.":pct>=60?"Good foundation. Review any missed questions before continuing.":"Consider re-reading the lessons. The AI Coach can help clarify concepts.";
-  document.getElementById("quiz-body").innerHTML=`<div class="quiz-score-final"><div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div><div class="quiz-result-title">${pct>=80?"Excellent Work":pct>=60?"Good Work":"Keep Going"}</div><p class="quiz-result-body">${msg}</p><button class="btn-nav-primary" onclick="showPage('chat')">Continue to AI Coach \u2192</button></div>`;
-  const nav=document.getElementById("nav-quiz");
-  if(nav&&!nav.querySelector(".nav-check"))nav.innerHTML+='<span class="nav-check">&#10003;</span>';
-}
-
-function initChat(){
-  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
-  addMessage("ai","Hi "+userName+". I am your AI coach for Track 2. Your assessment score is "+userScore+"/100, placing you at the "+m.name+" level.\n\nYou have just completed From Pilot to Proof. I am here to help you apply these concepts, whether that is picking your first project, structuring the pilot, or building the ROI case for leadership. What is on your mind?");
-}
-
-function addMessage(role,text){
-  chatHistory.push({role:role==="ai"?"assistant":"user",content:text});
-  const container=document.getElementById("chat-messages");
-  const div=document.createElement("div");
-  div.className="msg "+role;
-  div.innerHTML=`<div class="msg-avatar ${role}">${role==="ai"?"AI":"ME"}</div><div class="msg-bubble"><div class="msg-name">${role==="ai"?"AI Coach":userName||"You"}</div><div class="msg-text"><p>${text.replace(/\n\n/g,"</p><p>").replace(/\n/g,"<br/>")}</p></div></div>`;
-  container.appendChild(div);
-  container.scrollTop=container.scrollHeight;
-}
-
-function addTyping(){
-  const container=document.getElementById("chat-messages");
-  const div=document.createElement("div");
-  div.className="msg ai";div.id="typing-indicator";
-  div.innerHTML=`<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
-  container.appendChild(div);container.scrollTop=container.scrollHeight;
-}
-
-function removeTyping(){const t=document.getElementById("typing-indicator");if(t)t.remove();}
-
-async function sendMessage(text){
-  const input=document.getElementById("chat-input");
-  const msg=text||input.value.trim();
-  if(!msg)return;
-  input.value="";autoResize(input);
-  document.getElementById("chat-send").disabled=true;
-  addMessage("user",msg);addTyping();
-  const m=MATURITY.find(x=>userScore>=x.min&&userScore<=x.max)||MATURITY[2];
-  const domainSummary=Object.keys(domainScores).length?" Domain scores: Data "+(domainScores.data??"N/A")+"/100, Strategy "+(domainScores.strategy??"N/A")+"/100, Talent "+(domainScores.talent??"N/A")+"/100, Current AI Use "+(domainScores.current??"N/A")+"/100, Governance "+(domainScores.governance??"N/A")+"/100.":"";
-  const industryContext=INDUSTRY_KB[userIndustry]||INDUSTRY_KB["general"];
-  const systemPrompt=`You are an AI readiness coach on the JSN Made platform helping ${userName} (${userEmail}).\n\n${industryContext}\n\nTheir AIQ assessment score is ${userScore}/100. Level ${m.level}: ${m.name}.${domainSummary}\n\nThey have completed Track 2: From Pilot to Proof, which covered:\n1. How to pick the right first AI project: the three criteria (high repetition, measurable outcome, low failure risk), the prioritization matrix, and common mistakes\n2. Running the 90-day pilot: the four phases (setup, run, measure, decide), managing people, the weekly check-in rhythm\n3. Measuring results and making the case to scale: the four numbers that matter, the 10x rule, structuring the go/no-go recommendation, scale vs. pause framework\n\nYour role:\n- Help them apply Track 2 concepts to their specific business situation\n- Reference their domain scores when relevant\n- Give direct, actionable advice, not generic platitudes\n- Ask follow-up questions to understand their specific context before recommending\n- Be honest: if they are not ready to scale yet, say so clearly\n- Keep responses to 3 to 5 sentences unless they ask for more\n- Respond in plain conversational prose, no bullet points or markdown\n- Do not repeat back what they said before answering`;
-  const ANTHROPIC_WORKER="https://jsn-aiq-coach.wewearsmiles.workers.dev";
-  try{
-    const res=await fetch(ANTHROPIC_WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-haiku-4-5-20251001",max_tokens:1000,system:systemPrompt,messages:chatHistory})});
-    const data=await res.json();
-    removeTyping();
-    const reply=data?.content?.[0]?.text||"I am having trouble connecting right now. Please try again.";
-    addMessage("ai",reply);
-  }catch(e){removeTyping();addMessage("ai","I am having trouble connecting right now. Please try again in a moment.");}
-  document.getElementById("chat-send").disabled=false;
-}
-
-function handleChatKey(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}}
-function autoResize(el){el.style.height="auto";el.style.height=Math.min(el.scrollHeight,120)+"px";}
-function askSuggested(btn){sendMessage(btn.textContent);}
-
-const INDUSTRY_KB={
-  general:`INDUSTRY CONTEXT: General / No Specific Industry\n\nThis user has not selected a specific industry. Apply broad AI readiness coaching applicable to any small or mid-size business.\n\nLANDSCAPE: Most small businesses are at the Aware or Experimenting stage of AI adoption. The biggest barrier is not cost or technology, it is knowing where to start.\n\nTOP PAIN POINTS AI ADDRESSES: Manual repetitive data entry and reporting. Inconsistent customer communication and slow follow-up. Knowledge trapped in one person's head. Scheduling and resource allocation done manually.\n\nBEST-FIT FIRST USE CASES: Generative AI for drafting emails, proposals, SOPs, and customer communications (ChatGPT, Claude, Copilot). AI-assisted scheduling tools. Automated reporting and dashboard tools. Customer inquiry routing and FAQ automation.\n\nREALISTIC ROI: Knowledge work acceleration of 20 to 40% productivity improvement. Customer response time reduction of 50 to 70%. Reporting time reduction of 60 to 80%. First pilot payback typically 60 to 90 days.`,
-
-  food_beverage:`INDUSTRY CONTEXT: Food & Beverage\n\nThis user operates in food and beverage: restaurants, cafes, bars, food trucks, catering, food manufacturing, or CPG brands.\n\nLANDSCAPE: Food and beverage businesses operate on razor-thin margins (3 to 9% net for restaurants) with high labor costs and significant waste.\n\nTOP PAIN POINTS: Food waste from over-ordering and poor demand forecasting. Labor scheduling mismatches. Menu pricing that does not reflect ingredient cost fluctuations. Slow review response. Supplier management done in spreadsheets.\n\nBEST-FIT USE CASES: Demand forecasting and inventory optimization (MarketMan, Craftable, BlueCart). AI-assisted labor scheduling (7shifts, HotSchedules, When I Work). Automated review response (Birdeye, Podium, Yext). Menu engineering analysis. AI-powered ordering (Choco, Cut+Dry).\n\nROI EXAMPLES: A 20-location restaurant group reduced food waste 23% saving $340,000 annually. A catering company reduced overtime costs 18% saving $60,000/year.\n\nTERMINOLOGY: COGS, food cost percentage, labor cost percentage, covers, average check, RevPASH, pour cost, front of house, back of house.`,
-
-  distribution:`INDUSTRY CONTEXT: Distribution & Supply Chain\n\nThis user operates in distribution, logistics, warehousing, or supply chain: wholesale distributors, 3PLs, fulfillment operations, or companies managing complex inventory and routing.\n\nLANDSCAPE: Distribution is one of the highest-ROI sectors for AI because operations are data-rich, repetitive, and sensitive to small efficiency gains.\n\nTOP PAIN POINTS: Demand forecasting errors causing stockouts or excess inventory. Inefficient routing increasing fuel costs. Manual order processing and invoice matching. Warehouse pick path inefficiency. Supplier lead time variability.\n\nBEST-FIT USE CASES: Demand forecasting and inventory optimization (Inventory Planner, Lokad, Blue Yonder). Route optimization (OptimoRoute, Route4Me, Circuit). Automated order processing and invoice matching (Rossum, Stampli). Warehouse management with AI-assisted slotting (Fishbowl, Extensiv).\n\nROI EXAMPLES: A regional food distributor reduced fuel costs 14% and improved on-time delivery from 87% to 96%. A building materials distributor reduced inventory carrying costs $2.1M annually while cutting stockouts 40%.\n\nTERMINOLOGY: SKU, carrying cost, stockout, fill rate, OTIF, pick accuracy, slotting, dwell time, load factor, last-mile delivery, cross-docking, 3PL, WMS, ERP, EOQ, safety stock, lead time variability.`,
-
-  real_estate:`INDUSTRY CONTEXT: Real Estate\n\nThis user operates in real estate: residential agents, commercial brokers, property managers, investors, mortgage professionals, or teams and brokerages.\n\nLANDSCAPE: AI adoption among independent agents remains low despite high availability of affordable tools.\n\nTOP PAIN POINTS: Time spent on repetitive written communications. Lead response time: conversion drops 80% if not contacted within 5 minutes. CRM data entry done inconsistently. Market analysis and CMA preparation taking hours.\n\nBEST-FIT USE CASES: AI-assisted listing copy (Listing AI, ChatGPT, Copy.ai). Lead response automation (Follow Up Boss with AI, Sierra Interactive, Structurely). CMA and market analysis assistance (HouseCanary, Restb.ai, RPR). Transaction communication templates. Social media and content generation.\n\nROI EXAMPLES: A 12-agent team increased contact rate from 23% to 67% adding 8 to 12 closings per year. A property management company reduced staff time on routine inquiries by 4 hours per day per coordinator.\n\nTERMINOLOGY: CMA, GCI, absorption rate, days on market, list-to-sale ratio, earnest money, contingency, title, escrow, MLS, IDX, cap rate, NOI, 1031 exchange.`,
-
-  professional_services:`INDUSTRY CONTEXT: Professional Services\n\nThis user operates in professional services: accounting, law, consulting, marketing agencies, HR firms, IT service providers, financial advisors, or knowledge-based service businesses.\n\nLANDSCAPE: Professional services firms sell time and expertise. AI directly compresses the time required for high-value deliverables, forcing a rethinking of billing models.\n\nTOP PAIN POINTS: Document drafting and research consuming billable hours on low-value work. Proposals and engagement letters created from scratch each time. Client reporting requiring manual compilation.\n\nBEST-FIT USE CASES: Document drafting and review (Harvey for legal, Casetext, ChatGPT). Proposal and SOW generation (PandaDoc with AI, Proposify). Client reporting automation (Klipfolio, AgencyAnalytics, Databox). Meeting transcription and action items (Otter.ai, Fireflies, Fathom).\n\nROI EXAMPLES: A 15-attorney firm reduced associate research time per brief by 6 hours recovering $180,000 billable capacity annually. A marketing agency reduced creative production time 35% taking on 4 additional retainer clients.\n\nTERMINOLOGY: Billable hours, utilization rate, realization rate, engagement letter, SOW, retainer, WIP, accounts receivable, client acquisition cost, due diligence, deliverable, milestone billing.`,
-
-  healthcare:`INDUSTRY CONTEXT: Healthcare\n\nThis user operates in healthcare: private practices, dental offices, chiropractic or PT practices, urgent care, mental health practices, medical billing, or healthcare administration.\n\nLANDSCAPE: Healthcare AI adoption faces unique HIPAA regulatory complexity. The highest-ROI applications are administrative, not clinical.\n\nTOP PAIN POINTS: Clinical documentation time consuming provider hours. Medical billing errors and claim denials delaying revenue. Patient scheduling inefficiency and no-shows. Patient communication and follow-up between appointments.\n\nBEST-FIT USE CASES: AI medical scribing (Nuance DAX, Suki, Ambience Healthcare) reduces documentation time 50 to 70%. Revenue cycle management (Waystar, Kareo with AI, AdvancedMD). AI-assisted scheduling and no-show prediction (Luma Health, Klara, Relatient). Prior authorization automation (Cohere Health, Infinitus).\n\nROI EXAMPLES: A 4-physician practice recovered 90 minutes per physician per day from AI scribing. A dental group reduced no-shows from 18% to 7% adding $280,000 annual revenue.\n\nCOMPLIANCE: Always verify HIPAA compliance and BAA before recommending any tool that handles PHI.\n\nTERMINOLOGY: HIPAA, PHI, BAA, EHR/EMR, prior authorization, claim denial, revenue cycle, RVU, no-show rate, CPT code, ICD-10, payer mix, capitation, fee-for-service.`,
-
-  auto:`INDUSTRY CONTEXT: Automotive\n\nThis user operates in automotive: dealerships, independent repair shops, body shops, tire and service centers, auto parts retailers, fleet management, or detailing businesses.\n\nLANDSCAPE: Large dealer groups have invested in AI-powered CRM and inventory management. Independent shops are the next wave.\n\nTOP PAIN POINTS: Service bay scheduling and capacity utilization. Customer follow-up and declined service reminders leaving revenue on the table. Parts inventory management over and understocked simultaneously.\n\nBEST-FIT USE CASES: Shop management with AI (Shop-Ware, Tekmetric, Mitchell 1 with AI). Customer communication and declined service follow-up (Podium, Birdeye, DealerSocket). AI-powered parts inventory (PartsTech, Epicor, WHI).\n\nROI EXAMPLES: An 8-bay shop implemented declined service follow-up recovering $4,200/month in previously lost revenue. A 3-location tire chain increased bay utilization from 71% to 88% adding $340,000 annual revenue.\n\nTERMINOLOGY: ARO (average repair order), bay utilization, labor rate, flat rate, technician efficiency, comeback rate, CSI, declined service, deferred maintenance, OEM vs aftermarket, parts fill rate, dead stock, DMS.`,
-
-  fitness:`INDUSTRY CONTEXT: Fitness & Wellness\n\nThis user operates in fitness and wellness: gyms, personal training studios, CrossFit boxes, yoga studios, Pilates studios, wellness centers, or online fitness coaches.\n\nLANDSCAPE: The fitness industry operates on thin margins with high member churn as the primary business challenge. Average gym churn is 30 to 50% annually.\n\nTOP PAIN POINTS: Member churn: identifying at-risk members before they cancel. Lead follow-up speed and consistency. Class scheduling optimization and instructor utilization.\n\nBEST-FIT USE CASES: Member engagement and churn prediction (Glofox with AI, Mindbody Insights, ClubReady). Lead management and follow-up automation (Gym Lead Machine, Wodify, PushPress with AI). AI-assisted programming (Trainerize, TrueCoach).\n\nROI EXAMPLES: A 600-member CrossFit reduced monthly attrition from 5.2% to 3.1% worth $2,800/month in retained revenue. A personal training studio increased trial conversion from 24% to 41% adding 8 to 12 new clients monthly.\n\nTERMINOLOGY: Churn rate, attrition, lifetime value (LTV), cost per acquisition (CPA), lead conversion rate, trial close rate, EFT, monthly recurring revenue (MRR), class utilization, average class size, revenue per member.`,
-
-  childcare:`INDUSTRY CONTEXT: Childcare & Early Education\n\nThis user operates in childcare or early education: daycare centers, preschools, after-school programs, summer camps, in-home providers, or child development centers.\n\nLANDSCAPE: Childcare is one of the most administratively burdened and financially constrained industries. Operators face high staff turnover (30 to 40% annually) and parent communication demands that consume significant staff time.\n\nTOP PAIN POINTS: Parent communication: daily updates, incident reports, newsletters consuming staff hours. Staff scheduling and substitute coordination with high turnover. Enrollment management and waitlist follow-up losing prospective families.\n\nBEST-FIT USE CASES: Parent communication platforms (Brightwheel, HiMama, Procare) reduce staff time on parent updates 60 to 80%. Enrollment and lead management (Brightwheel CRM, ChildcareCRM). Staff scheduling (When I Work, Homebase with AI). Billing and tuition management automation.\n\nROI EXAMPLES: A 4-center group reduced director time on parent communication from 3 hours to 45 minutes daily. A preschool reduced inquiry-to-enrollment time from 12 days to 4 days increasing enrollment rate 22%.\n\nCOMPLIANCE: Tools handling children's data must be COPPA compliant.\n\nTERMINOLOGY: Child-to-staff ratio, licensing, CACFP, enrollment capacity, waitlist, tuition assistance, subsidy, developmental milestones, IEP, NAEYC accreditation, lead teacher, floater, director, incident report.`
-};
-</script>
+    // ── INIT ──
+    checkAccess();
+  </script>
 </body>
 </html>
