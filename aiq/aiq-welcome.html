@@ -174,7 +174,7 @@
       <div class="success-icon">&#10003;</div>
       <div class="success-title">You're In</div>
       <p class="success-msg" id="success-msg">Your content is unlocked and ready.</p>
-      <a href="/aiq/" class="btn" id="start-btn" style="display:block;text-decoration:none;text-align:center;">Start Learning</a>
+      <a href="aiq-training-track2.html" class="btn" id="start-btn" style="display:block;text-decoration:none;text-align:center;">Start Learning</a>
     </div>
   </div>
 
@@ -186,14 +186,26 @@
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const params  = new URLSearchParams(window.location.search);
-    const product = params.get('product') || 'track_2';
+    const product = params.get('product') || localStorage.getItem('aiq_pending_product') || 'track_2';
+
+    // If Supabase redirected back here after email confirmation, a session will exist
+    sb.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        const pending = localStorage.getItem('aiq_pending_product');
+        if (pending) {
+          localStorage.removeItem('aiq_pending_product');
+          localStorage.removeItem('aiq_pending_email');
+          await activateAccess(session);
+        }
+      }
+    });
 
     const PRODUCT_INFO = {
-      track_2:      { label: 'Track 2 Unlocked',        unlocks: ['AI Tools and Workflows (Track 2)', 'Track 2 AI Coach', 'Track 2 Quiz'], redirect: '/aiq/aiq-training-track2.html' },
-      track_3:      { label: 'Track 3 Unlocked',        unlocks: ['Advanced AI Integration (Track 3)', 'Track 3 AI Coach', 'Track 3 Quiz'], redirect: '/aiq/aiq-training-track3.html' },
-      track_4:      { label: 'Track 4 Unlocked',        unlocks: ['AI Leadership and Scale (Track 4)', 'Track 4 AI Coach', 'Track 4 Quiz'], redirect: '/aiq/aiq-training-track4.html' },
-      tracks_3_4:   { label: 'Tracks 3 + 4 Unlocked',  unlocks: ['Advanced AI Integration (Track 3)', 'AI Leadership and Scale (Track 4)', 'AI Coaches for both tracks', 'Quizzes for both tracks'], redirect: '/aiq/aiq-training-track3.html' },
-      full_program: { label: 'Full Program Unlocked',   unlocks: ['All 4 Tracks unlocked', 'AI Coach for every track', 'All quizzes', 'Priority support'], redirect: '/aiq/aiq-training-track2.html' },
+      track_2:      { label: 'Track 2 Unlocked',        unlocks: ['AI Tools and Workflows (Track 2)', 'Track 2 AI Coach', 'Track 2 Quiz'], redirect: 'aiq-training-track2.html' },
+      track_3:      { label: 'Track 3 Unlocked',        unlocks: ['Advanced AI Integration (Track 3)', 'Track 3 AI Coach', 'Track 3 Quiz'], redirect: 'aiq-training-track3.html' },
+      track_4:      { label: 'Track 4 Unlocked',        unlocks: ['AI Leadership and Scale (Track 4)', 'Track 4 AI Coach', 'Track 4 Quiz'], redirect: 'aiq-training-track4.html' },
+      tracks_3_4:   { label: 'Tracks 3 + 4 Unlocked',  unlocks: ['Advanced AI Integration (Track 3)', 'AI Leadership and Scale (Track 4)', 'AI Coaches for both tracks', 'Quizzes for both tracks'], redirect: 'aiq-training-track3.html' },
+      full_program: { label: 'Full Program Unlocked',   unlocks: ['All 4 Tracks unlocked', 'AI Coach for every track', 'All quizzes', 'Priority support'], redirect: 'aiq-training-track2.html' },
     };
 
     const info = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
@@ -247,7 +259,8 @@
       const btn = document.getElementById('signup-btn');
       btn.disabled = true; btn.textContent = 'Creating Account...';
 
-      const { data, error } = await sb.auth.signUp({ email, password });
+      const redirectTo = `https://jsnmade.com/aiq/aiq-welcome.html?product=${product}`;
+      const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: redirectTo } });
 
       if (error) {
         errorEl.textContent = error.message;
@@ -256,8 +269,10 @@
       }
 
       if (data.user && !data.session) {
+        localStorage.setItem('aiq_pending_product', product);
+        localStorage.setItem('aiq_pending_email', email);
         errorEl.style.color = '#00d4c8';
-        errorEl.textContent = 'Check your inbox to confirm your email, then come back and sign in.';
+        errorEl.textContent = 'Check your inbox to confirm your email. You will be brought back here automatically.';
         btn.disabled = false; btn.textContent = 'Create Account and Unlock';
         return;
       }
