@@ -516,81 +516,51 @@
       <div class="track-footer">
         <a href="aiq-training-track1.html" class="track-nav-btn">&#8592; Back to Track 1</a>
         <span class="track-position">Track 2 of 4</span>
-        <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" class="track-nav-btn primary">Unlock Tracks 3 + 4 <a href="aiq-training-track3.html" class="track-nav-btn primary">Continue to Track 3 &#8594;</a>#8594;</a>
+        <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" class="track-nav-btn primary">Unlock Tracks 3 + 4 &#8594;</a>
       </div>
 
     </div>
   </div><!-- /page-content -->
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
-    // ── CONFIG ──
-    const WORKER_URL = 'https://jsn-reps-paywall.wewearsmiles.workers.dev';
-    const WELCOME_PAGE = 'aiq-welcome.html';
-    const TRACK_ID = 'aiq_track2';
-
-    // ── MOBILE NAV ──
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
     hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 
-    // ── ACCESS CHECK ──
     async function checkAccess() {
-      // 1. Get token: prefer URL param, fall back to localStorage
-      const params = new URLSearchParams(window.location.search);
-      let token = params.get('token') || localStorage.getItem('aiq_token');
+      const { createClient } = supabase;
+      const sb = createClient(
+        'https://vmuvgdtfsdydvpxvdgso.supabase.co',
+        'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
+      );
 
-      if (!token) {
-        redirectToWelcome('no_token');
+      const { data: { session } } = await sb.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'aiq-welcome.html?reason=not_logged_in';
         return;
       }
 
-      // Persist token so user doesn't need it in URL every time
-      localStorage.setItem('aiq_token', token);
+      const { data, error } = await sb
+        .from('aiq_access')
+        .select('track_2, full_program')
+        .eq('user_id', session.user.id)
+        .single();
 
-      // Clean token from URL without triggering a reload
-      if (params.get('token')) {
-        const cleanUrl = window.location.pathname + window.location.hash;
-        window.history.replaceState({}, '', cleanUrl);
+      if (error || !data) {
+        window.location.href = 'aiq-welcome.html?reason=no_access';
+        return;
       }
 
-      try {
-        const res = await fetch(`${WORKER_URL}/check-access`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, track: TRACK_ID })
-        });
-
-        if (!res.ok) {
-          redirectToWelcome('http_error');
-          return;
-        }
-
-        const data = await res.json();
-
-        if (data.access === true) {
-          showContent();
-        } else {
-          redirectToWelcome(data.reason || 'no_access');
-        }
-
-      } catch (err) {
-        console.error('Access check failed:', err);
-        // On network error, be lenient: show content but log
-        // Change to redirectToWelcome('network_error') if you prefer to block on error
-        showContent();
+      if (data.track_2 || data.full_program) {
+        document.getElementById('access-gate').classList.add('hidden');
+        document.getElementById('page-content').classList.add('visible');
+      } else {
+        window.location.href = 'aiq-welcome.html?reason=no_access';
       }
     }
 
-    function showContent() {
-      document.getElementById('access-gate').classList.add('hidden');
-      document.getElementById('page-content').classList.add('visible');
-    }
-
-    function redirectToWelcome(reason) {
-      window.location.href = `${WELCOME_PAGE}?reason=${reason}`;
-    }
-
-    // ── INIT ──
     checkAccess();
   </script>
 </body>

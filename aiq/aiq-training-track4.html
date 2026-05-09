@@ -547,52 +547,43 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
-    const WORKER_URL = 'https://jsn-reps-paywall.wewearsmiles.workers.dev';
-    const WELCOME_PAGE = 'aiq-welcome.html';
-    const TRACK_ID = 'aiq_track4';
-
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
     hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 
     async function checkAccess() {
-      const params = new URLSearchParams(window.location.search);
-      let token = params.get('token') || localStorage.getItem('aiq_token');
+      const { createClient } = supabase;
+      const sb = createClient(
+        'https://vmuvgdtfsdydvpxvdgso.supabase.co',
+        'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
+      );
 
-      if (!token) { redirectToWelcome('no_token'); return; }
+      const { data: { session } } = await sb.auth.getSession();
 
-      localStorage.setItem('aiq_token', token);
-
-      if (params.get('token')) {
-        window.history.replaceState({}, '', window.location.pathname + window.location.hash);
+      if (!session) {
+        window.location.href = 'aiq-welcome.html?reason=not_logged_in';
+        return;
       }
 
-      try {
-        const res = await fetch(`${WORKER_URL}/check-access`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, track: TRACK_ID })
-        });
+      const { data, error } = await sb
+        .from('aiq_access')
+        .select('track_4, full_program')
+        .eq('user_id', session.user.id)
+        .single();
 
-        if (!res.ok) { redirectToWelcome('http_error'); return; }
-
-        const data = await res.json();
-        data.access === true ? showContent() : redirectToWelcome(data.reason || 'no_access');
-
-      } catch (err) {
-        console.error('Access check failed:', err);
-        showContent();
+      if (error || !data) {
+        window.location.href = 'aiq-welcome.html?reason=no_access';
+        return;
       }
-    }
 
-    function showContent() {
-      document.getElementById('access-gate').classList.add('hidden');
-      document.getElementById('page-content').classList.add('visible');
-    }
-
-    function redirectToWelcome(reason) {
-      window.location.href = `${WELCOME_PAGE}?reason=${reason}`;
+      if (data.track_4 || data.full_program) {
+        document.getElementById('access-gate').classList.add('hidden');
+        document.getElementById('page-content').classList.add('visible');
+      } else {
+        window.location.href = 'aiq-welcome.html?reason=no_access';
+      }
     }
 
     checkAccess();
