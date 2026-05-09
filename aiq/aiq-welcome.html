@@ -185,24 +185,27 @@
     const { createClient } = supabase;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const PRODUCT_INFO = {
+      track_2:      { label: 'Track 2 Unlocked',        unlocks: ['AI Tools and Workflows (Track 2)', 'Track 2 AI Coach', 'Track 2 Quiz'], redirect: 'aiq-training-track2.html' },
+      track_3:      { label: 'Track 3 Unlocked',        unlocks: ['Advanced AI Integration (Track 3)', 'Track 3 AI Coach', 'Track 3 Quiz'], redirect: 'aiq-training-track3.html' },
+      track_4:      { label: 'Track 4 Unlocked',        unlocks: ['AI Leadership and Scale (Track 4)', 'Track 4 AI Coach', 'Track 4 Quiz'], redirect: 'aiq-training-track4.html' },
+      tracks_3_4:   { label: 'Tracks 3 + 4 Unlocked',  unlocks: ['Advanced AI Integration (Track 3)', 'AI Leadership and Scale (Track 4)', 'AI Coaches for both tracks', 'Quizzes for both tracks'], redirect: 'aiq-training-track3.html' },
+      full_program: { label: 'Full Program Unlocked',   unlocks: ['All 4 Tracks unlocked', 'AI Coach for every track', 'All quizzes', 'Priority support'], redirect: 'aiq-training-track2.html' },
+    };
+
     const params  = new URLSearchParams(window.location.search);
     const product = params.get('product') || localStorage.getItem('aiq_pending_product') || 'track_2';
+    const info    = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
 
-    // Set start button href immediately from product so it's always correct
-    // even if activateAccess() never fires (e.g. sign-in path)
-    document.addEventListener('DOMContentLoaded', () => {
-      const info = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
-      document.getElementById('start-btn').href = localStorage.getItem('aiq_pending_redirect') || info.redirect;
-    });
+    // Set start button href immediately so it's always correct
+    document.getElementById('start-btn').href = localStorage.getItem('aiq_pending_redirect') || info.redirect;
 
     // Detect Supabase confirmation redirect via URL hash
-    // Supabase appends #access_token=...&type=signup to the redirect URL
     const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
     const hashToken  = hashParams.get('access_token');
     const hashType   = hashParams.get('type');
 
     if (hashToken && (hashType === 'signup' || hashType === 'magiclink')) {
-      // Clear the hash from the URL so it looks clean
       window.history.replaceState({}, '', window.location.pathname + window.location.search);
     }
 
@@ -218,7 +221,7 @@
       }
     });
 
-    // Also check for existing session on load (covers edge cases)
+    // Also check for existing session on load
     sb.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         const pending = localStorage.getItem('aiq_pending_product');
@@ -229,16 +232,6 @@
         }
       }
     });
-
-    const PRODUCT_INFO = {
-      track_2:      { label: 'Track 2 Unlocked',        unlocks: ['AI Tools and Workflows (Track 2)', 'Track 2 AI Coach', 'Track 2 Quiz'], redirect: 'aiq-training-track2.html' },
-      track_3:      { label: 'Track 3 Unlocked',        unlocks: ['Advanced AI Integration (Track 3)', 'Track 3 AI Coach', 'Track 3 Quiz'], redirect: 'aiq-training-track3.html' },
-      track_4:      { label: 'Track 4 Unlocked',        unlocks: ['AI Leadership and Scale (Track 4)', 'Track 4 AI Coach', 'Track 4 Quiz'], redirect: 'aiq-training-track4.html' },
-      tracks_3_4:   { label: 'Tracks 3 + 4 Unlocked',  unlocks: ['Advanced AI Integration (Track 3)', 'AI Leadership and Scale (Track 4)', 'AI Coaches for both tracks', 'Quizzes for both tracks'], redirect: 'aiq-training-track3.html' },
-      full_program: { label: 'Full Program Unlocked',   unlocks: ['All 4 Tracks unlocked', 'AI Coach for every track', 'All quizzes', 'Priority support'], redirect: 'aiq-training-track2.html' },
-    };
-
-    const info = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
 
     // Set badge labels
     document.getElementById('product-badge').textContent   = info.label;
