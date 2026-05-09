@@ -188,7 +188,37 @@
     const params  = new URLSearchParams(window.location.search);
     const product = params.get('product') || localStorage.getItem('aiq_pending_product') || 'track_2';
 
-    // If Supabase redirected back here after email confirmation, a session will exist
+    // Set start button href immediately from product so it's always correct
+    // even if activateAccess() never fires (e.g. sign-in path)
+    document.addEventListener('DOMContentLoaded', () => {
+      const info = PRODUCT_INFO[product] || PRODUCT_INFO.track_2;
+      document.getElementById('start-btn').href = localStorage.getItem('aiq_pending_redirect') || info.redirect;
+    });
+
+    // Detect Supabase confirmation redirect via URL hash
+    // Supabase appends #access_token=...&type=signup to the redirect URL
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', ''));
+    const hashToken  = hashParams.get('access_token');
+    const hashType   = hashParams.get('type');
+
+    if (hashToken && (hashType === 'signup' || hashType === 'magiclink')) {
+      // Clear the hash from the URL so it looks clean
+      window.history.replaceState({}, '', window.location.pathname + window.location.search);
+    }
+
+    // onAuthStateChange fires when Supabase processes the hash token
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
+        const pending = localStorage.getItem('aiq_pending_product');
+        if (pending) {
+          localStorage.removeItem('aiq_pending_product');
+          localStorage.removeItem('aiq_pending_email');
+          await activateAccess(session);
+        }
+      }
+    });
+
+    // Also check for existing session on load (covers edge cases)
     sb.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
         const pending = localStorage.getItem('aiq_pending_product');
