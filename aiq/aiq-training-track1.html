@@ -343,6 +343,7 @@ fbq('track', 'PageView');
 src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -383,6 +384,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
     </div>
     <input class="gate-input" type="text" id="gate-name" placeholder="Your name" autocomplete="name"/>
 <input class="gate-input" type="email" id="gate-email" placeholder="Work email address" autocomplete="email"/>
+<input class="gate-input" type="password" id="gate-password" placeholder="Create a password (min 8 characters)" autocomplete="new-password"/>
 <select class="gate-input" id="gate-industry" style="margin-bottom:20px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231DC6C2' stroke-width='1.5' fill='none'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px">
   <option value="" disabled selected style="color:rgba(255,255,255,0.3)">Select your industry (optional)</option>
   <option value="food_beverage">Food & Beverage</option>
@@ -813,12 +815,14 @@ window.onload = () => {
 async function unlockTraining() {
   const fullName = document.getElementById("gate-name").value.trim();
   const e = document.getElementById("gate-email").value.trim();
+  const password = document.getElementById("gate-password").value;
   const errEl = document.getElementById("gate-error");
   const btn = document.getElementById("gate-btn");
 
   errEl.style.display = "none";
   if (!fullName) { errEl.textContent = "Please enter your name."; errEl.style.display = "block"; return; }
   if (!e || !e.includes("@")) { errEl.textContent = "Please enter a valid email address."; errEl.style.display = "block"; return; }
+  if (!password || password.length < 8) { errEl.textContent = "Please create a password (min 8 characters)."; errEl.style.display = "block"; return; }
 
   // Split name into first/last
   const nameParts = fullName.split(" ");
@@ -862,6 +866,29 @@ async function unlockTraining() {
   // Always unlock training regardless of API result
   btn.textContent = "Unlock My Training →";
   btn.disabled = false;
+
+  // Create Supabase account so user has credentials for paid tracks
+  try {
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://vmuvgdtfsdydvpxvdgso.supabase.co',
+      'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
+    );
+    const { data, error } = await sb.auth.signUp({
+      email: e,
+      password: password,
+      options: { emailRedirectTo: 'https://jsnmade.com/aiq/aiq-welcome.html' }
+    });
+    if (data?.session) {
+      // Store token so welcome page can use it
+      localStorage.setItem('aiq_token', data.session.access_token);
+    }
+    if (error && !error.message.toLowerCase().includes('already registered')) {
+      console.warn('Supabase signup warning:', error.message);
+    }
+  } catch(err) {
+    console.warn('Supabase signup failed silently:', err);
+  }
 
   document.getElementById("sb-score").textContent = userScore;
   document.getElementById("sb-score").style.color = m.color;
