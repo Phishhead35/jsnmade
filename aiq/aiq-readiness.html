@@ -797,7 +797,7 @@ function goToTraining() {
   const params = new URLSearchParams();
   params.set("score", composite);
   DOMAINS.forEach(d => params.set(d.id, domainScores[d.id]));
-  window.location.href = "aiq-training.html?" + params.toString();
+  window.location.href = "aiq-training-track1.html?" + params.toString();
 }
 
 function copyResults() {
