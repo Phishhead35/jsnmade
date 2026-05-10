@@ -167,7 +167,7 @@ body{padding-top:54px}
     <li><a href="aiq-training-track1.html">Track 1</a></li>
     <li><a href="aiq-training-track2.html">Track 2</a></li>
     <li><a href="aiq-training-track3.html" class="active">Track 3</a></li>
-    <li><a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04">Track 4</a></li>
+    <li><a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" id="nav-link-track4">Track 4</a></li>
     <li><span class="jsn-track-badge">Track 3</span></li>
   </ul>
   <button class="jsn-hamburger" id="jsn-hamburger" aria-label="Open menu">
@@ -179,7 +179,7 @@ body{padding-top:54px}
   <a href="aiq-training-track1.html">Track 1</a>
   <a href="aiq-training-track2.html">Track 2</a>
   <a href="aiq-training-track3.html">Track 3</a>
-  <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04">Track 4</a>
+  <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" id="mob-link-track4">Track 4</a>
 </div>
 
 <div class="shell" id="app-shell" style="display:none">
@@ -525,13 +525,20 @@ async function checkAccess() {
   const sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'aiq-welcome.html?reason=not_logged_in'; return; }
-  const { data, error } = await sb.from('aiq_access').select('track_3, full_program').eq('user_id', session.user.id).single();
+  const { data, error } = await sb.from('aiq_access').select('track_3, track_4, full_program').eq('user_id', session.user.id).single();
   if (error || !data) { window.location.href = 'aiq-welcome.html?reason=no_access'; return; }
   if (data.track_3 || data.full_program) {
     document.getElementById('access-gate').classList.add('hidden');
     document.getElementById('app-shell').style.display = 'grid';
     document.getElementById('sb-user-name').textContent = session.user.user_metadata?.full_name || '';
     document.getElementById('sb-user-email').textContent = session.user.email || '';
+    // Update Track 4 nav link if user already has access
+    if (data.track_4 || data.full_program) {
+      const l = document.getElementById('nav-link-track4');
+      if (l) l.href = 'aiq-training-track4.html';
+      const m = document.getElementById('mob-link-track4');
+      if (m) m.href = 'aiq-training-track4.html';
+    }
   } else {
     window.location.href = 'aiq-welcome.html?reason=no_access';
   }

@@ -353,9 +353,9 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
   <ul class="jsn-nav-links">
     <li><a href="aiq-welcome.html">AIQ Home</a></li>
     <li><a href="aiq-training-track1.html" class="active">Track 1</a></li>
-    <li><a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02">Track 2</a></li>
-    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 3</a></li>
-    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 4</a></li>
+    <li><a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02" id="nav-link-track2">Track 2</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track3">Track 3</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track4">Track 4</a></li>
     <li><span class="jsn-track-badge">Track 1</span></li>
   </ul>
   <button class="jsn-hamburger" id="jsn-hamburger" aria-label="Open menu">
@@ -365,8 +365,8 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
 <div class="jsn-mobile-menu" id="jsn-mobile-menu">
   <a href="aiq-welcome.html">AIQ Home</a>
   <a href="aiq-training-track1.html">Track 1</a>
-  <a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02">Track 2</a>
-  <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 3 + 4</a>
+  <a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02" id="mob-link-track2">Track 2</a>
+  <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="mob-link-track3">Track 3 + 4</a>
 </div>
 
 <!-- EMAIL GATE -->
@@ -809,6 +809,9 @@ window.onload = () => {
   document.getElementById("gate-score-num").style.color = m.color;
   document.getElementById("gate-level-name").textContent = "Level " + m.level + ": " + m.name;
   document.getElementById("gate-track-label").textContent = "Track: " + m.track;
+
+  // Silently update nav links for returning users who already have paid access
+  updateNavForAccess();
 };
 
 // ── EMAIL GATE ─────────────────────────────────────────────────────────────
@@ -904,6 +907,65 @@ async function unlockTraining() {
 
   initChat();
   renderQuiz();
+  updateNavForAccess();
+}
+
+// ── NAV ACCESS UPDATE ──────────────────────────────────────────────────────
+async function updateNavForAccess() {
+  try {
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://vmuvgdtfsdydvpxvdgso.supabase.co',
+      'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
+    );
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    const { data, error } = await sb.from('aiq_access')
+      .select('track_2, track_3, track_4, full_program')
+      .eq('user_id', session.user.id)
+      .single();
+    if (error || !data) return;
+
+    const hasT2 = data.track_2 || data.full_program;
+    const hasT3 = data.track_3 || data.full_program;
+    const hasT4 = data.track_4 || data.full_program;
+
+    if (hasT2) {
+      const l = document.getElementById('nav-link-track2');
+      const m = document.getElementById('mob-link-track2');
+      if (l) l.href = 'aiq-training-track2.html';
+      if (m) m.href = 'aiq-training-track2.html';
+    }
+    if (hasT3) {
+      const l = document.getElementById('nav-link-track3');
+      if (l) l.href = 'aiq-training-track3.html';
+    }
+    if (hasT4) {
+      const l = document.getElementById('nav-link-track4');
+      if (l) l.href = 'aiq-training-track4.html';
+      // update mobile link text/dest when both 3+4 are owned
+      const m = document.getElementById('mob-link-track3');
+      if (m && hasT3) { m.href = 'aiq-training-track3.html'; m.textContent = 'Track 3'; }
+      // add Track 4 mobile link if not already present
+      if (!document.getElementById('mob-link-track4')) {
+        const mob = document.getElementById('mob-link-track3');
+        if (mob) {
+          const a = document.createElement('a');
+          a.id = 'mob-link-track4';
+          a.href = 'aiq-training-track4.html';
+          a.textContent = 'Track 4';
+          mob.insertAdjacentElement('afterend', a);
+        }
+      }
+    } else if (hasT3) {
+      const l = document.getElementById('nav-link-track3');
+      if (l) l.href = 'aiq-training-track3.html';
+      const m = document.getElementById('mob-link-track3');
+      if (m) { m.href = 'aiq-training-track3.html'; m.textContent = 'Track 3'; }
+    }
+  } catch(e) {
+    // fail silently — nav stays as Stripe links
+  }
 }
 
 // ── NAVIGATION ─────────────────────────────────────────────────────────────

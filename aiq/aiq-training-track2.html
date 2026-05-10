@@ -294,8 +294,8 @@ body{padding-top:54px}
     <li><a href="aiq-welcome.html">AIQ Home</a></li>
     <li><a href="aiq-training-track1.html">Track 1</a></li>
     <li><a href="aiq-training-track2.html" class="active">Track 2</a></li>
-    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 3</a></li>
-    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 4</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track3">Track 3</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track4">Track 4</a></li>
     <li><span class="jsn-track-badge">Track 2</span></li>
   </ul>
   <button class="jsn-hamburger" id="jsn-hamburger" aria-label="Open menu">
@@ -306,7 +306,7 @@ body{padding-top:54px}
   <a href="aiq-welcome.html">AIQ Home</a>
   <a href="aiq-training-track1.html">Track 1</a>
   <a href="aiq-training-track2.html">Track 2</a>
-  <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05">Track 3 + 4</a>
+  <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="mob-link-track3">Track 3 + 4</a>
 </div>
 
 <!-- MAIN APP -->
@@ -666,20 +666,46 @@ function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDef
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
 function askSuggested(btn) { sendMessage(btn.textContent); }
 
+// ACCESS NAV UPDATE
+async function updateNavForAccess(data) {
+  const hasT3 = data.track_3 || data.full_program;
+  const hasT4 = data.track_4 || data.full_program;
+  if (hasT3) {
+    const l = document.getElementById('nav-link-track3');
+    if (l) l.href = 'aiq-training-track3.html';
+    const m = document.getElementById('mob-link-track3');
+    if (m) { m.href = 'aiq-training-track3.html'; m.textContent = 'Track 3'; }
+  }
+  if (hasT4) {
+    const l = document.getElementById('nav-link-track4');
+    if (l) l.href = 'aiq-training-track4.html';
+    if (!document.getElementById('mob-link-track4')) {
+      const mob = document.getElementById('mob-link-track3');
+      if (mob) {
+        const a = document.createElement('a');
+        a.id = 'mob-link-track4';
+        a.href = 'aiq-training-track4.html';
+        a.textContent = 'Track 4';
+        mob.insertAdjacentElement('afterend', a);
+      }
+    }
+  }
+}
+
 // ACCESS CHECK
 async function checkAccess() {
   const { createClient } = supabase;
   const sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'aiq-welcome.html?reason=not_logged_in'; return; }
-  const { data, error } = await sb.from('aiq_access').select('track_2, full_program').eq('user_id', session.user.id).single();
+  const { data, error } = await sb.from('aiq_access').select('track_2, track_3, track_4, full_program').eq('user_id', session.user.id).single();
   if (error || !data) { window.location.href = 'aiq-welcome.html?reason=no_access'; return; }
   if (data.track_2 || data.full_program) {
     document.getElementById('access-gate').classList.add('hidden');
     document.getElementById('app-shell').style.display = 'grid';
-    // Populate sidebar user info
     document.getElementById('sb-user-name').textContent = session.user.user_metadata?.full_name || '';
     document.getElementById('sb-user-email').textContent = session.user.email || '';
+    updateNavForAccess(data);
   } else {
     window.location.href = 'aiq-welcome.html?reason=no_access';
   }
