@@ -378,6 +378,71 @@
       color: var(--grey);
       letter-spacing: 0.06em;
     }
+    /* ── QUIZ & CHAT ── */
+    .quiz-section { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 0; }
+    .quiz-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; }
+    .quiz-section-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--white); margin-bottom: 2rem; }
+    .quiz-progress { height: 2px; background: var(--border); margin-bottom: 2rem; border-radius: 2px; }
+    .quiz-progress-fill { height: 100%; background: var(--teal); transition: width 0.4s ease; border-radius: 2px; }
+    .quiz-q { font-family: 'Barlow', sans-serif; font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--white); line-height: 1.5; margin-bottom: 1.5rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+    .quiz-option { background: var(--navy-light); border: 1px solid var(--border); padding: 0.9rem 1.1rem; cursor: pointer; font-size: 0.9rem; color: var(--white); text-align: left; font-family: 'Barlow', sans-serif; transition: all 0.12s; display: flex; align-items: center; gap: 0.75rem; border-radius: 5px; }
+    .quiz-option:hover { border-color: var(--teal); background: var(--teal-dim); }
+    .quiz-option.correct { border-color: #5be0a0; background: rgba(91,224,160,0.08); }
+    .quiz-option.wrong { border-color: #ff6b6b; background: rgba(255,107,107,0.08); }
+    .quiz-opt-letter { font-family: 'DM Mono', monospace; font-size: 0.7rem; width: 22px; height: 22px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 3px; }
+    .quiz-option.correct .quiz-opt-letter { border-color: #5be0a0; color: #5be0a0; }
+    .quiz-option.wrong .quiz-opt-letter { border-color: #ff6b6b; color: #ff6b6b; }
+    .quiz-feedback { padding: 0.9rem 1.1rem; margin-bottom: 1.25rem; font-size: 0.85rem; line-height: 1.6; display: none; border-radius: 0 5px 5px 0; }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.correct { background: rgba(91,224,160,0.08); border-left: 3px solid #5be0a0; color: var(--white); }
+    .quiz-feedback.wrong { background: rgba(255,107,107,0.08); border-left: 3px solid #ff6b6b; color: var(--white); }
+    .quiz-score-final { text-align: center; padding: 3rem 0; }
+    .quiz-score-circle { width: 120px; height: 120px; border: 2px solid var(--teal); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+    .quiz-score-circle .big { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; color: var(--teal); font-weight: 800; line-height: 1; }
+    .quiz-score-circle .small { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--white); }
+    .quiz-result-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; text-transform: uppercase; color: var(--white); margin-bottom: 0.75rem; }
+    .quiz-result-body { font-size: 0.9rem; color: var(--white); max-width: 420px; margin: 0 auto 2rem; line-height: 1.7; }
+    .quiz-next-btn { margin-top: 0.75rem; }
+    .btn-quiz-primary { background: var(--teal); color: var(--navy); border: none; border-radius: 5px; padding: 0.7rem 1.5rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .btn-quiz-primary:hover { background: #00bfb4; }
+    .chat-section { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .chat-container { background: var(--navy-light); border: 1px solid var(--border); display: flex; flex-direction: column; height: 520px; border-radius: 8px; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
+    .msg { display: flex; gap: 0.75rem; align-items: flex-start; }
+    .msg-avatar { width: 28px; height: 28px; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.05em; margin-top: 2px; }
+    .msg-avatar.ai { background: var(--teal-dim); border: 1px solid rgba(0,212,200,0.3); color: var(--teal); }
+    .msg-avatar.user { background: rgba(74,158,255,0.15); border: 1px solid rgba(74,158,255,0.3); color: #4a9eff; }
+    .msg-bubble { flex: 1; }
+    .msg-name { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.35rem; }
+    .msg-text { font-size: 0.9rem; line-height: 1.7; color: var(--white); }
+    .msg-text p { margin-bottom: 0.5rem; }
+    .msg-text p:last-child { margin-bottom: 0; }
+    .msg.user .msg-bubble { text-align: right; }
+    .msg.user .msg-name { text-align: right; }
+    .msg.user .msg-text { background: rgba(74,158,255,0.08); border: 1px solid rgba(74,158,255,0.15); padding: 0.75rem 1rem; display: inline-block; text-align: left; border-radius: 5px; }
+    .typing { display: flex; gap: 4px; align-items: center; padding: 4px 0; }
+    .typing span { width: 6px; height: 6px; background: var(--grey); border-radius: 50%; animation: bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.15s; }
+    .typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+    .chat-input-row { display: flex; gap: 0.5rem; padding: 1rem; border-top: 1px solid var(--border); }
+    .chat-input { flex: 1; background: var(--navy); border: 1px solid var(--border); border-radius: 5px; padding: 0.7rem 1rem; font-family: 'Barlow', sans-serif; font-size: 0.9rem; color: var(--white); resize: none; outline: none; }
+    .chat-input:focus { border-color: var(--teal); }
+    .chat-send { background: var(--teal); color: var(--navy); border: none; border-radius: 5px; padding: 0.7rem 1rem; font-size: 1rem; cursor: pointer; font-weight: 700; transition: background 0.2s; }
+    .chat-send:hover { background: #00bfb4; }
+    .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .suggested-qs { margin-top: 1.5rem; }
+    .sq-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.75rem; }
+    .sq-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .sq-btn { background: var(--navy-light); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.85rem; font-family: 'Barlow', sans-serif; font-size: 0.8rem; color: var(--white); cursor: pointer; transition: all 0.15s; }
+    .sq-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .coach-divider { max-width: 860px; margin: 0 auto; padding: 0 1.5rem; border-top: 1px solid var(--border); margin-top: 1rem; }
+    .coach-heading { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.75rem; padding-top: 2.5rem; }
+    .coach-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--white); margin-bottom: 0.5rem; }
+    .coach-subtitle { font-size: 0.9rem; color: var(--white); line-height: 1.6; margin-bottom: 1.5rem; }
   </style>
 </head>
 <body>
@@ -494,7 +559,7 @@
       <div class="track-footer">
         <a href="aiq-training-track2.html" class="track-nav-btn">&#8592; Back to Track 2</a>
         <span class="track-position">Track 3 of 4</span>
-        <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" class="track-nav-btn primary">Unlock Track 4 &#8594;</a>
+        <button class="track-nav-btn primary" onclick="showQuiz()">Take the Quiz &#8594;</button>
       </div>
 
     </div>
@@ -506,31 +571,163 @@
     const mobileMenu = document.getElementById('mobile-menu');
     hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 
+    let chatHistory = [];
+    const ANTHROPIC_WORKER = 'https://jsn-aiq-coach.wewearsmiles.workers.dev';
+
+    const QUIZ = [
+      { q: "What is the most common reason AI adoption fails at the organizational level?", opts: ["The technology is not mature enough","Change management failures, not technology failures","Lack of budget for AI tools","Insufficient data quality"], correct: 1, feedback: "Research consistently shows that AI adoption failures are change management failures. The technology works. What breaks down is communication, leadership engagement, and cultural readiness. Solving the people side of AI is more impactful than solving the technology side." },
+      { q: "What is the most important thing leadership needs to do to support AI adoption?", opts: ["Become technical experts in AI systems","Own the narrative and give employees a clear position on AI before rumors fill the gap","Hire a Chief AI Officer before doing anything else","Mandate AI tool usage across all departments"], correct: 1, feedback: "Owning the narrative is the highest-leverage leadership action. When employees hear about AI from leadership first, with context and clarity about what it means for them, anxiety is replaced by direction. The absence of that communication is where fear and resistance are born." },
+      { q: "Which of these is the most important capability for an AI-ready team member?", opts: ["Ability to write code and train machine learning models","Prompt fluency, the ability to describe problems clearly and iterate on AI outputs","Deep knowledge of specific AI vendor platforms","A background in statistics and data science"], correct: 1, feedback: "Prompt fluency is the foundational skill for working effectively with AI tools. It is learnable, not technical, and it compounds quickly. A team member who can describe problems precisely and iterate on AI outputs will get more value from any AI tool than one who knows the vendor landscape but cannot direct the tool effectively." },
+      { q: "What does a practical AI policy for a small business actually need to answer?", opts: ["Detailed technical specifications for approved AI models","Five questions: which tools are approved, what data should not go in, what needs human review, who to tell when something goes wrong, and where you can experiment","A comprehensive legal framework reviewed by outside counsel","A formal AI ethics statement signed by the executive team"], correct: 1, feedback: "A practical AI policy is five answered questions, not a document. Organizations that wait for a comprehensive policy before moving forward on AI consistently fall behind. Five questions, written down and shared, is more valuable than a 40-page policy that sits in a shared drive." },
+      { q: "What is the single most effective culture move to accelerate AI adoption?", opts: ["Mandate a minimum number of AI tool uses per week per employee","Make one AI-assisted pilot visible to the whole team regardless of outcome","Create a dedicated AI team that operates separately from the rest of the business","Tie executive compensation to AI adoption metrics"], correct: 1, feedback: "One visible pilot changes the culture conversation from abstract to real. When people see a colleague run an AI-assisted project and can observe the outcome, the psychological barriers to experimentation drop significantly. Visibility and permission together are more powerful than any policy or mandate." }
+    ];
+
+    let quizState = { current: 0, answers: [], complete: false };
+
+    function showQuiz() {
+      document.getElementById('page-content').style.display = 'none';
+      document.getElementById('quiz-section').style.display = 'block';
+      window.scrollTo(0, 0);
+      renderQuiz();
+    }
+
+    function renderQuiz() {
+      const body = document.getElementById('quiz-body');
+      if (quizState.complete) { renderQuizComplete(); return; }
+      const q = QUIZ[quizState.current];
+      const letters = ['A','B','C','D'];
+      body.innerHTML = `
+        <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--grey);margin-bottom:1rem;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-options">
+          ${q.opts.map((o,i) => `<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+        <div class="quiz-next-btn" id="quiz-next-btn"></div>
+      `;
+    }
+
+    function selectAnswer(i) {
+      const q = QUIZ[quizState.current];
+      const opts = document.querySelectorAll('.quiz-option');
+      opts.forEach(o => o.style.pointerEvents = 'none');
+      opts[i].classList.add(i === q.correct ? 'correct' : 'wrong');
+      if (i !== q.correct) opts[q.correct].classList.add('correct');
+      quizState.answers.push(i);
+      const fb = document.getElementById('quiz-feedback');
+      fb.className = 'quiz-feedback show ' + (i === q.correct ? 'correct' : 'wrong');
+      fb.textContent = (i === q.correct ? '\u2713 ' : '\u2717 ') + q.feedback;
+      document.getElementById('quiz-next-btn').innerHTML = `<button class="btn-quiz-primary" onclick="nextQuestion()">${quizState.current < QUIZ.length - 1 ? 'Next Question \u2192' : 'See Results \u2192'}</button>`;
+    }
+
+    function nextQuestion() {
+      quizState.current++;
+      if (quizState.current >= QUIZ.length) { quizState.complete = true; renderQuizComplete(); }
+      else renderQuiz();
+    }
+
+    function renderQuizComplete() {
+      const correct = quizState.answers.filter((a,i) => a === QUIZ[i].correct).length;
+      const pct = Math.round((correct / QUIZ.length) * 100);
+      const msg = pct >= 80 ? 'Strong understanding. Move on to the AI Coach to apply these concepts.' : pct >= 60 ? 'Good foundation. Review any questions you missed, then work with the AI Coach.' : 'Consider re-reading the modules before moving forward.';
+      document.getElementById('quiz-body').innerHTML = `
+        <div class="quiz-score-final">
+          <div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div>
+          <div class="quiz-result-title">${pct >= 80 ? 'Excellent Work' : pct >= 60 ? 'Good Work' : 'Keep Going'}</div>
+          <p class="quiz-result-body">${msg}</p>
+          <button class="btn-quiz-primary" onclick="showCoach()">Continue to AI Coach \u2192</button>
+          <br><br>
+          <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" class="btn-quiz-primary" style="display:inline-block;text-decoration:none;margin-top:0.5rem">Unlock Track 4 \u2192</a>
+        </div>`;
+    }
+
+    function showCoach() {
+      document.getElementById('quiz-section').style.display = 'none';
+      document.getElementById('coach-section').style.display = 'block';
+      window.scrollTo(0, 0);
+      initChat();
+    }
+
+    function initChat() {
+      if (chatHistory.length > 0) return;
+      const opening = "Hi. I am your AI coach for the Talent and Culture track. I am here to help you apply what you have just learned to your specific organization.\n\nWhat is on your mind? Is there a team dynamic, a leadership challenge, or a cultural barrier you want to think through?";
+      addMessage('ai', opening);
+    }
+
+    function addMessage(role, text) {
+      chatHistory.push({ role: role === 'ai' ? 'assistant' : 'user', content: text });
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.innerHTML = `<div class="msg-avatar ${role}">${role === 'ai' ? 'AI' : 'ME'}</div><div class="msg-bubble"><div class="msg-name">${role === 'ai' ? 'AI Coach' : 'You'}</div><div class="msg-text"><p>${text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br/>')}</p></div></div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function addTyping() {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'msg ai'; div.id = 'typing-indicator';
+      div.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
+
+    async function sendMessage(text) {
+      const input = document.getElementById('chat-input');
+      const msg = text || input.value.trim();
+      if (!msg) return;
+      input.value = '';
+      autoResize(input);
+      document.getElementById('chat-send').disabled = true;
+      addMessage('user', msg);
+      addTyping();
+
+      const systemPrompt = `You are an AI readiness coach on the JSN Made platform helping a business professional who has just completed the Talent and Culture module of the AIQ training track.
+
+The module covered: why AI adoption fails at the human level not the technology level, what leadership needs to do (own the narrative, protect experimentation), building an AI-ready team (prompt fluency, process awareness, critical evaluation, a designated learner), and creating a culture that carries AI forward (visible pilots, no-blame post-mortems, rewarding learning).
+
+Your role:
+- Help them apply these concepts to their specific organization
+- Give concrete, actionable advice, not generic platitudes
+- Ask follow-up questions to understand their specific context before giving recommendations
+- Be direct and honest. If they are not ready for something, say so clearly
+- Keep responses concise: 3 to 5 sentences maximum unless they ask for more detail
+- Do not use bullet points or markdown formatting. Respond in plain conversational prose
+- Do not repeat back what they said before answering
+
+You are knowledgeable, direct, and practical.`;
+
+      try {
+        const res = await fetch(ANTHROPIC_WORKER, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: chatHistory })
+        });
+        const data = await res.json();
+        removeTyping();
+        addMessage('ai', data?.content?.[0]?.text || "I am having trouble connecting right now. Please try again.");
+      } catch(e) {
+        removeTyping();
+        addMessage('ai', "I am having trouble connecting right now. Please try again in a moment.");
+      }
+      document.getElementById('chat-send').disabled = false;
+    }
+
+    function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+    function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+    function askSuggested(btn) { sendMessage(btn.textContent); }
+
     async function checkAccess() {
       const { createClient } = supabase;
-      const sb = createClient(
-        'https://vmuvgdtfsdydvpxvdgso.supabase.co',
-        'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
-      );
-
+      const sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
       const { data: { session } } = await sb.auth.getSession();
-
-      if (!session) {
-        window.location.href = 'aiq-welcome.html?reason=not_logged_in';
-        return;
-      }
-
-      const { data, error } = await sb
-        .from('aiq_access')
-        .select('track_3, full_program')
-        .eq('user_id', session.user.id)
-        .single();
-
-      if (error || !data) {
-        window.location.href = 'aiq-welcome.html?reason=no_access';
-        return;
-      }
-
+      if (!session) { window.location.href = 'aiq-welcome.html?reason=not_logged_in'; return; }
+      const { data, error } = await sb.from('aiq_access').select('track_3, full_program').eq('user_id', session.user.id).single();
+      if (error || !data) { window.location.href = 'aiq-welcome.html?reason=no_access'; return; }
       if (data.track_3 || data.full_program) {
         document.getElementById('access-gate').classList.add('hidden');
         document.getElementById('page-content').classList.add('visible');
