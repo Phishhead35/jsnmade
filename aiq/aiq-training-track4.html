@@ -524,9 +524,13 @@ Your role:
 You are knowledgeable, direct, and practical.`;
 
   try {
+    const { createClient } = supabase;
+    const _sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co','sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
+    const { data: { session: _session } } = await _sb.auth.getSession();
+    const _token = _session?.access_token || '';
     const res = await fetch(ANTHROPIC_WORKER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: chatHistory })
     });
     const data = await res.json();
