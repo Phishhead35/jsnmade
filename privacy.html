@@ -93,56 +93,81 @@
     <div class="brand">JSN Made</div>
 
     <h1>Privacy Policy</h1>
-    <p class="effective-date">Effective Date: April 28, 2025</p>
+    <p class="effective-date">Effective Date: May 12, 2026</p>
 
-    <p>JSN Made ("we," "us," or "our") operates the website jsnmade.com and associated digital products, including AI-powered tools for real estate professionals. This Privacy Policy explains how we collect, use, and protect your personal information when you interact with our site or subscribe to our email list.</p>
+    <p>JSN Made ("we," "us," or "our") operates the website jsnmade.com and its digital products, including AIQ (AI readiness assessment and training) and REPS (AI-powered tools for real estate professionals). This Privacy Policy explains what data we collect, how we use it, who we share it with, and how we protect it.</p>
 
     <hr class="divider" />
 
     <h2>1. Information We Collect</h2>
-    <p>We may collect the following types of information:</p>
+    <p>Depending on how you use our platform, we may collect the following:</p>
     <ul>
-      <li><strong>Contact information</strong> — your name and email address when you subscribe to our mailing list or submit a contact form.</li>
-      <li><strong>Usage data</strong> — basic analytics such as pages visited and time on site, collected through cookies or third-party analytics tools.</li>
-      <li><strong>Communications</strong> — messages you send us directly via email or contact forms.</li>
+      <li><strong>Account information</strong> — your email address and, optionally, your name when you create an account on AIQ or REPS.</li>
+      <li><strong>Assessment data</strong> — your responses to the AIQ assessment, your domain scores, your maturity level, and any saved progress through the training tracks.</li>
+      <li><strong>Usage data</strong> — records of which tools you use and how often, tracked per billing period to enforce free tier limits and manage paid subscriptions.</li>
+      <li><strong>Payment information</strong> — when you purchase a paid plan or training track, your payment is processed by Stripe. We do not store your card number, expiration date, or CVV. We retain only your Stripe customer ID and subscription status.</li>
+      <li><strong>AI coach interactions</strong> — messages you send to the AI coach within AIQ training tracks are transmitted to Anthropic's API to generate responses. These messages are not stored by JSN Made after the session ends, but are subject to Anthropic's data practices.</li>
+      <li><strong>Contact information</strong> — your name and email if you subscribe to our mailing list or contact us directly.</li>
+      <li><strong>Analytics data</strong> — aggregate, anonymized data about pages visited and time on site, collected through Google Analytics 4.</li>
     </ul>
 
     <h2>2. How We Use Your Information</h2>
     <p>We use the information we collect to:</p>
     <ul>
-      <li>Send you newsletters, product updates, and promotional emails via Constant Contact</li>
-      <li>Respond to inquiries and provide customer support</li>
-      <li>Improve our website and product offerings</li>
+      <li>Create and manage your account and authenticate your sessions</li>
+      <li>Deliver AIQ assessment results, training content, and AI coach functionality</li>
+      <li>Enforce free tier usage limits and manage paid subscription access on REPS</li>
+      <li>Process payments and manage subscription status through Stripe</li>
+      <li>Send transactional emails related to your account or purchase</li>
+      <li>Send newsletters and product updates via Constant Contact, if you have subscribed</li>
+      <li>Improve our products and understand how users interact with our platform</li>
       <li>Comply with applicable legal obligations</li>
     </ul>
 
-    <h2>3. Email Marketing (Constant Contact)</h2>
-    <p>We use Constant Contact to manage our email list and send communications. When you subscribe, your name and email address are stored in Constant Contact's platform. Constant Contact's privacy policy governs how they handle your data and is available at <a href="https://www.constantcontact.com/legal/privacy-statement" target="_blank">constantcontact.com</a>.</p>
-    <p>Every marketing email we send includes an unsubscribe link. You may opt out at any time.</p>
+    <h2>3. Third-Party Service Providers</h2>
+    <p>We work with the following third parties to operate our platform. Each processes data only as necessary to provide their service:</p>
+    <ul>
+      <li><strong>Supabase</strong> — stores your account credentials, assessment data, usage records, and subscription status. Data is encrypted at rest and in transit. See <a href="https://supabase.com/privacy" target="_blank">supabase.com/privacy</a>.</li>
+      <li><strong>Stripe</strong> — processes all payments. We do not handle or store your card data. See <a href="https://stripe.com/privacy" target="_blank">stripe.com/privacy</a>.</li>
+      <li><strong>Anthropic</strong> — powers the AI coach within AIQ training tracks. Messages you send to the AI coach are transmitted to Anthropic's API. See <a href="https://www.anthropic.com/privacy" target="_blank">anthropic.com/privacy</a>.</li>
+      <li><strong>Cloudflare</strong> — hosts our platform and routes API traffic through Cloudflare Workers. See <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">cloudflare.com/privacypolicy</a>.</li>
+      <li><strong>Constant Contact</strong> — manages our email marketing list. If you subscribe, your name and email are stored in Constant Contact's platform. See <a href="https://www.constantcontact.com/legal/privacy-statement" target="_blank">constantcontact.com</a>. Every marketing email includes an unsubscribe link.</li>
+      <li><strong>Google Analytics 4</strong> — collects anonymized, aggregate data about site usage. No personally identifiable information is shared with Google through analytics. See <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>.</li>
+    </ul>
+    <p>We do not sell, rent, or trade your personal information to any third party for their own marketing purposes.</p>
 
-    <h2>4. Sharing of Information</h2>
-    <p>We do not sell, rent, or trade your personal information. We may share data only with trusted service providers (such as Constant Contact) who assist in operating our business, under appropriate confidentiality agreements.</p>
+    <h2>4. Data Security</h2>
+    <p>We take reasonable technical measures to protect your data, including:</p>
+    <ul>
+      <li>All data is transmitted over HTTPS</li>
+      <li>Account authentication uses industry-standard JWT tokens with session expiry</li>
+      <li>Database access is restricted by Row Level Security — users can only access their own data</li>
+      <li>API keys are stored as encrypted environment variables and never exposed in client-side code</li>
+      <li>AI coach access is validated server-side before any API call is made</li>
+    </ul>
+    <p>No method of transmission over the internet is 100% secure. We cannot guarantee absolute security, but we are committed to protecting your information using reasonable and current best practices.</p>
 
     <h2>5. Cookies</h2>
-    <p>Our website may use cookies or similar technologies to enhance your browsing experience and collect aggregate usage statistics. You can control cookie settings through your browser preferences.</p>
+    <p>Our website uses cookies and similar technologies for authentication sessions and aggregate analytics. You can control cookie settings through your browser preferences. Disabling cookies may affect your ability to log in or use certain features.</p>
 
     <h2>6. Data Retention</h2>
-    <p>We retain your contact information for as long as you remain subscribed to our list or as required by law. You may request deletion of your data at any time by contacting us.</p>
+    <p>We retain your account and usage data for as long as your account is active or as needed to provide our services. If you request deletion of your account, we will remove your personal data within a reasonable timeframe, except where retention is required by law or for legitimate business purposes such as fraud prevention.</p>
+    <p>Email subscribers who unsubscribe are removed from our active mailing list. You may request full deletion of your contact record by emailing us directly.</p>
 
     <h2>7. Your Rights</h2>
-    <p>Depending on your location, you may have rights to access, correct, or delete your personal data, or to object to or restrict certain processing. To exercise any of these rights, please reach out to us using the contact information below.</p>
+    <p>Depending on your location, you may have rights under applicable privacy law, including the right to access, correct, or delete your personal data, or to object to or restrict certain processing. To exercise any of these rights, contact us at the address below. We will respond within a reasonable timeframe.</p>
 
     <h2>8. Children's Privacy</h2>
     <p>JSN Made is not directed at children under 13. We do not knowingly collect personal information from minors. If you believe we have inadvertently collected such information, please contact us and we will delete it promptly.</p>
 
     <h2>9. Changes to This Policy</h2>
-    <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated effective date. Continued use of our site or subscription to our list after changes constitutes acceptance of the updated policy.</p>
+    <p>We may update this Privacy Policy from time to time to reflect changes in our products or legal obligations. Changes will be posted on this page with an updated effective date. Continued use of our platform after changes constitutes acceptance of the updated policy.</p>
 
     <hr class="divider" />
 
     <div class="contact-block">
       <h2 style="margin-top:0;">10. Contact Us</h2>
-      <p>If you have questions about this Privacy Policy or your personal data, you can reach us at:</p>
+      <p>If you have questions about this Privacy Policy or want to exercise your data rights, contact us at:</p>
       <p style="margin-top:12px;"><strong>JSN Made</strong><br>
       <a href="mailto:hello@jsnmade.com">hello@jsnmade.com</a><br>
       <a href="https://jsnmade.com" target="_blank">jsnmade.com</a></p>
