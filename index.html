@@ -407,9 +407,73 @@
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* RESPONSIVE */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+      margin-left: 16px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .nav-mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: var(--navy2);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px 24px;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 999;
+    }
+    .nav-mobile-menu.open { display: flex; }
+    .nav-mobile-menu a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: color 0.15s;
+    }
+    .nav-mobile-menu a:last-child { border-bottom: none; }
+    .nav-mobile-menu a:hover { color: var(--cyan); }
+    .nav-mobile-cta {
+      margin-top: 12px;
+      display: block;
+      text-align: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 24px;
+      background: var(--cyan);
+      color: var(--navy) !important;
+      border-bottom: none !important;
+    }
+
     @media (max-width: 900px) {
       nav { padding: 18px 24px; }
       .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
       .hero { padding: 140px 24px 100px; }
       .hero-scroll { left: 24px; }
       .philosophy { grid-template-columns: 1fr; gap: 48px; padding: 80px 24px; }
@@ -472,8 +536,19 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
         <li><a href="login.html">Sign In</a></li>
       </ul>
       <a href="aiq/index.html" class="nav-cta">Take the AIQ</a>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="#products" id="mob-products">Products</a>
+    <a href="aiq/index.html">AIQ</a>
+    <a href="reps/index.html">REPS</a>
+    <a href="login.html">Sign In</a>
+    <a href="aiq/index.html" class="nav-mobile-cta">Take the AIQ →</a>
+  </div>
 
   <!-- HERO -->
   <div class="hero-wrap">
@@ -654,5 +729,25 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
     reveals.forEach(el => observer.observe(el));
   </script>
 
+<script>
+  const hamburger = document.getElementById('nav-hamburger');
+  const mobileMenu = document.getElementById('nav-mobile-menu');
+
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+
+  // Close menu when a link is tapped
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+    });
+  });
+
+  // Close menu on Products scroll link
+  document.getElementById('mob-products').addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+  });
+</script>
 </body>
 </html>
