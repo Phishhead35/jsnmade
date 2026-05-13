@@ -661,6 +661,7 @@
       footer { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
     }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -1028,41 +1029,70 @@
   </script>
 
   <script>
-    // REPS SIGNUP — adds contact to CTCT REPS list then redirects to login
+    // SUPABASE CLIENT
+    const _sb = supabase.createClient(
+      'https://vmuvgdtfsdydvpxvdgso.supabase.co',
+      'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
+    );
+
+    // REPS SIGNUP — creates Supabase account + adds to CTCT REPS list
     async function handleREPSSignup(e) {
       e.preventDefault();
 
       const firstName = document.getElementById('reps-first-name').value.trim();
       const email = document.getElementById('reps-email').value.trim();
+      const password = document.getElementById('reps-password').value;
       const btn = document.getElementById('reps-signup-btn');
+      const note = document.querySelector('.form-note');
 
+      // Basic validation
       if (!email) {
-        alert('Please enter your email address.');
+        note.textContent = 'Please enter your email address.';
+        note.style.color = '#ff6b2b';
+        return;
+      }
+      if (!password || password.length < 8) {
+        note.textContent = 'Password must be at least 8 characters.';
+        note.style.color = '#ff6b2b';
         return;
       }
 
       btn.textContent = 'Creating Account...';
       btn.disabled = true;
 
-      // Fire CTCT hosted form submission (fire and forget — don't block the user)
+      // 1. Create Supabase account
+      const { error } = await _sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: firstName }
+        }
+      });
+
+      if (error) {
+        btn.textContent = 'Create Free Account';
+        btn.disabled = false;
+        note.textContent = error.message;
+        note.style.color = '#ff6b2b';
+        return;
+      }
+
+      // 2. Fire CTCT lead capture in background (no-cors, never blocks user)
       try {
-        const ctctUrl = 'https://lp.constantcontactpages.com/sl/jrN60Nh/JSNREPS';
         const formData = new FormData();
         formData.append('email_address', email);
         if (firstName) formData.append('first_name', firstName);
-
-        // Use no-cors since CTCT hosted pages don't allow cross-origin reads
-        fetch(ctctUrl, {
+        fetch('https://lp.constantcontactpages.com/sl/jrN60Nh/JSNREPS', {
           method: 'POST',
           mode: 'no-cors',
           body: formData
-        }).catch(() => {}); // fail silently — never block the user
-      } catch(err) {
-        // fail silently
-      }
+        }).catch(() => {});
+      } catch(err) {}
 
-      // Always redirect to login regardless of CTCT result
-      window.location.href = '../login.html';
+      // 3. Show success — tell them to check email
+      btn.textContent = 'Account Created!';
+      note.style.color = '#5be0a0';
+      note.innerHTML = '&#10003; Check your inbox to confirm your email, then <a href="../login.html" style="color:#5be0a0;text-decoration:underline">sign in here</a>.';
     }
   </script>
 
