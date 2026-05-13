@@ -988,15 +988,15 @@
         <div class="login-heading">Start Free Today</div>
         <p class="login-subtext">Join agents and brokers already using REPS to save hours every week and show up more prepared to every conversation.</p>
         <div class="form-field">
-          <input type="text" placeholder="First Name" />
+          <input type="text" id="reps-first-name" placeholder="First Name" />
         </div>
         <div class="form-field">
-          <input type="email" placeholder="Work Email" />
+          <input type="email" id="reps-email" placeholder="Work Email" />
         </div>
         <div class="form-field">
-          <input type="password" placeholder="Create Password" />
+          <input type="password" id="reps-password" placeholder="Create Password" />
         </div>
-        <button class="form-submit" onclick="window.location='../login.html'">Create Free Account</button>
+        <button class="form-submit" id="reps-signup-btn" onclick="handleREPSSignup(event)">Create Free Account</button>
         <div class="form-note">No credit card &nbsp;·&nbsp; No setup &nbsp;·&nbsp; Cancel anytime</div>
       </div>
     </div>
@@ -1025,6 +1025,45 @@
       });
     }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
     reveals.forEach(el => observer.observe(el));
+  </script>
+
+  <script>
+    // REPS SIGNUP — adds contact to CTCT REPS list then redirects to login
+    async function handleREPSSignup(e) {
+      e.preventDefault();
+
+      const firstName = document.getElementById('reps-first-name').value.trim();
+      const email = document.getElementById('reps-email').value.trim();
+      const btn = document.getElementById('reps-signup-btn');
+
+      if (!email) {
+        alert('Please enter your email address.');
+        return;
+      }
+
+      btn.textContent = 'Creating Account...';
+      btn.disabled = true;
+
+      // Fire CTCT hosted form submission (fire and forget — don't block the user)
+      try {
+        const ctctUrl = 'https://lp.constantcontactpages.com/sl/jrN60Nh/JSNREPS';
+        const formData = new FormData();
+        formData.append('email_address', email);
+        if (firstName) formData.append('first_name', firstName);
+
+        // Use no-cors since CTCT hosted pages don't allow cross-origin reads
+        fetch(ctctUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: formData
+        }).catch(() => {}); // fail silently — never block the user
+      } catch(err) {
+        // fail silently
+      }
+
+      // Always redirect to login regardless of CTCT result
+      window.location.href = '../login.html';
+    }
   </script>
 
 </body>
