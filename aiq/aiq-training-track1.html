@@ -742,6 +742,8 @@ let userScore = 50;
 let userLevel = "Experimenting";
 let userName = "";
 let userEmail = "";
+const { createClient: _createClient } = supabase;
+const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
 let chatHistory = [];
 let quizState = { current: 0, answers: [], complete: false };
 let completedPages = new Set();
@@ -872,11 +874,7 @@ async function unlockTraining() {
 
   // Create Supabase account so user has credentials for paid tracks
   try {
-    const { createClient } = supabase;
-    const sb = createClient(
-      'https://vmuvgdtfsdydvpxvdgso.supabase.co',
-      'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
-    );
+    const sb = _sbClient;
     const { data, error } = await sb.auth.signUp({
       email: e,
       password: password,
@@ -913,11 +911,7 @@ async function unlockTraining() {
 // ── NAV ACCESS UPDATE ──────────────────────────────────────────────────────
 async function updateNavForAccess() {
   try {
-    const { createClient } = supabase;
-    const sb = createClient(
-      'https://vmuvgdtfsdydvpxvdgso.supabase.co',
-      'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl'
-    );
+    const sb = _sbClient;
     const { data: { session } } = await sb.auth.getSession();
     if (!session) return;
     const { data, error } = await sb.from('aiq_access')
@@ -1126,8 +1120,7 @@ You are knowledgeable, direct, and practical. You care about helping them make r
   const ANTHROPIC_WORKER = "https://jsn-aiq-coach.wewearsmiles.workers.dev";
 
   try {
-    const { createClient } = supabase;
-    const _sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co','sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
+    const _sb = _sbClient;
     const { data: { session: _session } } = await _sb.auth.getSession();
     const _token = _session?.access_token || '';
     const res = await fetch(ANTHROPIC_WORKER, {

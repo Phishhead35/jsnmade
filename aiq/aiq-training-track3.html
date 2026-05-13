@@ -367,6 +367,8 @@ document.getElementById('jsn-hamburger').addEventListener('click', () => {
   document.getElementById('jsn-mobile-menu').classList.toggle('open');
 });
 
+const { createClient: _createClient } = supabase;
+const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
 let chatHistory = [];
 let chatInitialized = false;
 const ANTHROPIC_WORKER = 'https://jsn-aiq-coach.wewearsmiles.workers.dev';
@@ -501,8 +503,7 @@ Your role:
 You are knowledgeable, direct, and practical.`;
 
   try {
-    const { createClient } = supabase;
-    const _sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co','sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
+    const _sb = _sbClient;
     const { data: { session: _session } } = await _sb.auth.getSession();
     const _token = _session?.access_token || '';
     const res = await fetch(ANTHROPIC_WORKER, {
@@ -525,8 +526,7 @@ function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(e
 function askSuggested(btn) { sendMessage(btn.textContent); }
 
 async function checkAccess() {
-  const { createClient } = supabase;
-  const sb = createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
+  const sb = _sbClient;
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'aiq-welcome.html?reason=not_logged_in'; return; }
   const { data, error } = await sb.from('aiq_access').select('track_3, track_4, full_program').eq('user_id', session.user.id).single();
