@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="sb-anon-key" content="sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl" />
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/reps/auth.js"></script>
 <script src="/reps/paywall.js"></script>
@@ -14,7 +14,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="JSN Coach">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0b1120;--surface:#121c30;--surface2:#1a2640;--border:#1e2d47;--accent:#ff6b2b;--accent-glow:rgba(255,107,43,.18);--accent2:#00d4c8;--accent2-glow:rgba(0,212,200,.15);--text:#ffffff;--muted:#7a8fa8;--danger:#ff3d52;--success:#1fd38a;--r:6px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -4609,9 +4608,7 @@ async function send(){
 
   }catch(e){
     rmTyping();
-    const eb=document.getElementById('stream-bubble');
-    if(eb){eb.textContent='[COACH] Connection error. Try again.';eb.removeAttribute('id');}
-    else addMsg('assistant','[COACH] Connection error. Try again.');
+    addMsg('assistant','[COACH] Connection error. Try again.');
   }
   loading=false;document.getElementById('sendbtn').disabled=false;
 }
