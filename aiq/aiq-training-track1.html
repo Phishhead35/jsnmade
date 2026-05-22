@@ -883,8 +883,13 @@ async function unlockTraining() {
     if (data?.session) {
       // Store token so welcome page can use it
       localStorage.setItem('aiq_token', data.session.access_token);
-    }
-    if (error && !error.message.toLowerCase().includes('already registered')) {
+    } else if (error?.message.toLowerCase().includes('already registered')) {
+      // Returning user — sign them in so the coach has a valid token
+      const { data: signInData } = await sb.auth.signInWithPassword({ email: e, password: password });
+      if (signInData?.session) {
+        localStorage.setItem('aiq_token', signInData.session.access_token);
+      }
+    } else if (error) {
       console.warn('Supabase signup warning:', error.message);
     }
   } catch(err) {
@@ -1122,7 +1127,7 @@ You are knowledgeable, direct, and practical. You care about helping them make r
   try {
     const _sb = _sbClient;
     const { data: { session: _session } } = await _sb.auth.getSession();
-    const _token = _session?.access_token || '';
+    const _token = _session?.access_token || localStorage.getItem('aiq_token') || '';
     const res = await fetch(ANTHROPIC_WORKER, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + _token },
