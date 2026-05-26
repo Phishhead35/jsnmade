@@ -714,15 +714,4 @@ async function checkAccess() {
   if (data.track_2 || data.full_program) {
     document.getElementById('access-gate').classList.add('hidden');
     document.getElementById('app-shell').style.display = 'grid';
-    document.getElementById('sb-user-name').textContent = session.user.user_metadata?.full_name || '';
-    document.getElementById('sb-user-email').textContent = session.user.email || '';
-    updateNavForAccess(data);
-  } else {
-    window.location.href = 'aiq-welcome.html?reason=no_access';
-  }
-}
-
-checkAccess();
-</script>
-</body>
-</html>
+    document.getElementById('sb-user-name').textConten

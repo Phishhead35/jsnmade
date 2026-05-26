@@ -545,16 +545,4 @@ async function checkAccess() {
     // Update Track 4 nav link if user already has access
     if (data.track_4 || data.full_program) {
       const l = document.getElementById('nav-link-track4');
-      if (l) l.href = 'aiq-training-track4.html';
-      const m = document.getElementById('mob-link-track4');
-      if (m) m.href = 'aiq-training-track4.html';
-    }
-  } else {
-    window.location.href = 'aiq-welcome.html?reason=no_access';
-  }
-}
-
-checkAccess();
-</script>
-</body>
-</html>
+     
