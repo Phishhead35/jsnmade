@@ -213,6 +213,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .example-grid{grid-template-columns:1fr}
   .next-tracks{grid-template-columns:1fr}
   .gate-card{padding:28px 16px}
+  .chat-container{height:360px}
 }
 
 /* ── JSN MADE NAV ── */
@@ -979,7 +980,11 @@ function showPage(id) {
       completedPages.add(id);
     }
   }
-  window.scrollTo(0,0);
+  if (window.innerWidth <= 768) {
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.scrollTo(0, 0);
+  }
 }
 
 // ── QUIZ ───────────────────────────────────────────────────────────────────

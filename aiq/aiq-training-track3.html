@@ -127,7 +127,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .complete-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);margin-bottom:16px}
 .complete-title em{color:#1DC6C2;font-style:italic}
 .complete-body{font-size:15px;color:#FFFFFF;line-height:1.7;max-width:480px;margin:0 auto 40px}
-@media(max-width:768px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.main{padding:32px 20px}}
+@media(max-width:768px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto}.main{padding:32px 20px}.chat-container{height:360px}}
 #jsn-nav{background:rgba(11,17,32,0.97);border-bottom:1px solid rgba(0,212,200,0.18);backdrop-filter:blur(12px);position:fixed;top:0;left:0;right:0;z-index:10000;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
 .jsn-brand{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#ffffff;text-decoration:none}
 .jsn-brand span{color:#00d4c8}
@@ -395,7 +395,11 @@ function showPage(id) {
   }
   if (id === 'quiz') renderQuiz();
   if (id === 'chat' && !chatInitialized) { initChat(); chatInitialized = true; }
-  window.scrollTo(0, 0);
+  if (window.innerWidth <= 768) {
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.scrollTo(0, 0);
+  }
 }
 
 function renderQuiz() {

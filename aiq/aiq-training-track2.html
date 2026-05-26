@@ -170,6 +170,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
   .shell{grid-template-columns:1fr}
   .sidebar{position:static;height:auto}
   .main{padding:32px 20px}
+  .chat-container{height:360px}
 }
 
 /* JSN MADE NAV */
@@ -539,7 +540,11 @@ function showPage(id) {
   }
   if (id === 'quiz') renderQuiz();
   if (id === 'chat' && !chatInitialized) { initChat(); chatInitialized = true; }
-  window.scrollTo(0, 0);
+  if (window.innerWidth <= 768) {
+    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.scrollTo(0, 0);
+  }
 }
 
 // QUIZ
