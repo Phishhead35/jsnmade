@@ -347,25 +347,23 @@ async function showTrackMenu(session, email) {
   if (hasT4) links.push({ label: 'Continue — Track 4: Competitive Edge', href: 'aiq-training-track4.html', primary: true });
   if (hasT3) links.push({ label: 'Continue — Track 3: Governance & Growth', href: 'aiq-training-track3.html', primary: !hasT4 });
   if (hasT2) links.push({ label: 'Continue — Track 2: From Pilot to Proof', href: 'aiq-training-track2.html', primary: !hasT3 && !hasT4 });
-  // Track 1 is always available
-  links.push({ label: 'Track 1: AI Foundations (Free)', href: 'aiq-training-track1.html', primary: links.length === 0 });
+  // Track 1 always available — assessment required to get score & personalized track
+  const track1Href = (hasT2 || hasT3 || hasT4) ? 'aiq-training-track1.html' : 'aiq-readiness.html';
+  const track1Label = (hasT2 || hasT3 || hasT4) ? 'Track 1: AI Foundations (Free)' : 'Track 1: AI Foundations — Take Assessment →';
+  links.push({ label: track1Label, href: track1Href, primary: links.length === 0 });
 
   const trackLinksEl = document.getElementById('track-links');
   trackLinksEl.innerHTML = links.map(l =>
     `<a href="${l.href}" class="track-btn${l.primary ? ' primary' : ''}">${l.label}</a>`
   ).join('');
 
-  const name = session.user.user_metadata?.full_name || email.split('@')[0];
-  document.getElementById('success-msg').textContent =
-    `Signed in as ${email}. Pick up where you left off:`;
+  const hasPaid = hasT2 || hasT3 || hasT4;
+  document.getElementById('success-msg').textContent = hasPaid
+    ? `Signed in as ${email}. Pick up where you left off:`
+    : `Signed in as ${email}. Take the free assessment to access your personalized training:`;
 
   document.getElementById('signin-panel').style.display = 'none';
   document.getElementById('success-panel').style.display = 'block';
-
-  // If they only have Track 1, redirect automatically after a beat
-  if (!hasT2 && !hasT3 && !hasT4) {
-    setTimeout(() => { window.location.href = 'aiq-training-track1.html'; }, 1200);
-  }
 }
 
 // ── PASSWORD RESET ───────────────────────────────────────────────────────────
