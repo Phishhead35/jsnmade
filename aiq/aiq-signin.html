@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In | AIQ by JSN Made</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-G33EEH6W8K');
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B0D14;
+  --surface:#121C2F;
+  --card:#151F33;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.12);
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,0.45);
+  --accent:#1DC6C2;
+  --orange:#FD6B2B;
+  --red:#FF6B6B;
+  --mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+  -webkit-font-smoothing:antialiased;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:999;opacity:0.4
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  padding:48px 44px;
+  max-width:440px;
+  width:100%;
+  position:relative;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent)
+}
+.brand{
+  font-family:var(--serif);
+  font-size:22px;
+  color:var(--accent);
+  text-align:center;
+  margin-bottom:6px;
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-align:center;
+  margin-bottom:32px;
+}
+h1{
+  font-family:var(--serif);
+  font-size:28px;
+  line-height:1.2;
+  margin-bottom:8px;
+}
+h1 em{color:var(--accent);font-style:italic}
+.sub{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-bottom:32px;
+}
+.field{margin-bottom:12px}
+.field label{
+  display:block;
+  font-family:var(--mono);
+  font-size:9px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+.field input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:13px 15px;
+  font-family:var(--mono);
+  font-size:13px;
+  outline:none;
+  transition:border-color 0.15s;
+}
+.field input:focus{border-color:var(--accent)}
+.field input::placeholder{color:rgba(255,255,255,0.25)}
+.btn{
+  width:100%;
+  background:var(--orange);
+  color:#fff;
+  border:none;
+  padding:15px;
+  font-family:var(--mono);
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  cursor:pointer;
+  margin-top:8px;
+  transition:opacity 0.15s;
+}
+.btn:hover{opacity:0.88}
+.btn:disabled{opacity:0.45;cursor:not-allowed}
+.error{
+  display:none;
+  color:var(--red);
+  font-family:var(--mono);
+  font-size:11px;
+  text-align:center;
+  margin:10px 0 4px;
+  line-height:1.5;
+}
+.success-state{display:none;text-align:center}
+.success-icon{
+  font-size:40px;
+  margin-bottom:16px;
+}
+.success-title{
+  font-family:var(--serif);
+  font-size:26px;
+  margin-bottom:8px;
+  color:var(--accent);
+}
+.success-msg{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-bottom:28px;
+}
+.success-tracks{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:28px;
+}
+.track-btn{
+  display:block;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:14px 18px;
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  text-decoration:none;
+  text-align:left;
+  transition:border-color 0.15s,color 0.15s;
+  cursor:pointer;
+}
+.track-btn:hover{border-color:var(--accent);color:var(--accent)}
+.track-btn.primary{
+  background:var(--orange);
+  border-color:var(--orange);
+  color:#fff;
+  font-weight:500;
+}
+.track-btn.primary:hover{opacity:0.88;color:#fff}
+.forgot{
+  text-align:center;
+  margin-top:20px;
+  font-size:12px;
+  color:var(--muted);
+  font-family:var(--mono);
+}
+.forgot a{color:var(--accent);text-decoration:none;cursor:pointer}
+.forgot a:hover{text-decoration:underline}
+.divider{
+  border:none;
+  border-top:1px solid var(--border);
+  margin:28px 0;
+}
+.new-user{
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  font-family:var(--mono);
+  margin-top:20px;
+}
+.new-user a{color:var(--accent);text-decoration:none}
+.new-user a:hover{text-decoration:underline}
+/* forgot panel */
+#forgot-panel{display:none}
+@media(max-width:480px){
+  .card{padding:32px 20px}
+}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- SIGN IN FORM -->
+  <div id="signin-panel">
+    <div class="brand">AIQ Training</div>
+    <div class="eyebrow">// by JSN Made</div>
+    <h1>Welcome <em>back.</em></h1>
+    <p class="sub">Sign in to continue your AI readiness training where you left off.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@company.com" autocomplete="email"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password"/>
+    </div>
+    <div class="error" id="signin-error"></div>
+    <button class="btn" id="signin-btn" onclick="signIn()">Sign In →</button>
+    <div class="forgot">
+      Forgot your password? <a onclick="showForgot()">Reset it →</a>
+    </div>
+    <hr class="divider"/>
+    <div class="new-user">
+      New to AIQ? <a href="aiq-readiness.html">Take the free assessment →</a>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="forgot-panel">
+    <div class="brand">AIQ Training</div>
+    <div class="eyebrow">// Password Reset</div>
+    <h1>Reset your <em>password.</em></h1>
+    <p class="sub">Enter your email and we'll send you a reset link.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="forgot-email" placeholder="you@company.com" autocomplete="email"/>
+    </div>
+    <div class="error" id="forgot-error"></div>
+    <button class="btn" id="forgot-btn" onclick="sendReset()">Send Reset Link →</button>
+    <div class="forgot" style="margin-top:16px">
+      <a onclick="showSignin()">← Back to sign in</a>
+    </div>
+  </div>
+
+  <!-- SUCCESS: CHOOSE TRACK -->
+  <div id="success-panel" class="success-state">
+    <div class="success-icon">◈</div>
+    <div class="success-title">You're in.</div>
+    <p class="success-msg" id="success-msg">Choose where to continue:</p>
+    <div class="success-tracks" id="track-links"></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL      = 'https://vmuvgdtfsdydvpxvdgso.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── PANEL TOGGLES ───────────────────────────────────────────────────────────
+function showForgot() {
+  document.getElementById('signin-panel').style.display = 'none';
+  document.getElementById('forgot-panel').style.display = 'block';
+}
+function showSignin() {
+  document.getElementById('forgot-panel').style.display = 'none';
+  document.getElementById('signin-panel').style.display = 'block';
+}
+
+// ── ENTER KEY SUPPORT ───────────────────────────────────────────────────────
+['email','password'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') signIn();
+  });
+});
+document.getElementById('forgot-email').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendReset();
+});
+
+// ── SIGN IN ─────────────────────────────────────────────────────────────────
+async function signIn() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl    = document.getElementById('signin-error');
+  const btn      = document.getElementById('signin-btn');
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.textContent = 'Signing In...'; btn.disabled = true;
+
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+      btn.textContent = 'Sign In →'; btn.disabled = false; return;
+    }
+    await showTrackMenu(data.session, email);
+  } catch(e) {
+    errEl.textContent = 'Sign in failed. Please try again.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Sign In →'; btn.disabled = false;
+  }
+}
+
+// ── SHOW TRACK MENU AFTER LOGIN ──────────────────────────────────────────────
+async function showTrackMenu(session, email) {
+  // Check which tracks they own
+  let hasT2 = false, hasT3 = false, hasT4 = false;
+  try {
+    const { data } = await sb.from('aiq_access')
+      .select('track_2, track_3, track_4, full_program')
+      .eq('user_id', session.user.id)
+      .single();
+    if (data) {
+      hasT2 = !!(data.track_2 || data.full_program);
+      hasT3 = !!(data.track_3 || data.full_program);
+      hasT4 = !!(data.track_4 || data.full_program);
+    }
+  } catch(e) { /* no paid tracks — default to Track 1 */ }
+
+  // Build track link list, highest owned track first
+  const links = [];
+  if (hasT4) links.push({ label: 'Continue — Track 4: Competitive Edge', href: 'aiq-training-track4.html', primary: true });
+  if (hasT3) links.push({ label: 'Continue — Track 3: Governance & Growth', href: 'aiq-training-track3.html', primary: !hasT4 });
+  if (hasT2) links.push({ label: 'Continue — Track 2: From Pilot to Proof', href: 'aiq-training-track2.html', primary: !hasT3 && !hasT4 });
+  // Track 1 is always available
+  links.push({ label: 'Track 1: AI Foundations (Free)', href: 'aiq-training-track1.html', primary: links.length === 0 });
+
+  const trackLinksEl = document.getElementById('track-links');
+  trackLinksEl.innerHTML = links.map(l =>
+    `<a href="${l.href}" class="track-btn${l.primary ? ' primary' : ''}">${l.label}</a>`
+  ).join('');
+
+  const name = session.user.user_metadata?.full_name || email.split('@')[0];
+  document.getElementById('success-msg').textContent =
+    `Signed in as ${email}. Pick up where you left off:`;
+
+  document.getElementById('signin-panel').style.display = 'none';
+  document.getElementById('success-panel').style.display = 'block';
+
+  // If they only have Track 1, redirect automatically after a beat
+  if (!hasT2 && !hasT3 && !hasT4) {
+    setTimeout(() => { window.location.href = 'aiq-training-track1.html'; }, 1200);
+  }
+}
+
+// ── PASSWORD RESET ───────────────────────────────────────────────────────────
+async function sendReset() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const errEl = document.getElementById('forgot-error');
+  const btn   = document.getElementById('forgot-btn');
+  errEl.style.display = 'none';
+
+  if (!email) {
+    errEl.textContent = 'Please enter your email address.';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.textContent = 'Sending...'; btn.disabled = true;
+
+  try {
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://jsnmade.com/aiq/aiq-signin.html'
+    });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+      btn.textContent = 'Send Reset Link →'; btn.disabled = false; return;
+    }
+    errEl.style.color = '#1DC6C2';
+    errEl.textContent = 'Reset link sent. Check your inbox.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Sent ✓'; btn.disabled = true;
+  } catch(e) {
+    errEl.textContent = 'Failed to send reset email. Try again.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Send Reset Link →'; btn.disabled = false;
+  }
+}
+
+// ── CHECK FOR EXISTING SESSION ON LOAD ──────────────────────────────────────
+(async () => {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      await showTrackMenu(session, session.user.email);
+    }
+  } catch(e) { /* no session — show form */ }
+})();
+</script>
+</body>
+</html>

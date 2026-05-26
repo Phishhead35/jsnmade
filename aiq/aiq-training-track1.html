@@ -355,9 +355,10 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
     <li><a href="aiq-welcome.html">AIQ Home</a></li>
     <li><a href="aiq-training-track1.html" class="active">Track 1</a></li>
     <li><a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02" id="nav-link-track2">Track 2</a></li>
-    <li><a href="https://buy.stripe.com/00w5kD9Pi8ucf2h6o50kE03" id="nav-link-track3">Track 3</a></li>
-    <li><a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" id="nav-link-track4">Track 4</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track3">Track 3</a></li>
+    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track4">Track 4</a></li>
     <li><span class="jsn-track-badge">Track 1</span></li>
+    <li><a href="aiq-signin.html" style="color:rgba(255,255,255,0.45)">Sign In</a></li>
   </ul>
   <button class="jsn-hamburger" id="jsn-hamburger" aria-label="Open menu">
     <span></span><span></span><span></span>
@@ -368,6 +369,7 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
   <a href="aiq-training-track1.html">Track 1</a>
   <a href="https://buy.stripe.com/3cI00jf9CaCkbQ5aEl0kE02" id="mob-link-track2">Track 2</a>
   <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="mob-link-track3">Track 3 + 4</a>
+  <a href="aiq-signin.html">Sign In</a>
 </div>
 
 <!-- EMAIL GATE -->
@@ -401,6 +403,21 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
     <button class="btn-primary" id="gate-btn" onclick="unlockTraining()">Unlock My Training →</button>
     <div id="gate-error" style="display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-top:10px;font-family:var(--mono)"></div>
     <div class="gate-privacy">No spam. No sharing. Unsubscribe anytime.</div>
+    <div style="text-align:center;margin-top:16px;font-size:11px;font-family:var(--mono);color:rgba(255,255,255,0.4)">
+      Already have an account? <a href="#" onclick="showGateSignin();return false;" style="color:#1DC6C2;text-decoration:none">Sign in →</a>
+    </div>
+
+    <!-- Returning user sign-in (hidden by default) -->
+    <div id="gate-signin-panel" style="display:none;margin-top:20px;border-top:1px solid rgba(255,255,255,0.08);padding-top:20px">
+      <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:#1DC6C2;margin-bottom:14px">// Returning User — Sign In</div>
+      <input class="gate-input" type="email" id="gate-signin-email" placeholder="Your email address" autocomplete="email"/>
+      <input class="gate-input" type="password" id="gate-signin-password" placeholder="Your password" autocomplete="current-password"/>
+      <div id="gate-signin-error" style="display:none;color:#FF6B6B;font-size:11px;text-align:center;margin-bottom:10px;font-family:var(--mono)"></div>
+      <button class="btn-primary" id="gate-signin-btn" onclick="signInReturning()">Sign In →</button>
+      <div style="text-align:center;margin-top:12px;font-size:11px;font-family:var(--mono);color:rgba(255,255,255,0.4)">
+        New here? <a href="#" onclick="hideGateSignin();return false;" style="color:#1DC6C2;text-decoration:none">Create account ↑</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -815,6 +832,30 @@ window.onload = () => {
 
   // Silently update nav links for returning users who already have paid access
   updateNavForAccess();
+
+  // Check for existing Supabase session — skip gate for returning users
+  (async () => {
+    try {
+      const { data: { session } } = await _sbClient.auth.getSession();
+      if (session?.user) {
+        userName = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+        userEmail = session.user.email;
+        const m2 = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[1];
+        document.getElementById("sb-score").textContent = userScore;
+        document.getElementById("sb-score").style.color = m2.color;
+        document.getElementById("sb-level").textContent = "Level " + m2.level + ": " + m2.name;
+        document.getElementById("sb-track-label").textContent = m2.track;
+        document.getElementById("sb-user-name").textContent = userName;
+        document.getElementById("sb-user-email").textContent = userEmail;
+        const gate = document.getElementById("gate");
+        gate.style.display = "none";
+        document.getElementById("app-shell").style.display = "grid";
+        initChat();
+        renderQuiz();
+        updateNavForAccess();
+      }
+    } catch(e) { /* fail silent — gate shows normally */ }
+  })();
 };
 
 // ── EMAIL GATE ─────────────────────────────────────────────────────────────
@@ -884,13 +925,8 @@ async function unlockTraining() {
     if (data?.session) {
       // Store token so welcome page can use it
       localStorage.setItem('aiq_token', data.session.access_token);
-    } else if (error?.message.toLowerCase().includes('already registered')) {
-      // Returning user — sign them in so the coach has a valid token
-      const { data: signInData } = await sb.auth.signInWithPassword({ email: e, password: password });
-      if (signInData?.session) {
-        localStorage.setItem('aiq_token', signInData.session.access_token);
-      }
-    } else if (error) {
+    }
+    if (error && !error.message.toLowerCase().includes('already registered')) {
       console.warn('Supabase signup warning:', error.message);
     }
   } catch(err) {
@@ -965,6 +1001,62 @@ async function updateNavForAccess() {
     }
   } catch(e) {
     // fail silently — nav stays as Stripe links
+  }
+}
+
+// ── GATE SIGN-IN TOGGLE ────────────────────────────────────────────────────
+function showGateSignin() {
+  document.getElementById("gate-signin-panel").style.display = "block";
+  ["gate-name","gate-email","gate-password","gate-industry","gate-btn","gate-error"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
+}
+
+function hideGateSignin() {
+  document.getElementById("gate-signin-panel").style.display = "none";
+  ["gate-name","gate-email","gate-password","gate-industry","gate-btn"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "";
+  });
+}
+
+async function signInReturning() {
+  const email    = document.getElementById("gate-signin-email").value.trim();
+  const password = document.getElementById("gate-signin-password").value;
+  const errEl    = document.getElementById("gate-signin-error");
+  const btn      = document.getElementById("gate-signin-btn");
+  errEl.style.display = "none";
+  if (!email || !password) {
+    errEl.textContent = "Please enter your email and password.";
+    errEl.style.display = "block"; return;
+  }
+  btn.textContent = "Signing In..."; btn.disabled = true;
+  try {
+    const { data, error } = await _sbClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = "block";
+      btn.textContent = "Sign In →"; btn.disabled = false; return;
+    }
+    userName  = data.user.user_metadata?.full_name || email.split("@")[0];
+    userEmail = email;
+    const m = MATURITY.find(x => userScore >= x.min && userScore <= x.max) || MATURITY[1];
+    document.getElementById("sb-score").textContent = userScore;
+    document.getElementById("sb-score").style.color = m.color;
+    document.getElementById("sb-level").textContent = "Level " + m.level + ": " + m.name;
+    document.getElementById("sb-track-label").textContent = m.track;
+    document.getElementById("sb-user-name").textContent = userName;
+    document.getElementById("sb-user-email").textContent = userEmail;
+    const gate = document.getElementById("gate");
+    gate.classList.add("hidden");
+    setTimeout(() => gate.style.display = "none", 400);
+    document.getElementById("app-shell").style.display = "grid";
+    initChat(); renderQuiz(); updateNavForAccess();
+  } catch(e) {
+    errEl.textContent = "Sign in failed. Please try again.";
+    errEl.style.display = "block";
+    btn.textContent = "Sign In →"; btn.disabled = false;
   }
 }
 
@@ -1132,7 +1224,7 @@ You are knowledgeable, direct, and practical. You care about helping them make r
   try {
     const _sb = _sbClient;
     const { data: { session: _session } } = await _sb.auth.getSession();
-    const _token = _session?.access_token || localStorage.getItem('aiq_token') || '';
+    const _token = _session?.access_token || '';
     const res = await fetch(ANTHROPIC_WORKER, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + _token },
