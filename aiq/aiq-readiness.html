@@ -129,6 +129,7 @@
     .results-grid { grid-template-columns: 1fr; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
 <script>
@@ -164,6 +165,9 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
 </div>
 
 <script>
+const { createClient: _createClient } = supabase;
+const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
+
 const DOMAINS = [
   {
     id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
@@ -791,12 +795,29 @@ async function submitAuditInquiry() {
   document.getElementById("audit-confirm").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-function goToTraining() {
+async function goToTraining() {
   if (!results) return;
   const { composite, domainScores } = results;
   const params = new URLSearchParams();
   params.set("score", composite);
   DOMAINS.forEach(d => params.set(d.id, domainScores[d.id]));
+
+  // Save score to Supabase user_metadata if user is signed in
+  try {
+    const { data: { session } } = await _sbClient.auth.getSession();
+    if (session?.user) {
+      await _sbClient.auth.updateUser({
+        data: {
+          aiq_score: composite,
+          aiq_scores: domainScores,
+          aiq_score_date: new Date().toISOString()
+        }
+      });
+    }
+  } catch(e) {
+    console.warn('Score save skipped:', e);
+  }
+
   window.location.href = "aiq-training-track1.html?" + params.toString();
 }
 
