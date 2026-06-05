@@ -124,12 +124,36 @@
   .footer { margin-top: 28px; text-align: center; font-size: 10px; letter-spacing: 0.1em; color: #FFFFFF; }
   .footer a { color: var(--accent); text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
+  /* ── Email / Copy capture block ─────────────────────────────────── */
+  .email-row { display: flex; gap: 10px; margin-bottom: 8px; }
+  .email-row input[type="email"] {
+    flex: 1; min-width: 0;
+    background: #ffffff; color: #0b1120; border: none;
+    padding: 13px 16px; font-family: var(--mono); font-size: 12px; outline: none;
+  }
+  .btn-send {
+    background: #ff6b2b; color: #ffffff; border: none;
+    padding: 13px 24px; font-family: var(--mono); font-size: 11px;
+    font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; white-space: nowrap; transition: opacity 0.15s; flex-shrink: 0;
+  }
+  .btn-send:hover { opacity: 0.88; }
+  .btn-send:disabled { opacity: 0.5; cursor: default; }
+  .btn-copy-clipboard {
+    background: #00d4c8; color: #0b1120; border: none;
+    padding: 10px 20px; font-family: var(--mono); font-size: 10px;
+    font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-copy-clipboard:hover { opacity: 0.85; }
   @media (max-width: 560px) {
     .card { padding: 32px 20px; }
     .results-grid { grid-template-columns: 1fr; }
+    .email-row { flex-direction: column; }
+    .email-row input[type="email"],
+    .btn-send { width: 100%; }
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
 <script>
@@ -165,9 +189,6 @@ src="https://www.facebook.com/tr?id=1940890076534651&ev=PageView&noscript=1"
 </div>
 
 <script>
-const { createClient: _createClient } = supabase;
-const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
-
 const DOMAINS = [
   {
     id: "data", label: "Data & Infrastructure", weight: 0.25, color: "#00C4EE", icon: "◈",
@@ -455,36 +476,11 @@ const MATURITY = [
 ];
 
 const USE_CASES = {
-  data: [
-    "Start with a free CRM like HubSpot or Zoho — one afternoon to set up and your customer information is centralized immediately",
-    "Use Google Sheets or Airtable to build a simple shared customer tracker your whole team can access from any device",
-    "Set up automatic data backups so customer information is never lost if someone leaves or a device breaks",
-    "Run a one-hour team exercise to identify every place customer information currently lives and consolidate it into one spot"
-  ],
-  strategy: [
-    "Pick one specific problem in your business that costs you time or money every week and research whether a tool under $100 a month already solves it",
-    "Spend 30 minutes with your team listing the five biggest time-wasters in the business — that list is your AI roadmap",
-    "Sign up for a free AIQ Discovery Call to get a straight assessment of where to start and what it will actually cost",
-    "Set aside two hours this month to test one AI tool that addresses your biggest operational pain — no commitment, just a test"
-  ],
-  talent: [
-    "Host a one-hour team session to show employees what AI tools actually do — most fear disappears when people see how simple the tools are",
-    "Pick one willing team member to be your AI tester — give them an hour a week to experiment and report back what works",
-    "Start with tools your team already uses that have AI built in — Microsoft Copilot, Google Workspace AI, or Canva AI are good starting points",
-    "Address job security concerns directly and early — tell your team AI is here to handle the repetitive work so they can focus on what actually requires a human"
-  ],
-  current: [
-    "Set up a free auto-reply for missed calls and emails so no customer inquiry goes unanswered — tools like GoDaddy Conversations or Google Business Messages do this for free",
-    "Use a scheduling tool like Calendly or Acuity to eliminate back-and-forth booking and send automatic reminders — starting at free",
-    "Turn on automated follow-up in whatever email or CRM tool you already use — most have this built in and it takes 20 minutes to configure",
-    "Audit the tools you already pay for and check if they have AI features you are not using yet — most software added AI in the last 12 months"
-  ],
-  governance: [
-    "Create a simple one-page rule for your team: never put a customer's name, address, payment info, or personal details into a free AI tool like ChatGPT",
-    "Spend 30 minutes mapping what customer information your business collects and where it goes — you cannot protect what you have not identified",
-    "Before signing up for any new tool, check their privacy policy for two things: do they sell your data, and do they use your data to train their AI",
-    "Set up two-factor authentication on every tool that holds customer data — it takes five minutes and eliminates the most common cause of small business data breaches"
-  ]
+  data:       ["Implement a centralized data warehouse (Snowflake, BigQuery, or similar)", "Automate reporting pipelines to eliminate manual spreadsheet work", "Deploy data quality monitoring to catch issues before they propagate", "Build a single source of truth dashboard for operational KPIs"],
+  strategy:   ["Run a structured AI opportunity mapping session with leadership", "Define a 90-day AI pilot with a clear success metric and owner", "Benchmark competitors on AI adoption to build internal urgency", "Assign an AI lead or taskforce with explicit mandate and budget"],
+  talent:     ["Launch a company-wide AI literacy program (even 4 hours can shift culture)", "Identify internal AI champions and give them dedicated time to experiment", "Create a safe sandbox for employees to test tools without risk", "Build job descriptions that explicitly value data and AI fluency"],
+  current:    ["Audit current tools for AI features you are already paying for but not using", "Automate your highest-volume, lowest-complexity repetitive tasks first", "Integrate an AI assistant into customer-facing workflows for a 30-day test", "Establish a formal ROI tracking process for any AI or automation investment"],
+  governance: ["Draft an AI acceptable use policy covering data privacy and tool vetting", "Train employees on what company data should never enter public AI tools", "Map your regulatory exposure to AI risk scenarios (GDPR, CCPA, industry rules)", "Create a lightweight vendor AI assessment checklist for procurement"]
 };
 
 let screen = "intro";
@@ -622,6 +618,21 @@ function render() {
             </div>`).join("")}
         </div>
       </div>
+
+      <hr class="divider"/>
+      <div id="results-capture-block">
+        <div class="section-label" style="margin-bottom:16px">// Get Your Results</div>
+        <div id="email-form-wrap">
+          <div class="email-row">
+            <input type="email" id="results-email-input" placeholder="Enter your email" autocomplete="email"/>
+            <button class="btn-send" id="results-send-btn" onclick="sendResults()">Send My Results</button>
+          </div>
+          <div id="email-feedback" style="font-size:12px;color:#ffffff;font-family:var(--mono);min-height:18px;margin-bottom:10px"></div>
+          <button class="btn-copy-clipboard" id="copy-results-btn" onclick="handleCopyClick(this)">Or Copy to Clipboard</button>
+        </div>
+      </div>
+      <hr class="divider"/>
+
       ${gaps.length ? '<div class="section-label">Priority Gaps. Domains Below 50</div>' : ""}
       ${gapHTML}
       <hr class="divider"/>
@@ -696,7 +707,7 @@ function render() {
 
       <div class="btn-row">
         <button class="btn-ghost" onclick="restart()">Retake Assessment</button>
-        <button class="btn-ghost" onclick="copyResults()">Copy Results</button>
+        <button class="btn-ghost" onclick="handleCopyClick(this)">Copy Results</button>
       </div>
     `;
     setTimeout(() => {
@@ -820,39 +831,115 @@ async function submitAuditInquiry() {
   document.getElementById("audit-confirm").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-async function goToTraining() {
+function goToTraining() {
   if (!results) return;
   const { composite, domainScores } = results;
   const params = new URLSearchParams();
   params.set("score", composite);
   DOMAINS.forEach(d => params.set(d.id, domainScores[d.id]));
-
-  // Save score to Supabase user_metadata if user is signed in
-  try {
-    const { data: { session } } = await _sbClient.auth.getSession();
-    if (session?.user) {
-      await _sbClient.auth.updateUser({
-        data: {
-          aiq_score: composite,
-          aiq_scores: domainScores,
-          aiq_score_date: new Date().toISOString()
-        }
-      });
-    }
-  } catch(e) {
-    console.warn('Score save skipped:', e);
-  }
-
   window.location.href = "aiq-training-track1.html?" + params.toString();
 }
 
-function copyResults() {
+// ── EMAIL RESULTS ─────────────────────────────────────────────────────────
+const AIQ_EMAIL_WORKER = "https://jsn-aiq-coach.wewearsmiles.workers.dev/send-aiq-results";
+
+async function sendResults() {
   if (!results) return;
+  const emailInput = document.getElementById("results-email-input");
+  const feedbackEl = document.getElementById("email-feedback");
+  const btn = document.getElementById("results-send-btn");
+  if (!emailInput || !feedbackEl || !btn) return;
+
+  const email = emailInput.value.trim();
+  feedbackEl.style.color = "#ffffff";
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    feedbackEl.textContent = "Please enter a valid email address.";
+    return;
+  }
+
+  feedbackEl.textContent = "";
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
   const { domainScores, composite, maturity } = results;
-  const text = "AI Readiness Score: " + composite + "/100. " + maturity.name + " (Level " + maturity.level + ")\n\nDomain Scores:\n" +
-    DOMAINS.map(d => "  " + d.label + ": " + domainScores[d.id] + "/100").join("\n") +
-    "\n\nGenerated by JSN Made. jsnmade.com";
-  navigator.clipboard.writeText(text).then(() => alert("Results copied to clipboard."));
+  const domainObj = {};
+  DOMAINS.forEach(d => { domainObj[d.label] = domainScores[d.id]; });
+
+  try {
+    const res = await fetch(AIQ_EMAIL_WORKER, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        overallScore: composite,
+        maturityLevel: maturity.name,
+        domainScores: domainObj
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById("email-form-wrap").innerHTML =
+        '<div style="font-size:13px;color:#ffffff;font-family:var(--mono);padding:4px 0">Results sent! Check your inbox.</div>';
+    } else {
+      throw new Error(data.error || "Unknown error");
+    }
+  } catch (err) {
+    console.warn("Send results error:", err);
+    feedbackEl.textContent = "Something went wrong -- use Copy below.";
+    btn.textContent = "Send My Results";
+    btn.disabled = false;
+  }
+}
+
+// ── COPY RESULTS ──────────────────────────────────────────────────────────
+function buildCopyText() {
+  if (!results) return "";
+  const { domainScores, composite, maturity } = results;
+  const now = new Date();
+  const months = ["January","February","March","April","May","June","July",
+                  "August","September","October","November","December"];
+  const day = String(now.getDate()).padStart(2, "0");
+  const dateStr = months[now.getMonth()] + " " + day + ", " + now.getFullYear();
+  return [
+    "JSN AIQ -- AI Readiness Results",
+    "Date: " + dateStr,
+    "",
+    "Overall Score: " + composite + "/100",
+    "Maturity Level: " + maturity.name,
+    "",
+    "Domain Scores:",
+    ...DOMAINS.map(d => "- " + d.label + ": " + domainScores[d.id]),
+    "",
+    "Take the full assessment: jsnmade.com/aiq"
+  ].join("\n");
+}
+
+function handleCopyClick(btn) {
+  const text = buildCopyText();
+  if (!text) return;
+  const origLabel = btn.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = "Copied!";
+      setTimeout(() => { btn.textContent = origLabel; }, 2000);
+    }).catch(() => showCopyModal(text));
+  } else {
+    showCopyModal(text);
+  }
+}
+
+function showCopyModal(text) {
+  const modal = document.createElement("div");
+  modal.style.cssText = "position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px";
+  modal.innerHTML = '<div style="background:#121c2f;border:1px solid rgba(29,198,194,0.3);padding:28px;max-width:480px;width:100%">'
+    + '<div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#1dc6c2;margin-bottom:14px;font-family:var(--mono)">Copy Your Results</div>'
+    + '<textarea id="copy-modal-ta" readonly rows="12" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:#ffffff;padding:12px;font-family:var(--mono);font-size:11px;resize:none;line-height:1.6;outline:none">' + text.replace(/</g,"&lt;").replace(/>/g,"&gt;") + '</textarea>'
+    + '<button onclick="this.closest(\'[style*=fixed]\').remove()" style="margin-top:14px;background:transparent;border:1px solid rgba(255,255,255,0.15);color:#ffffff;padding:10px 20px;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer">Close</button>'
+    + '</div>';
+  document.body.appendChild(modal);
+  const ta = document.getElementById("copy-modal-ta");
+  if (ta) { ta.focus(); ta.select(); }
 }
 
 // ── RECOMMENDED TOOLS ─────────────────────────────────────────────────────
