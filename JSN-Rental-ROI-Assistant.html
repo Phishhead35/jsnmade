@@ -1354,6 +1354,7 @@ async function runAnalysis() {
       method: 'POST',
       headers,
       body: JSON.stringify({
+        app: 'roi',
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2000,
         stream: true,

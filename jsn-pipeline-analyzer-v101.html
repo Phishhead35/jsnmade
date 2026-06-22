@@ -1107,6 +1107,7 @@ async function analyze() {
     const resp = await fetch(API_URL, {
       method: 'POST', headers: hdrs, signal: abortCtrl.signal,
       body: JSON.stringify({
+        app: 'pipeline',
         model: 'claude-sonnet-4-20250514',
         max_tokens: 3500,
         stream: true,
