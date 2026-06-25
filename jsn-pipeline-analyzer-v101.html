@@ -1123,36 +1123,15 @@ async function analyze() {
       throw new Error(`API_ERROR:${resp.status}`);
     }
 
-    const reader  = resp.body.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      for (const line of decoder.decode(value).split('\n')) {
-        if (!line.startsWith('data: ')) continue;
-        const d = line.slice(6);
-        if (d === '[DONE]') continue;
-        try {
-          const p = JSON.parse(d);
-          if (p.type === 'content_block_delta' && p.delta?.text) {
-            fullText += p.delta.text;
-
-            if (!streamStarted) {
-              // Switch from spinner to live stream on first token
-              streamStarted = true;
-              document.getElementById('outputBody').innerHTML =
-                `<div class="response-content" id="streamContent"></div>`;
-            }
-
-            // Live render as markdown while streaming
-            const el = document.getElementById('streamContent');
-            if (el) el.innerHTML = renderMarkdown(fullText) + '<span class="cursor"></span>';
-          }
-        } catch(e) {}
+    fullText = await streamSSE(resp, (text) => {
+      if (!streamStarted) {
+        streamStarted = true;
+        document.getElementById('outputBody').innerHTML =
+          `<div class="response-content" id="streamContent"></div>`;
       }
-    }
+      const el = document.getElementById('streamContent');
+      if (el) el.innerHTML = renderMarkdown(text) + '<span class="cursor"></span>';
+    });
 
     // Final clean render — remove cursor, detect routed mode
     lastOutput = fullText;
@@ -1372,6 +1351,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && abortCtrl) abortAnalysis();
 });
 </script>
+<script src="/stream.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_pipeline";

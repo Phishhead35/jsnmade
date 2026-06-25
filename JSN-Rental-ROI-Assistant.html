@@ -1377,34 +1377,12 @@ async function runAnalysis() {
       throw new Error(`API_ERROR:${response.status}:${errText}`);
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data === '[DONE]') continue;
-          try {
-            const parsed = JSON.parse(data);
-            if (parsed.type === 'content_block_delta' && parsed.delta?.text) {
-              fullText += parsed.delta.text;
-              document.getElementById('streamText').innerHTML =
-                escapeHtml(fullText) + '<span class="cursor"></span>';
-              // Auto scroll
-              const sc = document.getElementById('streamContainer');
-              if (sc) sc.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            }
-          } catch(e) {}
-        }
-      }
-    }
+    fullText = await streamSSE(response, (text) => {
+      document.getElementById('streamText').innerHTML =
+        escapeHtml(text) + '<span class="cursor"></span>';
+      const sc = document.getElementById('streamContainer');
+      if (sc) sc.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
 
     // Done streaming — render structured result
     sessionStats.analyses++;
@@ -1780,6 +1758,7 @@ document.addEventListener('keydown', e => {
 <div style="text-align:center; padding:10px 20px; font-size:11px; color:#ffffff; line-height:1.6; border-top:1px solid rgba(0,212,200,0.13); background:rgba(11,17,32,0.97);">
   Output is AI-generated and for informational use only. Not financial, legal, tax, or investment advice. Consult qualified professionals before making decisions.
 </div>
+<script src="/stream.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_objection";

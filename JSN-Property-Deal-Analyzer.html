@@ -1285,25 +1285,10 @@ async function runAnalysis() {
       throw new Error(`API_ERROR:${resp.status}`);
     }
 
-    const reader = resp.body.getReader();
-    const dec = new TextDecoder();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      for (const line of dec.decode(value).split('\n')) {
-        if (!line.startsWith('data: ')) continue;
-        const d = line.slice(6);
-        if (d === '[DONE]') continue;
-        try {
-          const p = JSON.parse(d);
-          if (p.type === 'content_block_delta' && p.delta?.text) {
-            full += p.delta.text;
-            const st = document.getElementById('stext');
-            if (st) st.innerHTML = esc(full) + '<span class="cursor"></span>';
-          }
-        } catch(e) {}
-      }
-    }
+    full = await streamSSE(resp, (text) => {
+      const st = document.getElementById('stext');
+      if (st) st.innerHTML = esc(text) + '<span class="cursor"></span>';
+    });
 
     stats.analyses++;
     renderResult(inp, full);
@@ -1606,6 +1591,7 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runAnalysis();
 });
 </script>
+<script src="/stream.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_discovery";

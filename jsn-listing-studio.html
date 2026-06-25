@@ -785,31 +785,10 @@ ${sanitized}`;
       throw new Error(errData.error?.message || 'API error ' + response.status);
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const data = line.slice(6).trim();
-        if (data === '[DONE]') continue;
-        try {
-          const parsed = JSON.parse(data);
-          const delta = parsed?.delta?.text || '';
-          if (delta) {
-            fullOutput += delta;
-            streamEl.textContent = fullOutput;
-            streamEl.appendChild(cursor);
-          }
-        } catch {}
-      }
-    }
+    fullOutput = await streamSSE(response, (text) => {
+      streamEl.textContent = text;
+      streamEl.appendChild(cursor);
+    });
 
     cursor.remove();
     updateStats(fullOutput);
@@ -885,6 +864,7 @@ function escHtml(str) {
 <div style="text-align:center; padding:10px 20px; font-size:11px; color:#ffffff; line-height:1.6; border-top:1px solid #1f2730; background:#121c30;">
   Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
 </div>
+<script src="/stream.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_contract";
