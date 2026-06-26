@@ -1832,7 +1832,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const session = JSNAuth.getSession();
   if (!session) { window.location.href = '/login.html'; return; }
 
-  const status = await JSNPaywall.check('pipeline');
+  const status = await JSNPaywall.check('reps_pipeline');
   if (!status.allowed) return;
 
   // Auth handled — show app directly (no API key entry needed)
