@@ -884,7 +884,7 @@
       <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
         <div class="copy-bar-label">JSN Pipeline v1.0</div>
         <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
-        <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+        <button class="copy-btn" onclick="copyOutput(this)">Copy Output</button>
         <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
         <button class="copy-btn" onclick="clearAll()">Clear</button>
       </div>
@@ -1629,14 +1629,36 @@ function reloadHistory(i) {
 }
 
 // ─── COPY / EXPORT ────────────────────────────────────────────────────────────
-function copyOutput() {
+function copyOutput(btn) {
   if (!lastOutput) return;
-  navigator.clipboard.writeText(lastOutput).then(() => {
-    const btn = event.target;
-    const orig = btn.textContent;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = orig, 1500);
-  }).catch(() => toast('Copy failed — select text manually'));
+  const orig = btn ? btn.textContent : '';
+  const flash = () => {
+    if (btn) {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastOutput).then(flash).catch(() => fallbackCopy(lastOutput, flash));
+  } else {
+    fallbackCopy(lastOutput, flash);
+  }
+}
+
+function fallbackCopy(text, onSuccess) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (onSuccess) onSuccess();
+  } catch (e) {
+    toast('Copy failed — use Export .txt instead');
+  }
+  document.body.removeChild(ta);
 }
 
 function exportTxt() {
