@@ -16,6 +16,7 @@
     { name: 'Listing',   file: '/jsn-listing-studio.html' },
     { name: 'Deals',     file: '/JSN-Property-Deal-Analyzer.html' },
     { name: 'ROI',       file: '/JSN-Rental-ROI-Assistant.html' },
+    { name: 'CRM',       file: '/reps/crm.html', minTier: 'pro' },
   ];
 
   const TIER_COLORS = {
@@ -141,10 +142,13 @@
   const nav = document.createElement('nav');
   nav.id = 'jsn-nav';
 
-  const appLinks = APPS.map(app => {
-    const isActive = currentPath === app.file.replace('/', '');
-    return `<a class="nav-app${isActive ? ' active' : ''}" href="${app.file}">${app.name}</a>`;
-  }).join('');
+  const tierRank = { free: 0, pro: 1, team: 2 };
+  const appLinks = APPS
+    .filter(app => !app.minTier || (tierRank[tier] || 0) >= (tierRank[app.minTier] || 0))
+    .map(app => {
+      const isActive = currentPath === app.file.replace('/', '');
+      return `<a class="nav-app${isActive ? ' active' : ''}" href="${app.file}">${app.name}</a>`;
+    }).join('');
 
   nav.innerHTML = `
     <div id="jsn-nav-inner">

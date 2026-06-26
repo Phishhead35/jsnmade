@@ -1,3 +1,4 @@
+// STARTER TEMPLATE — NOT the deployed proxy. Do not deploy.
 /**
  * JSN Made — Anthropic API Proxy Worker
  * Deploy as a Cloudflare Worker.

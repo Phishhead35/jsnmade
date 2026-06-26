@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="sb-anon-key" content="sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl" />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/reps/auth.js"></script>
 <script src="/reps/paywall.js"></script>
-<title>JSN Deal Pipeline Analyzer v10.1</title>
-<meta name="description" content="JSN Real Estate – Pipeline analysis, lead coaching, and agent performance tool">
+<title>JSN REPS Pipeline — Pipeline Coach</title>
+<meta name="description" content="JSN Pipeline — AI-powered pipeline analysis, lead coaching, and team performance for any sales team">
 <style>
-  /* skip link */
   .skip-link {
     position: absolute; top: -100%; left: 8px;
     background: var(--accent); color: #000;
@@ -36,9 +34,7 @@
     --font-body: 'Barlow', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     color: var(--text);
@@ -48,6 +44,80 @@
     display: flex;
     flex-direction: column;
   }
+
+  /* API KEY SETUP SCREEN */
+  /* setupScreen removed — auth handled by JSNAuth */
+  #setupScreen_UNUSED {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+  .setup-box_UNUSED {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px;
+    max-width: 480px;
+    width: 90%;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .setup-logo {
+    font-family: var(--font-head);
+    font-size: 28px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .setup-logo .cyan { color: var(--accent); }
+  .setup-subtitle {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    opacity: 0.6; margin-top: -12px;
+  }
+  .setup-label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    opacity: 0.7; margin-bottom: 6px;
+  }
+  .setup-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 12px 14px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .setup-input:focus { border-color: var(--accent); }
+  .setup-input::placeholder { color: rgba(255,255,255,0.25); }
+  .setup-btn {
+    background: var(--accent2);
+    color: #fff;
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    padding: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .setup-btn:hover { background: #ff8c55; }
+  .setup-note {
+    font-size: 11px; color: var(--muted); opacity: 0.5;
+    font-family: var(--font-mono); line-height: 1.6;
+    text-align: center;
+  }
+
+  /* MAIN APP */
+  #appScreen { display: none; flex-direction: column; flex: 1; }
+  #appScreen.visible { display: flex; }
 
   header {
     padding: 18px 28px;
@@ -75,8 +145,10 @@
     padding: 3px 8px;
     border-radius: 2px;
     letter-spacing: 1px;
+    opacity: 0.6;
   }
-  .badge.new { border-color: var(--accent2); color: var(--accent2); }
+  .badge.pro { border-color: var(--accent); color: var(--accent); opacity: 1; }
+  .badge.new { border-color: var(--accent2); color: var(--accent2); opacity: 1; }
 
   .mode-bar {
     display: flex;
@@ -94,6 +166,7 @@
     padding: 12px 20px;
     cursor: pointer;
     color: var(--muted);
+    opacity: 0.6;
     border-bottom: 2px solid transparent;
     transition: all 0.15s;
     background: none;
@@ -101,8 +174,8 @@
     border-left: none;
     border-right: none;
   }
-  .mode-tab:hover { color: var(--text); }
-  .mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .mode-tab:hover { color: var(--text); opacity: 1; }
+  .mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); opacity: 1; }
 
   .main {
     display: flex;
@@ -128,6 +201,7 @@
     text-transform: uppercase;
     padding: 14px 20px 10px;
     border-bottom: 1px solid var(--border);
+    opacity: 0.7;
   }
 
   .input-area {
@@ -155,7 +229,7 @@
     min-height: 180px;
   }
   textarea:focus { border-color: var(--accent); }
-  textarea::placeholder { color: rgba(255,255,255,0.35); }
+  textarea::placeholder { color: rgba(255,255,255,0.25); }
 
   .section-head {
     font-family: var(--font-mono);
@@ -164,6 +238,7 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 2px;
+    opacity: 0.7;
   }
 
   .scenarios { display: flex; flex-direction: column; gap: 6px; }
@@ -190,7 +265,6 @@
     font-weight: 500;
   }
 
-  /* SCORING REFERENCE PANEL */
   .ref-toggle {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -208,8 +282,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    opacity: 0.75;
   }
-  .ref-toggle:hover { border-color: var(--accent); color: var(--text); }
+  .ref-toggle:hover { border-color: var(--accent); color: var(--text); opacity: 1; }
   .ref-panel {
     display: none;
     background: var(--bg);
@@ -221,7 +296,11 @@
     color: var(--muted);
   }
   .ref-panel.open { display: block; }
-  .ref-panel strong { color: var(--accent); font-size: 10px; font-family: var(--font-mono); font-weight: 500; display: block; margin-top: 8px; margin-bottom: 2px; }
+  .ref-panel strong {
+    color: var(--accent); font-size: 10px;
+    font-family: var(--font-mono); font-weight: 500;
+    display: block; margin-top: 8px; margin-bottom: 2px;
+  }
   .ref-panel strong:first-child { margin-top: 0; }
 
   .run-btn {
@@ -256,6 +335,7 @@
     align-items: center;
     justify-content: space-between;
     background: var(--surface2);
+    flex-shrink: 0;
   }
   .output-label {
     font-family: var(--font-mono);
@@ -263,6 +343,7 @@
     letter-spacing: 2px;
     color: var(--muted);
     text-transform: uppercase;
+    opacity: 0.7;
   }
   .output-right { display: flex; align-items: center; gap: 14px; }
   .mode-indicator {
@@ -283,6 +364,21 @@
     border-radius: 2px;
     display: none;
   }
+  .coach-toggle-btn {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 1px;
+    text-transform: uppercase;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.15s;
+    display: none;
+  }
+  .coach-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .coach-toggle-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,212,200,0.08); }
 
   .output-body {
     flex: 1;
@@ -290,6 +386,7 @@
     padding: 28px;
     scrollbar-width: thin;
     scrollbar-color: var(--border) transparent;
+    min-height: 0;
   }
 
   .welcome {
@@ -333,8 +430,7 @@
     gap: 20px;
   }
   .pulse-ring {
-    width: 56px;
-    height: 56px;
+    width: 56px; height: 56px;
     border: 2px solid var(--border);
     border-top-color: var(--accent);
     border-radius: 50%;
@@ -343,132 +439,77 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-text {
     font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase;
     animation: blink 1.2s ease-in-out infinite;
   }
   .loading-sub {
     font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--border);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-size: 9px; color: var(--border);
+    letter-spacing: 1px; text-transform: uppercase;
   }
   @keyframes blink { 0%,100%{opacity:0.3} 50%{opacity:1} }
 
-  /* RESPONSE */
   .response-content {
-    font-size: 14px;
-    line-height: 1.8;
+    font-size: 14px; line-height: 1.8;
     color: var(--text);
     animation: fadeIn 0.3s ease;
     max-width: 820px;
   }
   @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-
   .response-content h1 {
-    font-family: var(--font-head);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 24px;
-    color: var(--accent);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    margin: 0 0 16px;
-    line-height: 1.2;
+    font-family: var(--font-head); font-weight: 800;
+    text-transform: uppercase; letter-spacing: 2px; font-size: 24px;
+    color: var(--accent); border-bottom: 1px solid var(--border);
+    padding-bottom: 8px; margin: 0 0 16px; line-height: 1.2;
   }
   .response-content h2 {
-    font-family: var(--font-head);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    font-size: 17px;
-    color: var(--text);
-    margin: 24px 0 8px;
-    line-height: 1.2;
+    font-family: var(--font-head); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px; font-size: 17px;
+    color: var(--text); margin: 24px 0 8px; line-height: 1.2;
   }
   .response-content h3 {
-    font-family: var(--font-head);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 13px;
-    color: var(--accent2);
-    margin: 18px 0 6px;
-    line-height: 1.2;
+    font-family: var(--font-head); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; font-size: 13px;
+    color: var(--accent2); margin: 18px 0 6px; line-height: 1.2;
   }
   .response-content p { margin-bottom: 12px; }
   .response-content ul, .response-content ol { padding-left: 20px; margin-bottom: 14px; }
   .response-content li { margin-bottom: 5px; }
   .response-content strong { color: var(--accent); font-weight: 600; }
   .response-content em {
-    color: var(--muted);
-    font-style: normal;
-    font-family: var(--font-mono);
-    font-size: 11px;
+    color: var(--muted); font-style: normal;
+    font-family: var(--font-mono); font-size: 11px;
   }
   .response-content code {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 2px 6px;
-    border-radius: 2px;
-    color: var(--accent);
+    font-family: var(--font-mono); font-size: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 2px; color: var(--accent);
   }
   .response-content pre {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 16px;
-    border-radius: 4px;
-    margin: 14px 0;
-    overflow-x: auto;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.65;
-    color: var(--text);
-    white-space: pre-wrap;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); padding: 16px; border-radius: 4px;
+    margin: 14px 0; overflow-x: auto; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.65; color: var(--text); white-space: pre-wrap;
   }
   .response-content blockquote {
-    border-left: 3px solid var(--accent2);
-    padding: 10px 16px;
-    margin: 14px 0;
-    background: var(--surface2);
-    color: var(--muted);
-    border-radius: 0 4px 4px 0;
-    font-size: 13px;
+    border-left: 3px solid var(--accent2); padding: 10px 16px;
+    margin: 14px 0; background: var(--surface2); color: var(--muted);
+    border-radius: 0 4px 4px 0; font-size: 13px;
   }
-  .response-content hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 24px 0;
-  }
+  .response-content hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
   .response-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 14px 0;
-    font-size: 13px;
-    font-family: var(--font-mono);
+    width: 100%; border-collapse: collapse; margin: 14px 0;
+    font-size: 13px; font-family: var(--font-mono);
   }
   .response-content th {
-    background: var(--surface2);
-    color: var(--accent);
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 8px 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
+    background: var(--surface2); color: var(--accent);
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border);
   }
   .response-content td {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    vertical-align: top;
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--text); vertical-align: top;
   }
   .response-content tr:last-child td { border-bottom: none; }
   .response-content tr:hover td { background: var(--surface2); }
@@ -481,71 +522,150 @@
     justify-content: flex-end;
     gap: 10px;
     align-items: center;
+    flex-shrink: 0;
   }
   .copy-bar-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-right: auto;
+    font-family: var(--font-mono); font-size: 9px;
+    color: var(--muted); letter-spacing: 1px;
+    text-transform: uppercase; margin-right: auto; opacity: 0.5;
   }
   .copy-btn {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 6px 14px;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.15s;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 6px 14px; cursor: pointer;
+    border-radius: 3px; transition: all 0.15s;
   }
   .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+  /* ─── COACH PANEL ─────────────────────────────────────────── */
+  .coach-panel {
+    border-top: 2px solid var(--accent);
+    background: var(--surface);
+    display: flex; flex-direction: column;
+    height: 0; overflow: hidden;
+    transition: height 0.3s ease;
+    flex-shrink: 0;
+  }
+  .coach-panel.open { height: 240px; }
+  .coach-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .coach-header-left { display: flex; align-items: center; gap: 10px; }
+  .coach-title {
+    font-family: var(--font-head); font-weight: 800;
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent);
+  }
+  .coach-sub {
+    font-family: var(--font-mono); font-size: 9px;
+    letter-spacing: 1px; color: var(--muted); opacity: 0.5;
+    text-transform: uppercase;
+  }
+  .coach-clear-btn {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 1px; text-transform: uppercase;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); padding: 4px 10px;
+    cursor: pointer; border-radius: 3px; transition: all 0.15s;
+    opacity: 0.6;
+  }
+  .coach-clear-btn:hover { border-color: var(--red); color: var(--red); opacity: 1; }
+  .coach-messages {
+    flex: 1; overflow-y: auto; padding: 14px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .coach-msg {
+    max-width: 85%; font-size: 13px; line-height: 1.65;
+    padding: 10px 14px; border-radius: 6px;
+    animation: fadeIn 0.2s ease;
+  }
+  .coach-msg.coach {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); align-self: flex-start; border-left: 3px solid var(--accent);
+    font-family: var(--font-body);
+  }
+  .coach-msg.user {
+    background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.25);
+    color: var(--text); align-self: flex-end;
+  }
+  .coach-msg.sys {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); opacity: 0.5; align-self: center;
+    letter-spacing: 1px; padding: 4px 0; background: none; border: none;
+  }
+  .coach-msg strong { color: var(--accent); font-weight: 600; }
+  .coach-msg em { color: var(--muted); font-style: italic; }
+  .coach-input-row {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  .coach-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    padding: 9px 12px;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+    height: 38px;
+    max-height: 72px;
+    overflow-y: hidden;
+    transition: border-color 0.15s;
+    line-height: 1.4;
+  }
+  .coach-input:focus { border-color: var(--accent); }
+  .coach-input::placeholder { color: rgba(255,255,255,0.25); }
+  .coach-send-btn {
+    background: var(--accent);
+    color: #000;
+    font-family: var(--font-head);
+    font-weight: 800; font-size: 13px;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: none; padding: 9px 16px;
+    cursor: pointer; border-radius: 4px;
+    transition: all 0.15s; flex-shrink: 0;
+    height: 40px;
+  }
+  .coach-send-btn:hover { background: #00ebe3; }
+  .coach-send-btn:disabled { background: var(--border); color: rgba(255,255,255,0.3); cursor: not-allowed; }
+
+  /* ─── HISTORY ──────────────────────────────────────────────── */
   .history-strip {
     border-top: 1px solid var(--border);
     background: var(--bg);
     padding: 8px 16px;
-    display: flex;
-    gap: 8px;
+    display: flex; gap: 8px;
     overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
     flex-shrink: 0;
   }
   .hist-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    white-space: nowrap;
-    padding: 4px 0;
-    flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); white-space: nowrap;
+    padding: 4px 0; flex-shrink: 0; opacity: 0.5;
   }
   .hist-chip {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    white-space: nowrap;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 4px 10px;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.5px;
+    font-family: var(--font-mono); font-size: 10px;
+    white-space: nowrap; background: var(--surface);
+    border: 1px solid var(--border); color: var(--muted);
+    padding: 4px 10px; border-radius: 2px; cursor: pointer;
+    transition: all 0.15s; letter-spacing: 0.5px;
   }
   .hist-chip:hover { border-color: var(--accent); color: var(--text); }
 
-  /* focus rings */
-  button:focus-visible, textarea:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+  button:focus-visible, textarea:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
   }
-
-  /* streaming cursor */
   .cursor {
     display: inline-block; width: 2px; height: 1em;
     background: var(--accent); margin-left: 2px;
@@ -553,39 +673,24 @@
     vertical-align: text-bottom;
   }
   @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  /* abort button */
   .abort-btn {
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 1px;
-    text-transform: uppercase;
-    background: none;
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 6px 14px; cursor: pointer;
-    border-radius: 3px; transition: all 0.15s;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase; background: none;
+    border: 1px solid var(--red); color: var(--red);
+    padding: 6px 14px; cursor: pointer; border-radius: 3px; transition: all 0.15s;
   }
-  .abort-btn:hover { background: rgba(231,76,60,0.12); }
-
-  /* validation warning */
+  .abort-btn:hover { background: rgba(255,61,82,0.12); }
   .val-warn {
-    background: rgba(240,165,0,0.08);
-    border: 1px solid rgba(240,165,0,0.25);
+    background: rgba(240,165,0,0.08); border: 1px solid rgba(240,165,0,0.25);
     border-radius: 3px; padding: 8px 12px;
-    font-size: 12px; color: var(--accent);
-    line-height: 1.5;
+    font-size: 12px; color: var(--accent); line-height: 1.5;
   }
-
-  /* char counter */
   .char-counter {
-    font-family: var(--font-mono);
-    font-size: 10px; color: var(--muted);
-    text-align: right; letter-spacing: 0.5px;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--muted); text-align: right; letter-spacing: 0.5px; opacity: 0.5;
   }
-  .char-counter.warn { color: var(--accent); }
-  .char-counter.danger { color: var(--red); }
-
-  /* hamburger */
+  .char-counter.warn { color: var(--accent); opacity: 1; }
+  .char-counter.danger { color: var(--red); opacity: 1; }
   .hamburger {
     display: none; flex-direction: column; gap: 5px;
     background: none; border: none; cursor: pointer; padding: 4px;
@@ -595,15 +700,12 @@
     display: block; width: 20px; height: 2px;
     background: var(--muted); border-radius: 2px; transition: all 0.3s;
   }
-
-  /* mobile overlay */
   .panel-overlay {
     display: none; position: fixed; inset: 0; top: 98px;
     background: rgba(0,0,0,0.6); z-index: 89;
   }
   .panel-overlay.vis { display: block; }
 
-  /* mobile responsive */
   @media (max-width: 800px) {
     .left-panel {
       position: fixed; left: 0; top: 98px;
@@ -618,195 +720,228 @@
     .main { height: calc(100vh - 98px); }
     .output-body { padding: 16px; }
     .copy-bar { padding: 10px 16px; }
+    .coach-panel.open { height: 220px; }
   }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-  /* JSN Top Nav */
-  #jsn-topnav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 52px;
-    background: rgba(11,17,32,0.96);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    z-index: 9000;
+  /* ── CRM DEALS IN SIDEBAR ── */
+  .crm-sidebar-section { margin-top: 20px; }
+  .crm-sidebar-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent); opacity: .7;
+    margin-bottom: 10px;
   }
-  .jsn-nav-logo {
-    font-family: "Barlow Condensed", sans-serif;
-    font-size: 18px; font-weight: 800;
-    letter-spacing: 0.03em; text-transform: uppercase;
-    text-decoration: none;
-    display: flex; align-items: center; gap: 4px;
+  .crm-deal-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 0; border-bottom: 1px solid rgba(30,45,71,.5);
+    font-size: 12px;
   }
-  .jsn-logo-jsn   { color: #00d4c8; }
-  .jsn-logo-made  { color: #ffffff; }
-  .jsn-logo-sep   { color: rgba(255,255,255,0.2); margin: 0 4px; }
-  .jsn-logo-product { color: rgba(255,255,255,0.55); font-weight: 600; }
-  .jsn-nav-right  { display: flex; align-items: center; gap: 12px; }
-  .jsn-nav-user   { display: flex; align-items: center; gap: 10px; }
-  .jsn-nav-email  { font-family: "DM Mono", monospace; font-size: 11px; color: rgba(255,255,255,0.45); }
-  .jsn-nav-tier   {
-    font-family: "Barlow Condensed", sans-serif;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 100px;
-    background: rgba(0,212,200,0.12);
-    border: 1px solid rgba(0,212,200,0.3);
-    color: #00d4c8;
+  .crm-deal-row:last-child { border-bottom: none; }
+  .crm-deal-name { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .crm-stage-sel {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 3px 6px; border-radius: 4px; font-size: 11px; font-family: var(--font-mono);
+    cursor: pointer; outline: none;
   }
-  .jsn-nav-tier[data-tier="pro"]  { background: rgba(255,107,43,0.12); border-color: rgba(255,107,43,0.3); color: #ff6b2b; }
-  .jsn-nav-tier[data-tier="team"] { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); color: #ffd700; }
-  .jsn-nav-signout {
-    background: none;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
-    color: rgba(255,255,255,0.4);
-    font-family: "Barlow Condensed", sans-serif;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 5px 10px; cursor: pointer; transition: all 0.2s;
+  .crm-stage-sel:focus { border-color: var(--accent); }
+  .crm-add-deal-btn {
+    width: 100%; margin-top: 10px; padding: 8px;
+    background: transparent; border: 1px dashed rgba(0,212,200,.3);
+    color: var(--accent); font-family: var(--font-head); font-size: 12px;
+    font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    border-radius: 5px; cursor: pointer; transition: all .18s;
   }
-  .jsn-nav-signout:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); }
+  .crm-add-deal-btn:hover { background: rgba(0,212,200,.06); border-color: var(--accent); }
+  .crm-deal-active { background: rgba(0,212,200,.06); border-radius: 4px; padding: 8px 6px; }
+  .crm-link-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  }
+  .crm-linked-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0,212,200,.1); border: 1px solid rgba(0,212,200,.25);
+    color: var(--accent); border-radius: 4px; padding: 3px 8px;
+    font-size: 11px; font-family: var(--font-mono);
+  }
+  .crm-unlink-btn {
+    background: none; border: none; color: var(--muted); cursor: pointer;
+    font-size: 13px; line-height: 1; padding: 0;
+  }
+  .crm-unlink-btn:hover { color: var(--red); }
+  .crm-saving { font-size: 10px; color: var(--accent); font-family: var(--font-mono); margin-left: 4px; }
 
 </style>
 </head>
 <body>
 
+<!-- SETUP SCREEN -->
+<div id="appScreen">
+  <a class="skip-link" href="#outputBody">Skip to output</a>
+  <div class="panel-overlay" id="panelOverlay" onclick="closeSidebar()"></div>
 
-<a class="skip-link" href="#outputBody">Skip to output</a>
-<div class="panel-overlay" id="panelOverlay" onclick="closeSidebar()"></div>
+  <header role="banner">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()"
+        aria-label="Toggle input panel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="logo">JSN <span>Pipeline</span> Coach</div>
+    </div>
+    <div class="badge-wrap">
+      <div class="badge new">v1.0</div>
+      <div class="badge">Any Sales Team // Mode Routing // Scoring</div>
+    </div>
+  </header>
 
-<header role="banner">
-  <div style="display:flex;align-items:center;gap:12px">
-    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle input panel" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="logo">JSN <span>Deal Pipeline</span> Analyzer</div>
+  <div class="mode-bar">
+    <button class="mode-tab active" data-mode="pipeline" onclick="setMode(this)">Pipeline Analysis</button>
+    <button class="mode-tab" data-mode="lead" onclick="setMode(this)">Lead Coaching</button>
+    <button class="mode-tab" data-mode="rep" onclick="setMode(this)">Rep Performance</button>
   </div>
-  <div class="badge-wrap">
-    <a href="reps/" style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">← REPS</a>
-    <div class="badge new">v10.1 Upgraded</div>
-    <div class="badge">Enterprise Routing // Scored Output</div>
-  </div>
-</header>
 
-<div class="mode-bar">
-  <button class="mode-tab active" data-mode="pipeline" onclick="setMode(this)">Pipeline Analysis</button>
-  <button class="mode-tab" data-mode="lead" onclick="setMode(this)">Lead Coaching</button>
-  <button class="mode-tab" data-mode="agent" onclick="setMode(this)">Agent Performance</button>
-</div>
+  <div class="main" role="main">
+    <aside class="left-panel" id="leftPanel" role="complementary" aria-label="Analysis inputs">
+      <div class="panel-label">// Input Data</div>
+      <div class="input-area">
+        <label for="userInput" class="panel-label" style="padding:0;border:none;margin-bottom:4px">
+          Pipeline data or scenario
+        </label>
+        <textarea id="userInput"
+          aria-label="Paste pipeline data, rep metrics, or lead situation"
+          placeholder="Paste pipeline data, rep metrics, lead situations, or deal details here...&#10;&#10;The system auto-routes to the correct mode. Ctrl+Enter to run."
+          oninput="updateCounter()"></textarea>
+        <div class="char-counter" id="charCounter">0 / 6000</div>
 
-<div class="main" role="main">
-  <aside class="left-panel" id="leftPanel" role="complementary" aria-label="Analysis inputs">
-    <div class="panel-label">// Input Data</div>
-    <div class="input-area">
-      <label for="userInput" class="panel-label" style="padding:0;border:none;margin-bottom:4px">Pipeline data or scenario</label>
-      <textarea id="userInput" aria-label="Paste pipeline data, agent metrics, or lead situation" placeholder="Paste pipeline data, agent metrics, lead situation, or deal details here...&#10;&#10;The system auto-routes to the correct mode. Ctrl+Enter to run." oninput="updateCounter()"></textarea>
-      <div class="char-counter" id="charCounter">0 / 6000</div>
+        <div class="scenarios">
+          <div class="section-head">Quick Scenarios</div>
+          <button class="scenario-btn" onclick="loadScenario('pipeline')">
+            <strong>Pipeline Snapshot</strong>
+            8 reps, 52 deals in CRM, Q3 goal at 61% with 5 weeks left. 9 deals stale 30+ days.
+          </button>
+          <button class="scenario-btn" onclick="loadScenario('lead')">
+            <strong>Lead Coaching</strong>
+            Enterprise prospect, demo went well, went quiet after legal review. 3 follow-ups ignored.
+          </button>
+          <button class="scenario-btn" onclick="loadScenario('rep')">
+            <strong>Rep Dashboard</strong>
+            5-rep team, mixed performance, Q3 revenue gap growing, 34 days left.
+          </button>
+          <button class="scenario-btn" onclick="loadScenario('messy')">
+            <strong>Incomplete / Messy Input</strong>
+            Tests fallback behavior with vague or partial data
+          </button>
+        </div>
 
-      <div class="scenarios">
-        <div class="section-head">Quick Scenarios</div>
-        <button class="scenario-btn" onclick="loadScenario('pipeline')">
-          <strong>Pipeline Snapshot</strong>
-          6 agents, 38 leads, 11 active buyers, 4 deals stale 30+ days, 2 listings expire next week
-        </button>
-        <button class="scenario-btn" onclick="loadScenario('lead')">
-          <strong>Lead Coaching</strong>
-          Hot buyer, seen 4 homes, went quiet after price convo. 2 follow-ups ignored.
-        </button>
-        <button class="scenario-btn" onclick="loadScenario('agent')">
-          <strong>Agent Dashboard</strong>
-          5-agent team, mixed performance, Q2 goal at risk, 47 days left
-        </button>
-        <button class="scenario-btn" onclick="loadScenario('messy')">
-          <strong>Incomplete / Messy Input</strong>
-          Tests fallback behavior with vague data
-        </button>
+        <div>
+          <button class="ref-toggle" onclick="toggleRef()">
+            <span>Scoring Reference Criteria</span>
+            <span id="refArrow">▼</span>
+          </button>
+          <div class="ref-panel" id="refPanel">
+            <strong>Contact Recency Risk</strong>
+            Low: last contact within 7 days &nbsp;|&nbsp; Moderate: 8–21 days &nbsp;|&nbsp; High: 22+ days
+            <strong>Task / Follow-Up Risk</strong>
+            Low: 0 overdue &nbsp;|&nbsp; Moderate: 1–2 overdue &nbsp;|&nbsp; High: 3+ overdue
+            <strong>Rep Performance</strong>
+            Strong: at/above team avg, active pipeline, consistent cadence<br>
+            Developing: below avg closings but showing activity<br>
+            Needs Attention: 0–1 closings + 8+ leads + high risk<br>
+            At Risk: high risk in two or more categories simultaneously
+            <strong>Pipeline Health</strong>
+            Healthy: &lt;20% of deals stale 30+ days<br>
+            Watch: 20–35% stale<br>
+            Critical: &gt;35% stale OR revenue gap &gt;30% of goal
+          </div>
+        </div>
+
+        <button class="run-btn" id="runBtn" onclick="analyze()">▶ Run Analysis</button>
       </div>
 
-      <div>
-        <button class="ref-toggle" onclick="toggleRef()">
-          <span>Scoring Reference Criteria</span>
-          <span id="refArrow">▼</span>
-        </button>
-        <div class="ref-panel" id="refPanel">
-          <strong>Contact Recency Risk</strong>
-          Low: within 7 days &nbsp;|&nbsp; Moderate: 8–21 days &nbsp;|&nbsp; High: 22+ days
-          <strong>Task / Follow-Up Risk</strong>
-          Low: 0 overdue &nbsp;|&nbsp; Moderate: 1–2 overdue &nbsp;|&nbsp; High: 3+ overdue
-          <strong>Agent Performance</strong>
-          Strong: at/above team avg, active pipeline, consistent cadence<br>
-          Developing: below avg closings, showing activity<br>
-          Needs Attention: 0–1 closings + 8+ leads + high risk<br>
-          At Risk: high risk in 2+ categories simultaneously
-          <strong>Pipeline Health</strong>
-          Healthy: &lt;20% stale 30+ days<br>
-          Watch: 20–35% stale<br>
-          Critical: &gt;35% stale OR revenue gap &gt;30% of goal
+      <div style="padding:10px 16px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.6; font-family:var(--font-mono); opacity:0.45;">
+        Output is AI-generated and for informational use only. Not financial, legal, or professional advice.
+      </div>
+      <div class="history-strip" id="historyStrip" role="navigation" aria-label="Recent analyses">
+        <div class="hist-label">Recent:</div>
+      </div>
+    </aside>
+
+    <div class="right-panel">
+      <div class="output-header">
+        <div class="output-label">// Analysis Output</div>
+        <div class="output-right">
+          <div class="routed-badge" id="routedBadge">Auto-Routed</div>
+          <button class="coach-toggle-btn" id="coachToggleBtn" onclick="toggleCoach()">
+            Coach ▲
+          </button>
+          <div class="mode-indicator" id="modeIndicator">Awaiting Input</div>
         </div>
       </div>
 
-      <button class="run-btn" id="runBtn" onclick="analyze()">▶ Run Analysis</button>
-    </div>
-
-    <div style="padding:10px 16px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.6; font-family:var(--font-mono);">
-      Output is AI-generated and for informational use only. Not financial, legal, compliance, or professional advice. Consult qualified professionals before making decisions.
-    </div>
-    <div class="history-strip" id="historyStrip" role="navigation" aria-label="Recent analyses">
-      <div class="hist-label">Recent:</div>
-    </div>
-  </aside>
-
-  <div class="right-panel">
-    <div class="output-header">
-      <div class="output-label">// Analysis Output</div>
-      <div class="output-right">
-        <div class="routed-badge" id="routedBadge">Auto-Routed</div>
-        <div class="mode-indicator" id="modeIndicator">Awaiting Input</div>
-      </div>
-    </div>
-
-    <div class="output-body" id="outputBody" role="region" aria-label="Analysis output" aria-live="polite">
-      <div class="welcome">
-        <div class="welcome-icon">📊</div>
-        <h2>v10.1 Ready</h2>
-        <p>Paste data or load a scenario. The system auto-routes to the correct mode using a strict priority hierarchy, applies defined scoring criteria, and delivers a fixed-scaffold response.</p>
-        <div class="welcome-pills">
-          <div class="welcome-pill">Mode Routing</div>
-          <div class="welcome-pill">Risk Scoring</div>
-          <div class="welcome-pill">Fixed Scaffolds</div>
-          <div class="welcome-pill">Fallback Logic</div>
+      <div class="output-body" id="outputBody" role="region"
+        aria-label="Analysis output" aria-live="polite">
+        <div class="welcome">
+          <div class="welcome-icon">📊</div>
+          <h2>Pipeline Coach Ready</h2>
+          <p>Paste your pipeline data or load a scenario. Auto-routing applies defined scoring criteria and delivers a fixed-scaffold response for any sales team.</p>
+          <div class="welcome-pills">
+            <div class="welcome-pill">Mode Routing</div>
+            <div class="welcome-pill">Risk Scoring</div>
+            <div class="welcome-pill">Fixed Scaffolds</div>
+            <div class="welcome-pill">Text Coach</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
-      <div class="copy-bar-label">v10.1 // JSN Pipeline Analyzer</div>
-      <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
-      <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
-      <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
-      <button class="copy-btn" onclick="clearAll()">Clear</button>
+      <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
+        <div class="copy-bar-label">JSN Pipeline v1.0</div>
+        <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
+        <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+        <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
+        <button class="copy-btn" onclick="clearAll()">Clear</button>
+      </div>
+
+      <!-- COACH PANEL -->
+      <div class="coach-panel" id="coachPanel">
+        <div class="coach-header">
+          <div class="coach-header-left">
+            <div class="coach-title">Pipeline Coach</div>
+            <div class="coach-sub">Ask about your pipeline, reps, or next move</div>
+          </div>
+          <button class="coach-clear-btn" onclick="clearCoach()">Clear Chat</button>
+        </div>
+        <div class="coach-messages" id="coachMessages">
+          <div class="coach-msg sys">Coach is ready — run an analysis first, then ask anything.</div>
+        </div>
+        <div class="coach-input-row">
+          <textarea class="coach-input" id="coachInput"
+            placeholder="Ask the coach anything about your pipeline..."
+            onkeydown="handleCoachKey(event)"
+            oninput="autoResizeCoachInput(this)"></textarea>
+          <button class="coach-send-btn" id="coachSendBtn" onclick="sendCoachMessage()">Send</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-const SYSTEM_PROMPT = `You are JSN Deal Pipeline Analyzer v10.1, a high-performance real estate pipeline and coaching assistant for brokerage owners, team leaders, and agents. Your role is to diagnose pipeline issues, improve execution, and drive conversions with clear, actionable coaching.
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
+const MAX_INPUT  = 6000;
+
+// ─── SYSTEM PROMPTS ───────────────────────────────────────────────────────────
+const ANALYSIS_SYSTEM = `You are JSN Pipeline Coach, a high-performance sales pipeline coaching assistant for sales managers, team leaders, and revenue operations professionals. Your role is to diagnose pipeline issues, improve execution, and drive conversions with clear, actionable coaching. You work with any B2B or B2C sales team regardless of industry.
 
 ---
 
 MODE ROUTING HIERARCHY — apply in strict priority order. First match wins.
 
-1. If input contains metrics or descriptions for TWO OR MORE agents, activate AGENT PERFORMANCE MODE. This overrides all other modes.
-2. If input describes a single lead, buyer, seller, or deal scenario, activate LEAD COACHING MODE.
-3. If input describes a pipeline, book of business, or deal count without agent-level breakdown, activate PIPELINE ANALYSIS MODE.
+1. If input contains metrics or descriptions for TWO OR MORE sales reps, activate REP PERFORMANCE MODE. This overrides all other modes.
+2. If input describes a single lead, prospect, or deal scenario, activate LEAD COACHING MODE.
+3. If input describes a pipeline, book of business, or deal count without rep-level breakdown, activate PIPELINE ANALYSIS MODE.
 4. If input is ambiguous or incomplete, default to PIPELINE ANALYSIS MODE. State your assumption at the top. Do not ask for clarification before delivering value. Analyze what is present, flag missing data as named placeholders, and deliver the full scaffold anyway.
 
 Always state the active mode on the FIRST LINE of your response, formatted as: MODE: [Mode Name]
@@ -825,7 +960,7 @@ Task / Follow-Up Risk:
 - Moderate: 1–2 overdue tasks
 - High: 3+ overdue tasks
 
-Agent Performance Classification:
+Rep Performance Classification:
 - Strong Performer: closing rate at or above team average, active pipeline healthy, contact cadence consistent
 - Developing: below team average closings but showing activity and follow-up
 - Needs Attention: 0–1 closings with 8+ leads AND high contact recency or task risk
@@ -843,27 +978,27 @@ FIXED OUTPUT SCAFFOLDS — use the correct template for the routed mode. Do not 
 PIPELINE ANALYSIS MODE output order:
 1. MODE declaration + data confidence note (what data was provided vs. assumed)
 2. Pipeline Health Score (Healthy / Watch / Critical) with the specific criteria that triggered it
-3. Revenue impact model: current projection vs. goal vs. recovery path
-4. Top 3 risks ranked by deal or dollar impact
-5. Immediate actions: numbered, owner assigned, deadline attached
-6. IF/THEN execution scenario for the top risk
+3. Top 3 risks ranked by deal or dollar impact
+4. Immediate actions: numbered, owner assigned, deadline attached
+5. IF/THEN execution scenario for the top risk
+6. Revenue impact model: current projection vs. goal vs. recovery path
 7. Manager's Call: one decisive sentence
 
 LEAD COACHING MODE output order:
 1. MODE declaration + lead classification (Hot / Warm / Cold / At Risk of Loss)
 2. Situation diagnosis: what is actually happening and why
 3. Next best action with rationale
-4. Follow-up script: ready to send or say, no editing required by the agent
-5. IF/THEN branches: if they respond positively / if they go cold again / if they push back on price
+4. Follow-up script: ready to send or say, no editing required
+5. IF/THEN branches: if they respond positively / if they go cold again / if they push back on price or terms
 6. Time pressure scenario: cost of inaction over the next 7 days
 7. Coach's Call: one decisive sentence
 
-AGENT PERFORMANCE MODE output order:
+REP PERFORMANCE MODE output order:
 1. MODE declaration
-2. Team Snapshot: total agents, % with overdue tasks, % high-risk, % strong performers
-3. Agent Ranking table: Name | Risk Level | Performance Class | Contact Recency Status | Key Flag
-4. Top Performers: one-line reinforcement note per agent
-5. Needs Attention: ranked by risk and revenue impact, one specific coaching action per agent
+2. Team Snapshot: total reps, % with overdue tasks, % high-risk, % strong performers
+3. Rep Ranking table: Name | Risk Level | Performance Class | Contact Recency Status | Key Flag
+4. Top Performers: one-line reinforcement note per rep
+5. Needs Attention: ranked by risk and revenue impact, one specific coaching action per rep
 6. Risk Flags: team-wide patterns beyond individual issues
 7. Trend Insight: one forward-looking observation about where the team is heading if current patterns hold
 8. Manager Actions: three numbered decisions to execute this week, in priority order
@@ -882,49 +1017,95 @@ FALLBACK BEHAVIOR — for incomplete or messy input:
 ADVANCED EXECUTION LAYER — include in every response where applicable:
 - IF/THEN logic for the top risk scenario
 - Follow-up scripts written and ready to use, no editing required
-- Agent scorecards in Dashboard Mode
+- Rep scorecards in Rep Performance Mode
 - Revenue impact modeling with current vs. goal vs. recovery path
 - Time pressure scenarios: what the cost of inaction is in days
 
 ---
 
-MANAGER SIMPLIFICATION LAYER — when user expresses constraints (no CRM, no sandbox, limited access), pivot immediately to:
+MANAGER SIMPLIFICATION LAYER — when user expresses constraints (no CRM, limited data, small team), pivot immediately to:
 - Live execution using real data provided
-- Roleplay simulations written as manager-to-agent dialogue
-- Shadow implementation framed as normal workflow, not a system rollout
+- Roleplay simulations written as manager-to-rep dialogue
 - Minimum viable tracking using manual lists or basic CRM filters
-Implementation always beats ideal setup.
+- Implementation always beats ideal setup
 
 ---
 
 FORMAT RULES:
 - Use markdown with clear headers (##, ###)
 - Bold key terms, risk levels, and action items
-- Use tables for agent ranking data
+- Use tables for rep ranking data
 - Use code blocks for scripts and dialogue
 - Be direct, decisive, and actionable
-- No filler. No hedging. Real estate professionals need real answers.`;
+- No filler. No hedging. Sales managers need real answers fast.`;
 
-// ── PRODUCTION SWAP ──────────────────────────────────────────────────────────
-// To deploy via Cloudflare Worker (recommended — keeps API key server-side):
-//   1. Deploy jsn-pipeline-worker.js to Cloudflare Workers
-//   2. Set USE_WORKER = true, set WORKER_URL to your workers.dev URL
-//   3. Remove API_KEY value — Worker holds it server-side
-// ─────────────────────────────────────────────────────────────────────────────
-const USE_WORKER = true;
-const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
-const API_URL    = USE_WORKER ? WORKER_URL : 'https://api.anthropic.com/v1/messages';
-const API_KEY    = '';
-const MAX_INPUT  = 6000;
+const COACH_SYSTEM = `You are JSN Pipeline Coach — a demanding, direct sales manager and coaching partner. You have access to the user's pipeline data and the analysis output (provided in the conversation context).
 
+Your job is to help the sales manager think clearly, make decisions fast, and take the right action. You are not a cheerleader. You are a results-driven coach who pushes back when the manager hedges, affirms when they're right, and always moves toward a decision or action.
+
+COACHING RULES:
+- Keep responses tight: 2–4 sentences unless the manager asks for a script, plan, or deep analysis.
+- When they hedge or give a vague answer, push back with a specific question.
+- When they have a solid plan, affirm it in one sentence then raise the next problem.
+- Always end with either a next-step directive or a sharp follow-up question.
+- No filler. No "great question." No corporate speak.
+- If they ask for a script or message, write it ready-to-use with no editing required.
+- You know their pipeline data. Reference it specifically when coaching.
+
+You work with managers across all industries and sales models — B2B SaaS, enterprise, transactional, field sales, inside sales. Adapt your language to their context.`;
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
 let currentMode  = 'pipeline';
 let lastOutput   = '';
+let lastInput    = '';
 let abortCtrl    = null;
 let dealHistory  = [];
 let sessionStats = { analyses: 0 };
+let coachMessages = [];
+let coachOpen    = false;
+let coachAbortCtrl = null;
 
-// ── INDEXEDDB ─────────────────────────────────────────────────────────────
-const DB_NAME = 'jsn_pipeline_db', DB_VER = 1, STORE = 'analyses';
+// ─── CRM STATE ────────────────────────────────────────────────────────────────
+let crmDeals     = [];
+let activeDealId = null;
+
+// ─── SCENARIOS ────────────────────────────────────────────────────────────────
+const scenarios = {
+  pipeline: `8 reps on the team. 52 active deals in CRM. Q3 goal: $1.8M. Current closed: $1.1M. 5 weeks left in quarter.
+
+Deal breakdown:
+- 9 deals have had no activity in 30+ days
+- 6 deals are in "proposal sent" stage for 3+ weeks with no response
+- 14 deals are active with recent contact (within 7 days)
+- 23 deals have moderate recency risk (8–21 days since last contact)
+- 3 deals projected to close this week totaling $180K
+
+Team issue: reps are not logging follow-up tasks consistently. Manager suspects 3 reps are working deals off-CRM.`,
+
+  lead: `Prospect: VP of Operations at a 400-person manufacturing company. Decision-maker confirmed with budget authority ($120K deal).
+
+Timeline:
+- Week 1: Discovery call — strong fit, VP said "this solves exactly what we're struggling with"
+- Week 2: Product demo — positive feedback, VP brought in IT director
+- Week 3: Proposal sent at $118K/year
+- Week 4: VP said "legal needs to review the contract" — went quiet
+- Weeks 5–6: Three follow-up attempts (email, LinkedIn, phone). No response.
+
+Rep's current plan: wait another week then mark it as lost. Manager thinks the deal is still alive.`,
+
+  rep: `Team of 5 reps. Q3 goal: $920K. Current closed: $388K. 34 days left in quarter.
+
+Rep A (Danielle): 9 leads, 3 closings this quarter ($182K), last contact avg 4 days. 0 overdue tasks. Consistent.
+Rep B (Marcus): 16 leads, 1 closing ($42K), 4 overdue tasks, last contact avg 19 days. Manager flagged concern last week.
+Rep C (Priya): 6 leads, 2 closings ($96K), strong follow-up, last contact avg 3 days. 0 overdue.
+Rep D (Cole): 11 leads, 1 closing ($38K), last contact 25 days on 7 of those leads. 2 overdue tasks. Not responding to coaching.
+Rep E (Jordan): 4 leads, 1 closing ($30K), new rep (5 months in). Last contact avg 5 days. Still learning the product.`,
+
+  messy: `Had a check-in with two of my reps this morning. One is crushing it, the other is all over the place — lots of activity but nothing closing. We're behind on the quarter but I'm not sure by how much exactly. I feel like we're leaving deals on the table. What should I be focused on right now?`
+};
+
+// ─── INDEXEDDB ────────────────────────────────────────────────────────────────
+const DB_NAME = 'jsn_pipeline_v1_db', DB_VER = 1, STORE = 'analyses';
 let db = null;
 
 function openDB() {
@@ -936,7 +1117,7 @@ function openDB() {
         d.createObjectStore(STORE, { keyPath: 'id' });
     };
     r.onsuccess = e => { db = e.target.result; res(db); };
-    r.onerror   = ()  => rej(r.error);
+    r.onerror   = () => rej(r.error);
   });
 }
 async function dbSave(entry) {
@@ -975,28 +1156,18 @@ async function dbPrune(max = 20) {
     await openDB();
     const all = await dbLoadAll();
     dealHistory = all.sort((a, b) => b.id - a.id).slice(0, 8);
-    sessionStats.analyses = all.length;
     renderHistory();
-  } catch(e) {
-    console.warn('IndexedDB unavailable', e);
-  }
+  } catch(e) { console.warn('IndexedDB unavailable', e); }
 })();
 
-// ── MODE LABELS ───────────────────────────────────────────────────────────
+// ─── MODE LABELS ──────────────────────────────────────────────────────────────
 const modeLabels = {
   pipeline: 'Pipeline Analysis Mode',
   lead:     'Lead Coaching Mode',
-  agent:    'Agent Performance Mode'
+  rep:      'Rep Performance Mode'
 };
 
-const scenarios = {
-  pipeline: `6 agents total. 38 leads in system. 11 active buyers currently engaged. 4 deals have gone stale (30+ days no movement). 2 listings expiring next week with no renewal decisions made. Q2 goal: $4.2M. Current projection based on pipeline: $2.8M. Common issue flagged by manager: agents not logging follow-ups consistently. 47 days left in Q2.`,
-  lead: `Buyer: pre-approved at $550K. Has toured 4 homes over 2 weeks. Showed strong interest in a $499K property — commented on the layout and school district. After the agent discussed adjusting their price ceiling to explore more options, the buyer went quiet. Agent followed up twice via text over 5 days. No response. Agent is unsure whether to call, drop the lead, or try a different angle.`,
-  agent: `Team of 5 agents. Q2 goal: $5.1M. Current closed: $1.9M. 47 days left in quarter.\n\nAgent A (Sarah): 8 leads, 2 closings this quarter, average last contact 3 days. No overdue tasks.\nAgent B (Mike): 14 leads, 0 closings, 3 overdue tasks, average last contact 22 days. Manager flagged as concern last week.\nAgent C (Tanya): 5 leads, 1 closing, consistent follow-up, last contact average 5 days. 0 overdue.\nAgent D (Ray): 12 leads, 1 closing, last contact 21 days on 6 of those leads. 2 overdue tasks.\nAgent E (Jordan): 3 leads, 1 closing, new agent (4 months in). Last contact average 4 days.`,
-  messy: `Had a meeting with two of my agents yesterday. One is doing okay I think, the other not so much. Pipeline feels off but I'm not sure why. We have a big quarter coming up and I'm nervous about hitting the number. What should I be focused on right now?`
-};
-
-// ── UI CONTROLS ───────────────────────────────────────────────────────────
+// ─── UI CONTROLS ──────────────────────────────────────────────────────────────
 function setMode(el) {
   document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -1007,10 +1178,10 @@ function setMode(el) {
 function loadScenario(type) {
   document.getElementById('userInput').value = scenarios[type];
   updateCounter();
-  const tabMap = { pipeline: 0, lead: 1, agent: 2, messy: 0 };
+  const tabMap = { pipeline: 0, lead: 1, rep: 2, messy: 0 };
   document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.mode-tab')[tabMap[type]].classList.add('active');
-  currentMode = type === 'messy' ? 'pipeline' : type;
+  currentMode = (type === 'messy') ? 'pipeline' : type;
   document.getElementById('modeIndicator').textContent = modeLabels[currentMode] || modeLabels['pipeline'];
 }
 
@@ -1041,7 +1212,7 @@ function updateCounter() {
     (val > MAX_INPUT * 0.95 ? ' danger' : val > MAX_INPUT * 0.80 ? ' warn' : '');
 }
 
-// ── VALIDATION ────────────────────────────────────────────────────────────
+// ─── VALIDATION ───────────────────────────────────────────────────────────────
 function validateInput(input) {
   const warns = [];
   if (input.length > MAX_INPUT)
@@ -1061,7 +1232,57 @@ function showWarning(msg) {
   document.getElementById('runBtn').before(el);
 }
 
-// ── MAIN ANALYSIS ─────────────────────────────────────────────────────────
+// ─── API CALL (streaming) ─────────────────────────────────────────────────────
+async function streamRequest(system, messages, onToken, signal, extra = {}) {
+  const jwt = JSNAuth.getJWT();
+  const session = JSNAuth.getSession();
+  const hdrs = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${jwt}`,
+  };
+  const resp = await fetch(WORKER_URL, {
+    method: 'POST', headers: hdrs, signal,
+    body: JSON.stringify({
+      app: 'pipeline',
+      stream: true,
+      system,
+      messages,
+      user_id: session?.user?.id || null,
+      ...extra,
+    })
+  });
+
+  if (!resp.ok) {
+    if (resp.status === 429) throw new Error('RATE_LIMIT');
+    if (resp.status === 401) throw new Error('AUTH_ERROR');
+    if (resp.status >= 500) throw new Error('SERVER_ERROR');
+    throw new Error(`API_ERROR:${resp.status}`);
+  }
+
+  const reader  = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText  = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    for (const line of decoder.decode(value).split('\n')) {
+      if (!line.startsWith('data: ')) continue;
+      const d = line.slice(6);
+      if (d === '[DONE]') continue;
+      try {
+        const p = JSON.parse(d);
+        if (p.type === 'content_block_delta' && p.delta?.text) {
+          fullText += p.delta.text;
+          onToken(fullText);
+        }
+      } catch(e) {}
+    }
+  }
+  return fullText;
+}
+
+// ─── MAIN ANALYSIS ────────────────────────────────────────────────────────────
 async function analyze() {
   const input = document.getElementById('userInput').value.trim();
   if (!input) { showWarning('Please paste some data or load a scenario first.'); return; }
@@ -1069,11 +1290,6 @@ async function analyze() {
   const warns = validateInput(input);
   if (warns.length) { showWarning(warns[0]); if (input.length > MAX_INPUT) return; }
   else { const w = document.getElementById('valWarn'); if (w) w.remove(); }
-
-  if (!USE_WORKER && !API_KEY) {
-    showWarning('No API key configured. Set USE_WORKER = true and configure WORKER_URL, or add API_KEY for local testing.');
-    return;
-  }
 
   const btn = document.getElementById('runBtn');
   btn.disabled = true; btn.textContent = 'Analyzing...';
@@ -1083,59 +1299,35 @@ async function analyze() {
   document.getElementById('copyBar').style.display = 'flex';
   document.getElementById('routedBadge').style.display = 'none';
 
-  // Show streaming area immediately
   document.getElementById('outputBody').innerHTML = `
     <div class="loading">
       <div class="pulse-ring"></div>
       <div class="loading-text">Routing + Analyzing...</div>
-      <div class="loading-sub">Applying v10.1 scoring criteria</div>
+      <div class="loading-sub">Applying scoring criteria</div>
     </div>`;
 
   abortCtrl = new AbortController();
-
-  const hdrs = USE_WORKER
-    ? { 'Content-Type': 'application/json' }
-    : { 'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true' };
-
-  let fullText = '';
   let streamStarted = false;
+  let fullText = '';
 
   try {
-    const resp = await fetch(API_URL, {
-      method: 'POST', headers: hdrs, signal: abortCtrl.signal,
-      body: JSON.stringify({
-        app: 'pipeline',
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 3500,
-        stream: true,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: input }]
-      })
-    });
+    fullText = await streamRequest(
+      ANALYSIS_SYSTEM,
+      [{ role: 'user', content: input }],
+      (text) => {
+        if (!streamStarted) {
+          streamStarted = true;
+          document.getElementById('outputBody').innerHTML =
+            `<div class="response-content" id="streamContent"></div>`;
+        }
+        const el = document.getElementById('streamContent');
+        if (el) el.innerHTML = renderMarkdown(text) + '<span class="cursor"></span>';
+      },
+      abortCtrl.signal
+    );
 
-    if (!resp.ok) {
-      if (resp.status === 429) throw new Error('RATE_LIMIT');
-      if (resp.status === 401) throw new Error('AUTH_ERROR');
-      if (resp.status >= 500) throw new Error('SERVER_ERROR');
-      throw new Error(`API_ERROR:${resp.status}`);
-    }
-
-    fullText = await streamSSE(resp, (text) => {
-      if (!streamStarted) {
-        streamStarted = true;
-        document.getElementById('outputBody').innerHTML =
-          `<div class="response-content" id="streamContent"></div>`;
-      }
-      const el = document.getElementById('streamContent');
-      if (el) el.innerHTML = renderMarkdown(text) + '<span class="cursor"></span>';
-    });
-
-    // Final clean render — remove cursor, detect routed mode
     lastOutput = fullText;
-    sessionStats.analyses++;
+    lastInput  = input;
 
     const modeMatch = fullText.match(/MODE:\s*([^\n]+)/i);
     if (modeMatch) {
@@ -1146,13 +1338,41 @@ async function analyze() {
     document.getElementById('outputBody').innerHTML =
       `<div class="response-content">${renderMarkdown(fullText)}</div>`;
 
+    // Show coach button
+    const coachBtn = document.getElementById('coachToggleBtn');
+    coachBtn.style.display = 'inline-block';
+
+    // Prime coach context with pipeline data (don't auto-open — let user read the analysis first)
+    coachMessages = [
+      {
+        role: 'user',
+        content: `Here is my pipeline data:\n\n${input}\n\nHere is the analysis output:\n\n${fullText}\n\nI'm ready for coaching. What are you seeing?`
+      }
+    ];
+
+    // If coach is already open, refresh its context
+    if (coachOpen) {
+      addCoachMsg('sys', '— New analysis loaded —');
+      await sendCoachOpener();
+    } else {
+      // Update button to signal coach is ready, but don't open
+      const coachBtn = document.getElementById('coachToggleBtn');
+      coachBtn.textContent = 'Coach Ready ▲';
+      coachBtn.style.borderColor = 'var(--accent)';
+      coachBtn.style.color = 'var(--accent)';
+    }
+
     addToHistory(input.substring(0, 48) + (input.length > 48 ? '…' : ''), input, currentMode);
-    await JSNPaywall.recordUse(TOOL_ID);
+
+    // Log AI analysis to CRM activities if a deal is linked
+    if (activeDealId) {
+      logCRMActivity(activeDealId, fullText);
+    }
 
   } catch(err) {
     const errMsgs = {
-      RATE_LIMIT:   ['Rate Limit Reached',    'Too many requests. Wait a minute and try again.'],
-      AUTH_ERROR:   ['Authentication Error',  'API key is invalid. Check your Worker configuration.'],
+      RATE_LIMIT:   ['Rate Limit Reached',     'Too many requests. Wait a minute and try again.'],
+      AUTH_ERROR:   ['Authentication Error',   'API key is invalid or expired.'],
       SERVER_ERROR: ['Anthropic Service Error','Temporary server error. Wait 30 seconds and retry.'],
     };
     if (err.name === 'AbortError') {
@@ -1165,7 +1385,7 @@ async function analyze() {
           `<div class="response-content"><p style="color:var(--muted)">Analysis stopped.</p></div>`;
       }
     } else {
-      const [title, body] = errMsgs[err.message] || ['Analysis Error', 'Network or configuration error. Check your connection and API key.'];
+      const [title, body] = errMsgs[err.message] || ['Analysis Error', 'Network or configuration error. Check your API key.'];
       document.getElementById('outputBody').innerHTML =
         `<div class="response-content">
           <h2 style="color:var(--red)">${title}</h2>
@@ -1181,41 +1401,167 @@ async function analyze() {
 
 function abortAnalysis() { if (abortCtrl) abortCtrl.abort(); }
 
-// ── MARKDOWN RENDERER ─────────────────────────────────────────────────────
+// ─── COACH PANEL ──────────────────────────────────────────────────────────────
+function toggleCoach() {
+  if (coachOpen) closeCoach(); else openCoach();
+}
+
+function openCoach() {
+  coachOpen = true;
+  document.getElementById('coachPanel').classList.add('open');
+  const btn = document.getElementById('coachToggleBtn');
+  btn.textContent = 'Coach ▼';
+  btn.style.borderColor = '';
+  btn.style.color = '';
+  btn.classList.add('active');
+  // If context is ready and no messages yet, fire opener
+  if (coachMessages.length === 1 && coachMessages[0].role === 'user') {
+    sendCoachOpener();
+  }
+  setTimeout(() => document.getElementById('coachInput').focus(), 350);
+}
+
+function closeCoach() {
+  coachOpen = false;
+  document.getElementById('coachPanel').classList.remove('open');
+  const btn = document.getElementById('coachToggleBtn');
+  btn.textContent = 'Coach ▲';
+  btn.classList.remove('active');
+}
+
+function addCoachMsg(role, text) {
+  const container = document.getElementById('coachMessages');
+  const div = document.createElement('div');
+  div.className = `coach-msg ${role}`;
+  div.innerHTML = renderCoachText(text);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function renderCoachText(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+}
+
+async function sendCoachOpener() {
+  if (!coachMessages.length) return;
+
+  const msgEl = addCoachMsg('coach', '');
+  const sendBtn = document.getElementById('coachSendBtn');
+  sendBtn.disabled = true;
+
+  try {
+    coachAbortCtrl = new AbortController();
+    const fullText = await streamRequest(
+      COACH_SYSTEM,
+      coachMessages,
+      (text) => {
+        msgEl.innerHTML = renderCoachText(text);
+        document.getElementById('coachMessages').scrollTop =
+          document.getElementById('coachMessages').scrollHeight;
+      },
+      coachAbortCtrl.signal
+    );
+    msgEl.innerHTML = renderCoachText(fullText);
+    coachMessages.push({ role: 'assistant', content: fullText });
+  } catch(e) {
+    msgEl.innerHTML = '<em>Coach unavailable — check your API key.</em>';
+  } finally {
+    sendBtn.disabled = false;
+    coachAbortCtrl = null;
+  }
+}
+
+async function sendCoachMessage() {
+  const input = document.getElementById('coachInput');
+  const msg   = input.value.trim();
+  if (!msg) return;
+  if (!lastOutput) {
+    addCoachMsg('sys', 'Run an analysis first, then the coach can help.');
+    return;
+  }
+
+  input.value = '';
+  autoResizeCoachInput(input);
+  addCoachMsg('user', msg);
+
+  coachMessages.push({ role: 'user', content: msg });
+
+  const sendBtn = document.getElementById('coachSendBtn');
+  sendBtn.disabled = true;
+
+  const msgEl = addCoachMsg('coach', '');
+
+  try {
+    coachAbortCtrl = new AbortController();
+    const fullText = await streamRequest(
+      COACH_SYSTEM,
+      coachMessages,
+      (text) => {
+        msgEl.innerHTML = renderCoachText(text);
+        document.getElementById('coachMessages').scrollTop =
+          document.getElementById('coachMessages').scrollHeight;
+      },
+      coachAbortCtrl.signal
+    );
+    msgEl.innerHTML = renderCoachText(fullText);
+    coachMessages.push({ role: 'assistant', content: fullText });
+  } catch(e) {
+    msgEl.innerHTML = '<em>Error — check your connection or API key.</em>';
+  } finally {
+    sendBtn.disabled = false;
+    coachAbortCtrl = null;
+  }
+}
+
+function handleCoachKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendCoachMessage();
+  }
+}
+
+function autoResizeCoachInput(el) {
+  el.style.height = '40px';
+  el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+}
+
+function clearCoach() {
+  coachMessages = [];
+  document.getElementById('coachMessages').innerHTML =
+    '<div class="coach-msg sys">Chat cleared — run a new analysis to reset the coach context.</div>';
+}
+
+// ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
 function renderMarkdown(text) {
-  // Escape HTML first
   let html = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Code blocks (before inline code)
   html = html.replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre>$1</pre>');
   html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
 
-  // Headers
   html = html.replace(/^#### (.+)$/gm, '<h3>$1</h3>');
   html = html.replace(/^### (.+)$/gm,  '<h3>$1</h3>');
   html = html.replace(/^## (.+)$/gm,   '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm,    '<h1>$1</h1>');
 
-  // Bold / italic
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g,     '<em>$1</em>');
 
-  // Blockquote
   html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-
-  // HR
   html = html.replace(/^---$/gm, '<hr>');
 
-  // Lists
-  html = html.replace(/^[-*] (.+)$/gm,      '<li>$1</li>');
-  html = html.replace(/^(\d+)\. (.+)$/gm,   '<li>$2</li>');
+  html = html.replace(/^[-*] (.+)$/gm,    '<li>$1</li>');
+  html = html.replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
   html = html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
   html = html.replace(/<\/ul>\n?<ul>/g, '');
 
-  // Markdown tables
   html = html.replace(/(\|.+\|\n?)+/g, tableBlock => {
     const rows = tableBlock.trim().split('\n').filter(r => r.trim());
     if (rows.length < 2) return tableBlock;
@@ -1229,10 +1575,8 @@ function renderMarkdown(text) {
     return t + '</table>';
   });
 
-  // Paragraphs
   html = '<p>' + html.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
 
-  // Clean block element p-wrapping
   ['h1','h2','h3','ul','pre','blockquote','hr','table'].forEach(tag => {
     html = html
       .replace(new RegExp(`<p>(<${tag}[^>]*>)`, 'g'), '$1')
@@ -1244,7 +1588,7 @@ function renderMarkdown(text) {
   return html;
 }
 
-// ── HISTORY ───────────────────────────────────────────────────────────────
+// ─── HISTORY ──────────────────────────────────────────────────────────────────
 async function addToHistory(label, fullInput, mode) {
   const entry = {
     id: Date.now(), label, fullInput, mode,
@@ -1274,14 +1618,16 @@ function reloadHistory(i) {
   updateCounter();
   if (entry.output) {
     lastOutput = entry.output;
+    lastInput  = entry.fullInput;
     document.getElementById('outputBody').innerHTML =
       `<div class="response-content">${renderMarkdown(entry.output)}</div>`;
     document.getElementById('copyBar').style.display = 'flex';
     document.getElementById('abortBtn').style.display = 'none';
+    document.getElementById('coachToggleBtn').style.display = 'inline-block';
   }
 }
 
-// ── COPY / EXPORT ─────────────────────────────────────────────────────────
+// ─── COPY / EXPORT ────────────────────────────────────────────────────────────
 function copyOutput() {
   if (!lastOutput) return;
   navigator.clipboard.writeText(lastOutput).then(() => {
@@ -1310,58 +1656,194 @@ function clearAll() {
   document.getElementById('outputBody').innerHTML = `
     <div class="welcome">
       <div class="welcome-icon">📊</div>
-      <h2>v10.1 Ready</h2>
-      <p>Paste data or load a scenario. Auto-routing, defined scoring, and fixed scaffolds are active.</p>
+      <h2>Pipeline Coach Ready</h2>
+      <p>Paste your pipeline data or load a scenario. Auto-routing, defined scoring, and fixed scaffolds are active.</p>
       <div class="welcome-pills">
         <div class="welcome-pill">Mode Routing</div>
         <div class="welcome-pill">Risk Scoring</div>
         <div class="welcome-pill">Fixed Scaffolds</div>
-        <div class="welcome-pill">Fallback Logic</div>
+        <div class="welcome-pill">Text Coach</div>
       </div>
     </div>`;
   document.getElementById('copyBar').style.display = 'none';
   document.getElementById('routedBadge').style.display = 'none';
   document.getElementById('modeIndicator').textContent = 'Awaiting Input';
-  lastOutput = '';
+  document.getElementById('coachToggleBtn').style.display = 'none';
+  lastOutput = ''; lastInput = '';
   const w = document.getElementById('valWarn'); if (w) w.remove();
 }
 
-// ── KEYBOARD ──────────────────────────────────────────────────────────────
-document.getElementById('userInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.ctrlKey) analyze();
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && abortCtrl) abortAnalysis();
-});
-</script>
-<script src="/stream.js"></script>
-<script src="/toast.js"></script>
-<script src="/jsn-nav.js"></script>
-<script>
-  const TOOL_ID = "reps_pipeline";
 
-  async function initTool() {
-    await JSNAuth.init();
-    const status = await JSNPaywall.check(TOOL_ID);
+// ─── CRM INTEGRATION ─────────────────────────────────────────────────────────
+async function crmRequest(action, table, opts = {}) {
+  const jwt = JSNAuth.getJWT();
+  const res = await fetch(`${WORKER_URL}/crm`, {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ action, table, ...opts }),
+  });
+  if (!res.ok) throw new Error(`CRM ${res.status}`);
+  return res.json();
+}
 
-    if (status.allowed) {
-      enableTool();
+async function loadCRMDeals() {
+  try {
+    const session = JSNAuth.getSession();
+    if (!session) return;
+    const { data } = await crmRequest('select', 'crm_deals');
+    crmDeals = data || [];
+    renderCRMDeals();
+  } catch(e) {
+    document.getElementById('crmDealsList').innerHTML =
+      '<div style="color:var(--muted);font-size:11px;font-family:var(--font-mono)">Could not load deals</div>';
+  }
+}
+
+function renderCRMDeals() {
+  const el = document.getElementById('crmDealsList');
+  if (!crmDeals.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:11px;font-family:var(--font-mono)">No deals yet</div>';
+    return;
+  }
+  el.innerHTML = crmDeals.map(d => {
+    const label = d.crm_contacts?.name || d.notes?.slice(0,24) || d.id.slice(0,8);
+    return `
+      <div class="crm-deal-row${activeDealId === d.id ? ' crm-deal-active' : ''}">
+        <span class="crm-deal-name" title="${esc(label)}">${esc(label)}</span>
+        <select class="crm-stage-sel" onchange="updateDealStage('${d.id}', this.value)"
+          title="Stage">
+          ${['lead','active','under_contract','closed','dead'].map(s =>
+            `<option value="${s}"${d.stage===s?' selected':''}>${s.replace('_',' ')}</option>`
+          ).join('')}
+        </select>
+        <button class="btn btn-sm" style="padding:2px 6px;font-size:10px;background:rgba(0,212,200,.08);border:1px solid rgba(0,212,200,.2);color:var(--accent);border-radius:3px;cursor:pointer"
+          onclick="linkDealToSession('${d.id}')" title="Link to current analysis">
+          ${activeDealId === d.id ? 'Active' : 'Link'}
+        </button>
+      </div>`;
+  }).join('');
+}
+
+async function updateDealStage(dealId, stage) {
+  try {
+    await crmRequest('update', 'crm_deals', { id: dealId, data: { stage } });
+    const d = crmDeals.find(x => x.id === dealId);
+    if (d) d.stage = stage;
+    toast('Stage updated');
+  } catch(e) {
+    toast('Stage update failed');
+  }
+}
+
+function linkDealToSession(dealId) {
+  activeDealId = activeDealId === dealId ? null : dealId;
+  renderCRMDeals();
+  const sec = document.getElementById('linkedDealSection');
+  const badge = document.getElementById('linkedDealBadge');
+  if (activeDealId) {
+    const d = crmDeals.find(x => x.id === activeDealId);
+    const label = d?.crm_contacts?.name || d?.notes?.slice(0,24) || activeDealId.slice(0,8);
+    badge.innerHTML = `
+      <span class="crm-linked-badge">
+        <span>&#128203;</span> ${esc(label)}
+        <button class="crm-unlink-btn" onclick="linkDealToSession('${activeDealId}')" title="Unlink">&times;</button>
+      </span>`;
+    sec.style.display = 'block';
+    toast('Deal linked — AI output will log to activity feed');
+  } else {
+    sec.style.display = 'none';
+    badge.innerHTML = '';
+  }
+}
+
+function openAddDealModal() {
+  const notes = document.getElementById('userInput').value.trim().slice(0, 80) || '';
+  const name  = prompt('Deal label (e.g. contact name or address):');
+  if (!name) return;
+  const session = JSNAuth.getSession();
+  if (!session) return;
+  crmRequest('insert', 'crm_deals', {
+    data: {
+      user_id: session.user.id,
+      stage: 'lead',
+      notes: name,
     }
+  }).then(() => {
+    toast('Deal created');
+    loadCRMDeals();
+  }).catch(e => toast('Could not create deal: ' + e.message));
+}
 
-    JSNAuth.onAuthChange(async ({ session }) => {
-      if (session) {
-        const fresh = await JSNPaywall.check(TOOL_ID);
-        if (fresh.allowed) enableTool();
+async function logCRMActivity(dealId, analysisText) {
+  try {
+    const session = JSNAuth.getSession();
+    if (!session) return;
+    const snippet = analysisText.slice(0, 200).replace(/\n/g, ' ');
+    await crmRequest('insert', 'crm_activities', {
+      data: {
+        deal_id:        dealId,
+        user_id:        session.user.id,
+        type:           'ai_analysis',
+        note:           'Pipeline Coach analysis: ' + snippet,
+        created_by_app: 'pipeline-analyzer',
       }
     });
+  } catch(e) {
+    console.warn('Activity log failed:', e.message);
   }
+}
 
-  function enableTool() {
-    const overlay = document.getElementById("tool-disabled-overlay");
-    if (overlay) overlay.remove();
-  }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-  initTool().catch(console.error);
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position: 'fixed', bottom: '22px', right: '22px',
+    background: 'var(--surface2)', border: '1px solid var(--border)',
+    color: 'var(--text)', padding: '10px 16px',
+    borderRadius: '4px', fontSize: '12px',
+    fontFamily: 'var(--font-mono)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+    zIndex: '999', transition: 'opacity 0.3s'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ─── KEYBOARD + BOOT ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('userInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) analyze();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && abortCtrl) abortAnalysis();
+  });
+});
+
+(async function boot() {
+  await JSNAuth.init();
+  const session = JSNAuth.getSession();
+  if (!session) { window.location.href = '/login.html'; return; }
+
+  const status = await JSNPaywall.check('pipeline');
+  if (!status.allowed) return;
+
+  // Auth handled — show app directly (no API key entry needed)
+  const ss = document.getElementById('setupScreen');
+  if (ss) ss.style.display = 'none';
+  document.getElementById('appScreen').classList.add('visible');
+
+  // Load CRM deals
+  await loadCRMDeals();
+})();
 </script>
+<script src="/jsn-nav.js"></script>
 </body>
 </html>

@@ -4,7 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AIQ Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -147,7 +148,6 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   .export-btn{display:none}
 }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
 <body>
@@ -516,7 +516,6 @@ function openAudit(i) {
   const lead = leads[i];
   currentAuditLead = lead;
 
-  // Pre-fill from assessment data
   document.getElementById("ap-name").textContent = lead.name || "Unknown";
   document.getElementById("ap-email").textContent = lead.email || "Unknown";
   document.getElementById("ap-score").textContent = (lead.score || 0) + "/100";
@@ -530,11 +529,9 @@ function openAudit(i) {
     "Governance " + (lead.domainScores?.governance ?? 0)
   ].join("  ·  ");
 
-  // Set date to today by default
   const today = new Date().toLocaleDateString("en-US", { month:"long", day:"numeric", year:"numeric" });
   document.getElementById("ap-date").value = today;
 
-  // Build quick win fields
   const winsContainer = document.getElementById("ap-wins-container");
   winsContainer.innerHTML = [1,2,3,4].map(n => `
     <div class="audit-win-block">
@@ -573,7 +570,6 @@ function openAudit(i) {
       </div>
     </div>`).join("");
 
-  // Build 4-day plan fields
   const planContainer = document.getElementById("ap-plan-container");
   planContainer.innerHTML = [1,2,3,4].map(n => `
     <div class="audit-win-block">
@@ -610,7 +606,6 @@ async function generateAuditReport() {
   const lead = currentAuditLead;
   const g = (id) => (document.getElementById(id)?.value || "").trim();
 
-  // Collect form data
   const client = {
     name:     lead.name || "Client",
     date:     g("ap-date") || new Date().toLocaleDateString(),
@@ -663,7 +658,7 @@ async function generateAuditReport() {
 }
 
 // ============================================================
-// PPTX BUILDER runs entirely in browser via PptxGenJS
+// PPTX BUILDER — runs entirely in browser via PptxGenJS
 // ============================================================
 async function buildAuditPptx(c) {
   const pres = new PptxGenJS();
@@ -680,7 +675,7 @@ async function buildAuditPptx(c) {
   const eyebrow = (s, t, x, y) => s.addText(t,{x,y,w:7,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.teal,charSpacing:3,align:"left",margin:0});
   const topBar = (s) => s.addShape("rect",{x:0,y:0,w:10,h:0.04,fill:{color:C.teal},line:{color:C.teal,width:0}});
 
-  // SLIDE 1 Cover
+  // SLIDE 1 — Cover
   const s1 = pres.addSlide();
   s1.background = {color:C.navy};
   s1.addShape("rect",{x:0,y:0,w:0.28,h:5.625,fill:{color:C.teal},line:{color:C.teal,width:0}});
@@ -695,22 +690,19 @@ async function buildAuditPptx(c) {
   s1.addText([{text:"AIQ Score  ",options:{color:C.dim,fontSize:10,fontFace:"Courier New"}},{text:c.score+"/100",options:{color:C.teal,fontSize:10,fontFace:"Courier New",bold:true}},{text:"   "+c.level,options:{color:C.dim,fontSize:10,fontFace:"Courier New"}}],{x:0.55,y:4.64,w:8,h:0.26,margin:0});
   s1.addText("Delivered within 48 hours of assessment completion.",{x:0.55,y:5.22,w:9,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.dim,align:"left",margin:0});
 
-  // SLIDE 2 Executive Summary
+  // SLIDE 2 — Executive Summary
   const s2 = pres.addSlide();
   s2.background={color:C.navy}; topBar(s2);
   eyebrow(s2,"// EXECUTIVE SUMMARY",0.5,0.18);
   s2.addText("The Opportunity",{x:0.5,y:0.45,w:9,h:0.55,fontSize:28,fontFace:"Georgia",color:C.white,align:"left",margin:0});
-  // Pain card
   s2.addShape("rect",{x:0.5,y:1.15,w:4.3,h:1.6,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
   bar(s2,0.5,1.15,1.6,C.orange);
   s2.addText("PAIN",{x:0.65,y:1.24,w:4,h:0.2,fontSize:7.5,fontFace:"Courier New",color:C.orange,charSpacing:3,margin:0});
   s2.addText(c.painSummary,{x:0.65,y:1.5,w:4.0,h:1.1,fontSize:11,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
-  // Outcome card
   s2.addShape("rect",{x:5.2,y:1.15,w:4.3,h:1.6,fill:{color:C.surface},line:{color:C.border,width:0.5},shadow:mk()});
   bar(s2,5.2,1.15,1.6,C.teal);
   s2.addText("OUTCOME",{x:5.35,y:1.24,w:4,h:0.2,fontSize:7.5,fontFace:"Courier New",color:C.teal,charSpacing:3,margin:0});
   s2.addText(c.outcomeSummary,{x:5.35,y:1.5,w:4.0,h:1.1,fontSize:11,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
-  // Glance stats
   eyebrow(s2,"// THE OPPORTUNITY AT A GLANCE",0.5,2.92);
   [{label:"Hours Reclaimed Weekly",value:c.hoursReclaimed,col:C.teal},{label:"Primary Focus",value:c.primaryFocus,col:C.orange},{label:"Maturity Level",value:c.level,col:C.green}].forEach((item,i)=>{
     const x=0.5+i*3.1;
@@ -720,7 +712,7 @@ async function buildAuditPptx(c) {
     s2.addText(item.label,{x:x+0.15,y:4.15,w:2.6,h:0.6,fontSize:8.5,fontFace:"Arial",color:C.dim,align:"left",valign:"top",wrap:true,margin:0});
   });
 
-  // SLIDE 3 Domain Scores
+  // SLIDE 3 — Domain Scores
   const s3 = pres.addSlide();
   s3.background={color:C.navy}; topBar(s3);
   eyebrow(s3,"// AIQ ASSESSMENT RESULTS",0.5,0.18);
@@ -739,7 +731,7 @@ async function buildAuditPptx(c) {
     if(isGap) s3.addText("PRIORITY GAP",{x:4.5,y:y+0.07,w:3.5,h:0.22,fontSize:7,fontFace:"Courier New",color:C.orange,charSpacing:2,align:"right",margin:0});
   });
 
-  // SLIDE 4 Quick Wins
+  // SLIDE 4 — Quick Wins
   const s4 = pres.addSlide();
   s4.background={color:C.navy}; topBar(s4);
   eyebrow(s4,"// RECOMMENDED SOLUTIONS",0.5,0.18);
@@ -760,7 +752,7 @@ async function buildAuditPptx(c) {
     });
   });
 
-  // SLIDE 5 4-Day Plan
+  // SLIDE 5 — 4-Day Plan
   const s5 = pres.addSlide();
   s5.background={color:C.navy}; topBar(s5);
   eyebrow(s5,"// IMPLEMENTATION PLAN",0.5,0.18);
@@ -777,7 +769,7 @@ async function buildAuditPptx(c) {
     s5.addText(p.tool,{x:x+0.14,y:4.76,w:cW-0.28,h:0.22,fontSize:7.5,fontFace:"Courier New",color:C.teal,align:"center",valign:"middle",margin:0});
   });
 
-  // SLIDE 6 Phase 2
+  // SLIDE 6 — Phase 2
   const s6 = pres.addSlide();
   s6.background={color:C.navy}; topBar(s6);
   eyebrow(s6,"// AFTER QUICK WINS",0.5,0.18);
@@ -792,7 +784,7 @@ async function buildAuditPptx(c) {
     s6.addText(item,{x:1.3,y:y+0.22,w:8.0,h:0.58,fontSize:11.5,fontFace:"Arial",color:C.white,align:"left",valign:"middle",wrap:true,margin:0});
   });
 
-  // SLIDE 7 Financial Impact
+  // SLIDE 7 — Financial Impact
   const s7 = pres.addSlide();
   s7.background={color:C.navy}; topBar(s7);
   eyebrow(s7,"// FINANCIAL IMPACT",0.5,0.18);
@@ -810,7 +802,7 @@ async function buildAuditPptx(c) {
   s7.addText("What This Means",{x:0.65,y:3.96,w:8,h:0.26,fontSize:8,fontFace:"Courier New",color:C.teal,charSpacing:2,margin:0});
   s7.addText("These projections are based on industry benchmarks for similar tool implementations and the time costs identified in the assessment. Actual results depend on adoption speed and team consistency. Most clients see measurable impact within the first 30 days.",{x:0.65,y:4.25,w:8.6,h:0.85,fontSize:10,fontFace:"Arial",color:C.white,align:"left",valign:"top",wrap:true,margin:0});
 
-  // SLIDE 8 Next Steps
+  // SLIDE 8 — Next Steps
   const s8 = pres.addSlide();
   s8.background={color:C.navy}; topBar(s8);
   eyebrow(s8,"// YOUR NEXT STEPS",0.5,0.18);
@@ -826,7 +818,6 @@ async function buildAuditPptx(c) {
   s8.addShape("rect",{x:0.5,y:5.04,w:9,h:0.38,fill:{color:C.card},line:{color:C.border,width:0.5}});
   s8.addText([{text:"Questions?  ",options:{color:C.dim,fontSize:9,fontFace:"Courier New"}},{text:"jsnmade.com",options:{color:C.teal,fontSize:9,fontFace:"Courier New",bold:true}},{text:"   ·   Prepared by JSN Made   ·   AI Readiness Audit",options:{color:C.dim,fontSize:9,fontFace:"Courier New"}}],{x:0.65,y:5.07,w:8.7,h:0.3,valign:"middle",margin:0});
 
-  // Download
   const safeName = (c.name || "Client").replace(/[^a-zA-Z0-9]/g, "-");
   await pres.writeFile({ fileName: "JSN-Made-Audit-" + safeName + ".pptx" });
 }

@@ -705,6 +705,20 @@ function render() {
         <button class="btn-ghost" onclick="goToTraining()">Start My Training →</button>
       </div>
 
+      <!-- REPS CONVERSION FUNNEL — for real estate professionals -->
+      <div style="background:rgba(255,107,43,0.05);border:1px solid rgba(255,107,43,0.25);padding:32px;margin-bottom:24px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FF6B2B,transparent)"></div>
+        <div style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:#FF8C55;margin-bottom:10px;font-family:var(--mono)">Built for Real Estate</div>
+        <div style="font-family:'EB Garamond',serif;font-size:clamp(18px,2.5vw,24px);line-height:1.25;margin-bottom:10px">Are you a real estate agent or broker in Massachusetts?</div>
+        <div style="font-size:13px;color:#FFFFFF;line-height:1.7;margin-bottom:20px">JSN REPS is a suite of 7 AI-powered tools built specifically for MA real estate professionals — pipeline analysis, roleplay coaching, deal analysis, listing studio, and more. Built on the same AI that just scored your readiness.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+          ${['Pipeline','Roleplay','Messaging','Marketing','Listing','Deal Analyzer','Rental ROI'].map(app =>
+            `<span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#FF8C55;border:1px solid rgba(255,107,43,0.3);padding:4px 10px;border-radius:3px">${app}</span>`
+          ).join('')}
+        </div>
+        <a href="https://jsnmade.com/reps" target="_blank" rel="noopener" style="display:inline-block;background:#FF6B2B;color:#FFFFFF;padding:12px 28px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Explore JSN REPS →</a>
+      </div>
+
       <div class="btn-row">
         <button class="btn-ghost" onclick="restart()">Retake Assessment</button>
         <button class="btn-ghost" onclick="handleCopyClick(this)">Copy Results</button>
