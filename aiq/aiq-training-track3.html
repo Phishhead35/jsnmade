@@ -150,6 +150,8 @@ body{padding-top:54px}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-G33EEH6W8K');</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="aiq-auth.js"></script>
+  <script src="aiq-track-engine.js"></script>
 </head>
 <body>
 
@@ -369,12 +371,8 @@ document.getElementById('jsn-hamburger').addEventListener('click', () => {
   document.getElementById('jsn-mobile-menu').classList.toggle('open');
 });
 
-const { createClient: _createClient } = supabase;
-const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
-let chatHistory = [];
-let chatInitialized = false;
+const _sbClient = AIQAuth.getClient(); // shared singleton — see aiq-auth.js
 const ANTHROPIC_WORKER = 'https://jsn-aiq-coach.wewearsmiles.workers.dev';
-let completedPages = new Set();
 
 const QUIZ = [
   { q: "What is the most common reason AI adoption fails at the organizational level?", opts: ["The technology is not mature enough","Change management failures, not technology failures","Lack of budget for AI tools","Insufficient data quality"], correct: 1, feedback: "Research consistently shows that AI adoption failures are change management failures. The technology works. What breaks down is communication, leadership engagement, and cultural readiness. Solving the people side of AI is more impactful than solving the technology side." },
@@ -383,105 +381,15 @@ const QUIZ = [
   { q: "What does a practical AI policy for a small business actually need to answer?", opts: ["Detailed technical specifications for approved AI models","Five questions: which tools are approved, what data should not go in, what needs human review, who to tell when something goes wrong, and where you can experiment","A comprehensive legal framework reviewed by outside counsel","A formal AI ethics statement signed by the executive team"], correct: 1, feedback: "A practical AI policy is five answered questions, not a document. Organizations that wait for a comprehensive policy before moving forward on AI consistently fall behind. Five questions, written down and shared, is more valuable than a 40-page policy that sits in a shared drive." },
   { q: "What is the most effective single action to build an AI-ready culture?", opts: ["Mandate AI tool usage for all employees immediately","Make one visible AI pilot public within your organization, regardless of outcome","Send the team to an AI certification course","Hire an AI consultant to assess your readiness"], correct: 1, feedback: "Visibility is the engine of culture change. When one pilot is made visible, regardless of whether it succeeds, it signals that experimentation is safe and valued. That signal spreads faster than any policy or training program." }
 ];
+window.QUIZ = QUIZ;
+window.AIQ_QUIZ_CTA = '<br><br><a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" class="btn-nav-primary" style="display:inline-block;text-decoration:none;margin-top:8px">Unlock Track 4 →</a>';
 
-let quizState = { current: 0, answers: [], complete: false };
-
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const nav = document.getElementById('nav-' + id);
-  if (nav) {
-    nav.classList.add('active');
-    if (!nav.querySelector('.nav-check') && id.startsWith('lesson')) completedPages.add(id);
-  }
-  if (id === 'quiz') renderQuiz();
-  if (id === 'chat' && !chatInitialized) { initChat(); chatInitialized = true; }
-  if (window.innerWidth <= 768) {
-    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    window.scrollTo(0, 0);
-  }
-}
-
-function renderQuiz() {
-  const body = document.getElementById('quiz-body');
-  if (quizState.complete) { renderQuizComplete(); return; }
-  const q = QUIZ[quizState.current];
-  const letters = ['A','B','C','D'];
-  body.innerHTML = `
-    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div>
-    <div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
-    <div class="quiz-q">${q.q}</div>
-    <div class="quiz-options">
-      ${q.opts.map((o,i) => `<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join('')}
-    </div>
-    <div class="quiz-feedback" id="quiz-feedback"></div>
-    <div id="quiz-next-btn"></div>
-  `;
-}
-
-function selectAnswer(i) {
-  const q = QUIZ[quizState.current];
-  const opts = document.querySelectorAll('.quiz-option');
-  opts.forEach(o => o.style.pointerEvents = 'none');
-  opts[i].classList.add(i === q.correct ? 'correct' : 'wrong');
-  if (i !== q.correct) opts[q.correct].classList.add('correct');
-  quizState.answers.push(i);
-  const fb = document.getElementById('quiz-feedback');
-  fb.className = 'quiz-feedback show ' + (i === q.correct ? 'correct' : 'wrong');
-  fb.textContent = (i === q.correct ? '✓ ' : '✗ ') + q.feedback;
-  document.getElementById('quiz-next-btn').innerHTML = `<button class="btn-nav-primary" style="margin-top:8px" onclick="nextQuestion()">${quizState.current < QUIZ.length - 1 ? 'Next Question →' : 'See Results →'}</button>`;
-}
-
-function nextQuestion() {
-  quizState.current++;
-  if (quizState.current >= QUIZ.length) { quizState.complete = true; renderQuizComplete(); }
-  else renderQuiz();
-}
-
-function renderQuizComplete() {
-  const correct = quizState.answers.filter((a,i) => a === QUIZ[i].correct).length;
-  const pct = Math.round((correct / QUIZ.length) * 100);
-  const msg = pct >= 80 ? 'Strong understanding. Move on to the AI Coach to apply these concepts.' : pct >= 60 ? 'Good foundation. Review any questions you missed, then work with the AI Coach.' : 'Consider re-reading the modules before moving forward.';
-  document.getElementById('quiz-body').innerHTML = `
-    <div class="quiz-score-final">
-      <div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div>
-      <div class="quiz-result-title">${pct >= 80 ? 'Excellent Work' : pct >= 60 ? 'Good Work' : 'Keep Going'}</div>
-      <p class="quiz-result-body">${msg}</p>
-      <button class="btn-nav-primary" onclick="showPage('chat')">Continue to AI Coach →</button>
-      <br><br>
-      <a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" class="btn-nav-primary" style="display:inline-block;text-decoration:none;margin-top:8px">Unlock Track 4 →</a>
-    </div>`;
-  const nav = document.getElementById('nav-quiz');
-  if (nav && !nav.querySelector('.nav-check')) nav.innerHTML += '<span class="nav-check">✓</span>';
-}
 
 function initChat() {
   const opening = "Hi. I am your AI coach for the Talent and Culture track. I am here to help you apply what you have just learned to your specific organization.\n\nWhat is on your mind? Is there a team dynamic, a leadership challenge, or a cultural barrier you want to think through?";
   addMessage('ai', opening);
 }
 
-function addMessage(role, text) {
-  chatHistory.push({ role: role === 'ai' ? 'assistant' : 'user', content: text });
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = `<div class="msg-avatar ${role}">${role === 'ai' ? 'AI' : 'ME'}</div><div class="msg-bubble"><div class="msg-name">${role === 'ai' ? 'AI Coach' : 'You'}</div><div class="msg-text"><p>${text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br/>')}</p></div></div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function addTyping() {
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai'; div.id = 'typing-indicator';
-  div.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
 
 async function sendMessage(text) {
   const input = document.getElementById('chat-input');
@@ -515,7 +423,7 @@ You are knowledgeable, direct, and practical.`;
     const res = await fetch(ANTHROPIC_WORKER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: chatHistory })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: window.chatHistory })
     });
     const data = await res.json();
     removeTyping();
@@ -527,9 +435,6 @@ You are knowledgeable, direct, and practical.`;
   document.getElementById('chat-send').disabled = false;
 }
 
-function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
-function askSuggested(btn) { sendMessage(btn.textContent); }
 
 async function checkAccess() {
   const sb = _sbClient;

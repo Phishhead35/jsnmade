@@ -277,6 +277,8 @@ body{padding-top:54px}
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G33EEH6W8K"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-G33EEH6W8K');</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="aiq-auth.js"></script>
+  <script src="aiq-track-engine.js"></script>
 </head>
 <body>
 
@@ -296,7 +298,7 @@ body{padding-top:54px}
     <li><a href="aiq-training-track1.html">Track 1</a></li>
     <li><a href="aiq-training-track2.html" class="active">Track 2</a></li>
     <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track3">Track 3</a></li>
-    <li><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" id="nav-link-track4">Track 4</a></li>
+    <li><a href="https://buy.stripe.com/eVq00j0eI39S4nDeUB0kE04" id="nav-link-track4">Track 4</a></li>
     <li><span class="jsn-track-badge">Track 2</span></li>
     <li><a href="aiq-signin.html" style="color:rgba(255,255,255,0.45)">Sign In</a></li>
   </ul>
@@ -511,12 +513,8 @@ document.getElementById('jsn-hamburger').addEventListener('click', () => {
 });
 
 // STATE
-const { createClient: _createClient } = supabase;
-const _sbClient = _createClient('https://vmuvgdtfsdydvpxvdgso.supabase.co', 'sb_publishable_SCYigpiHN0HkmkAREaB8ZQ_9GgT14fl');
-let chatHistory = [];
-let chatInitialized = false;
+const _sbClient = AIQAuth.getClient(); // shared singleton — see aiq-auth.js
 const ANTHROPIC_WORKER = 'https://jsn-aiq-coach.wewearsmiles.workers.dev';
-let completedPages = new Set();
 
 const QUIZ = [
   { q: "Which of the four data questions is most commonly overlooked by small businesses?", opts: ["Where does it live?","Who owns it?","How clean is it?","How fresh is it?"], correct: 1, feedback: "Data ownership is the most commonly overlooked question. Without a clear owner, data quality degrades over time and accountability disappears. Most businesses discover this problem only when an AI project fails." },
@@ -525,83 +523,10 @@ const QUIZ = [
   { q: "What is the most practical first step to assess your data readiness?", opts: ["Hire a data scientist to audit your systems","Pick one high-value data set and map where it lives, who uses it, and how often it is wrong","Build a data warehouse before evaluating any AI tools","Subscribe to a data quality platform"], correct: 1, feedback: "A focused audit of one high-value data set takes an afternoon and reveals more than any consultant report. It tells you exactly where your data problems are and gives you a concrete starting point for improvement." },
   { q: "What does the CarGurus analogy illustrate about AI infrastructure?", opts: ["You need expensive custom software to aggregate data","Aggregating existing data sources creates significant value without generating new data","AI requires real-time data feeds to be useful","Data aggregation is only valuable at enterprise scale"], correct: 1, feedback: "Aggregating existing data sources, as CarGurus did with car listings, creates enormous value without generating any new data. The same principle applies to your business: connecting and centralizing data you already have is often more valuable than collecting new data." }
 ];
+window.QUIZ = QUIZ;
+window.AIQ_QUIZ_CTA = '<br><br><a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" class="btn-nav-primary" style="display:inline-block;text-decoration:none;margin-top:8px">Unlock Tracks 3 + 4 →</a>';
 
-let quizState = { current: 0, answers: [], complete: false };
 
-// NAVIGATION
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const nav = document.getElementById('nav-' + id);
-  if (nav) {
-    nav.classList.add('active');
-    if (!nav.querySelector('.nav-check') && id.startsWith('lesson')) {
-      completedPages.add(id);
-    }
-  }
-  if (id === 'quiz') renderQuiz();
-  if (id === 'chat' && !chatInitialized) { initChat(); chatInitialized = true; }
-  if (window.innerWidth <= 768) {
-    document.querySelector('.main').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    window.scrollTo(0, 0);
-  }
-}
-
-// QUIZ
-function renderQuiz() {
-  const body = document.getElementById('quiz-body');
-  if (quizState.complete) { renderQuizComplete(); return; }
-  const q = QUIZ[quizState.current];
-  const letters = ['A','B','C','D'];
-  body.innerHTML = `
-    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${(quizState.current/QUIZ.length)*100}%"></div></div>
-    <div style="font-family:var(--mono);font-size:10px;color:#FFFFFF;margin-bottom:16px;letter-spacing:0.1em">Question ${quizState.current+1} of ${QUIZ.length}</div>
-    <div class="quiz-q">${q.q}</div>
-    <div class="quiz-options">
-      ${q.opts.map((o,i) => `<button class="quiz-option" onclick="selectAnswer(${i})"><span class="quiz-opt-letter">${letters[i]}</span>${o}</button>`).join('')}
-    </div>
-    <div class="quiz-feedback" id="quiz-feedback"></div>
-    <div id="quiz-next-btn"></div>
-  `;
-}
-
-function selectAnswer(i) {
-  const q = QUIZ[quizState.current];
-  const opts = document.querySelectorAll('.quiz-option');
-  opts.forEach(o => o.style.pointerEvents = 'none');
-  opts[i].classList.add(i === q.correct ? 'correct' : 'wrong');
-  if (i !== q.correct) opts[q.correct].classList.add('correct');
-  quizState.answers.push(i);
-  const fb = document.getElementById('quiz-feedback');
-  fb.className = 'quiz-feedback show ' + (i === q.correct ? 'correct' : 'wrong');
-  fb.textContent = (i === q.correct ? '✓ ' : '✗ ') + q.feedback;
-  document.getElementById('quiz-next-btn').innerHTML = `<button class="btn-nav-primary" style="margin-top:8px" onclick="nextQuestion()">${quizState.current < QUIZ.length - 1 ? 'Next Question →' : 'See Results →'}</button>`;
-}
-
-function nextQuestion() {
-  quizState.current++;
-  if (quizState.current >= QUIZ.length) { quizState.complete = true; renderQuizComplete(); }
-  else renderQuiz();
-}
-
-function renderQuizComplete() {
-  const correct = quizState.answers.filter((a,i) => a === QUIZ[i].correct).length;
-  const pct = Math.round((correct / QUIZ.length) * 100);
-  const msg = pct >= 80 ? 'Strong understanding. Move on to the AI Coach to apply these concepts.' : pct >= 60 ? 'Good foundation. Review any questions you missed, then work with the AI Coach.' : 'Consider re-reading the modules before moving forward. The AI Coach can help clarify any concepts.';
-  document.getElementById('quiz-body').innerHTML = `
-    <div class="quiz-score-final">
-      <div class="quiz-score-circle"><span class="big">${correct}/${QUIZ.length}</span><span class="small">${pct}%</span></div>
-      <div class="quiz-result-title">${pct >= 80 ? 'Excellent Work' : pct >= 60 ? 'Good Work' : 'Keep Going'}</div>
-      <p class="quiz-result-body">${msg}</p>
-      <button class="btn-nav-primary" onclick="showPage('chat')">Continue to AI Coach →</button>
-      <br><br>
-      <a href="https://buy.stripe.com/eVq4gzbXq4dW2fvh2J0kE05" class="btn-nav-primary" style="display:inline-block;text-decoration:none;margin-top:8px">Unlock Tracks 3 + 4 →</a>
-    </div>`;
-  const nav = document.getElementById('nav-quiz');
-  if (nav && !nav.querySelector('.nav-check')) nav.innerHTML += '<span class="nav-check">✓</span>';
-}
 
 // CHAT
 function initChat() {
@@ -609,26 +534,6 @@ function initChat() {
   addMessage('ai', opening);
 }
 
-function addMessage(role, text) {
-  chatHistory.push({ role: role === 'ai' ? 'assistant' : 'user', content: text });
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = `<div class="msg-avatar ${role}">${role === 'ai' ? 'AI' : 'ME'}</div><div class="msg-bubble"><div class="msg-name">${role === 'ai' ? 'AI Coach' : 'You'}</div><div class="msg-text"><p>${text.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br/>')}</p></div></div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function addTyping() {
-  const container = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ai'; div.id = 'typing-indicator';
-  div.innerHTML = `<div class="msg-avatar ai">AI</div><div class="msg-bubble"><div class="msg-name">AI Coach</div><div class="msg-text"><div class="typing"><span></span><span></span><span></span></div></div></div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
 
 async function sendMessage(text) {
   const input = document.getElementById('chat-input');
@@ -662,7 +567,7 @@ You are knowledgeable, direct, and practical.`;
     const res = await fetch(ANTHROPIC_WORKER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: chatHistory })
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: systemPrompt, messages: window.chatHistory })
     });
     const data = await res.json();
     removeTyping();
@@ -674,9 +579,6 @@ You are knowledgeable, direct, and practical.`;
   document.getElementById('chat-send').disabled = false;
 }
 
-function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
-function askSuggested(btn) { sendMessage(btn.textContent); }
 
 // ACCESS NAV UPDATE
 async function updateNavForAccess(data) {
