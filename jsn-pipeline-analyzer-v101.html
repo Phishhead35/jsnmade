@@ -191,6 +191,7 @@
     display: flex;
     flex-direction: column;
     background: var(--surface);
+    overflow: hidden;
   }
 
   .panel-label {
@@ -516,7 +517,7 @@
 
   .copy-bar {
     padding: 10px 28px;
-    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     background: var(--surface2);
     display: flex;
     justify-content: flex-end;
@@ -880,6 +881,14 @@
         </div>
       </div>
 
+      <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
+        <div class="copy-bar-label">JSN Pipeline v1.0</div>
+        <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
+        <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
+        <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
+        <button class="copy-btn" onclick="clearAll()">Clear</button>
+      </div>
+
       <div class="output-body" id="outputBody" role="region"
         aria-label="Analysis output" aria-live="polite">
         <div class="welcome">
@@ -893,14 +902,6 @@
             <div class="welcome-pill">Text Coach</div>
           </div>
         </div>
-      </div>
-
-      <div class="copy-bar" id="copyBar" style="display:none" role="toolbar" aria-label="Output actions">
-        <div class="copy-bar-label">JSN Pipeline v1.0</div>
-        <button class="abort-btn" id="abortBtn" onclick="abortAnalysis()" style="display:none">■ Stop</button>
-        <button class="copy-btn" onclick="copyOutput()">Copy Output</button>
-        <button class="copy-btn" onclick="exportTxt()">Export .txt</button>
-        <button class="copy-btn" onclick="clearAll()">Clear</button>
       </div>
 
       <!-- COACH PANEL -->
@@ -978,10 +979,10 @@ FIXED OUTPUT SCAFFOLDS — use the correct template for the routed mode. Do not 
 PIPELINE ANALYSIS MODE output order:
 1. MODE declaration + data confidence note (what data was provided vs. assumed)
 2. Pipeline Health Score (Healthy / Watch / Critical) with the specific criteria that triggered it
-3. Top 3 risks ranked by deal or dollar impact
-4. Immediate actions: numbered, owner assigned, deadline attached
-5. IF/THEN execution scenario for the top risk
-6. Revenue impact model: current projection vs. goal vs. recovery path
+3. Revenue impact model: current projection vs. goal vs. recovery path
+4. Top 3 risks ranked by deal or dollar impact
+5. Immediate actions: numbered, owner assigned, deadline attached
+6. IF/THEN execution scenario for the top risk
 7. Manager's Call: one decisive sentence
 
 LEAD COACHING MODE output order:
