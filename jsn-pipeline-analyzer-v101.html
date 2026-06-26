@@ -1326,23 +1326,6 @@ function clearAll() {
   const w = document.getElementById('valWarn'); if (w) w.remove();
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────
-function toast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position: 'fixed', bottom: '22px', right: '22px',
-    background: 'var(--surface2)', border: '1px solid var(--border)',
-    color: 'var(--text)', padding: '10px 16px',
-    borderRadius: '4px', fontSize: '12px',
-    fontFamily: 'var(--font-mono)',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-    zIndex: '999', transition: 'opacity 0.3s'
-  });
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
-}
-
 // ── KEYBOARD ──────────────────────────────────────────────────────────────
 document.getElementById('userInput').addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.ctrlKey) analyze();
@@ -1352,6 +1335,7 @@ document.addEventListener('keydown', e => {
 });
 </script>
 <script src="/stream.js"></script>
+<script src="/toast.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_pipeline";

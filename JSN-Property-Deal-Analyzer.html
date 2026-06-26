@@ -1569,21 +1569,6 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function toast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position:'fixed', bottom:'22px', right:'22px',
-    background:'var(--navy3)', border:'1px solid var(--border)',
-    color:'var(--white)', padding:'11px 18px',
-    borderRadius:'8px', fontSize:'13px',
-    boxShadow:'0 4px 24px rgba(0,0,0,0.45)',
-    zIndex:'999', transition:'opacity 0.3s'
-  });
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
-}
-
 // init
 setDealType('buy-hold');
 document.getElementById('exitSection').style.display = 'none';
@@ -1592,6 +1577,7 @@ document.addEventListener('keydown', e => {
 });
 </script>
 <script src="/stream.js"></script>
+<script src="/toast.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_discovery";

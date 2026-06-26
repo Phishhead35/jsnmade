@@ -1302,7 +1302,7 @@ async function runAnalysis() {
   const inputs = gatherInputs();
 
   if (!inputs.rent && !inputs.additionalNotes) {
-    showToast('Please enter at least a monthly rent amount to begin analysis.');
+    toast('Please enter at least a monthly rent amount to begin analysis.');
     return;
   }
 
@@ -1311,7 +1311,7 @@ async function runAnalysis() {
   showValidationWarnings(warnings);
 
   if (!USE_WORKER && !API_KEY) {
-    showToast('⚠️ No API key configured. Set USE_WORKER = true and point WORKER_URL to your Cloudflare Worker, or add an API_KEY for local testing only.');
+    toast('⚠️ No API key configured. Set USE_WORKER = true and point WORKER_URL to your Cloudflare Worker, or add an API_KEY for local testing only.');
     return;
   }
 
@@ -1710,8 +1710,8 @@ function clearAll() {
 function copyResult() {
   if (!window._lastResult) return;
   navigator.clipboard.writeText(window._lastResult)
-    .then(() => showToast('Analysis copied to clipboard'))
-    .catch(() => showToast('Copy failed — try selecting the text manually'));
+    .then(() => toast('Analysis copied to clipboard'))
+    .catch(() => toast('Copy failed — try selecting the text manually'));
 }
 
 function exportTxt() {
@@ -1735,21 +1735,6 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position: 'fixed', bottom: '24px', right: '24px',
-    background: 'var(--navy3)', border: '1px solid var(--border)',
-    color: 'var(--white)', padding: '12px 20px',
-    borderRadius: '8px', fontSize: '13px',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
-    zIndex: '999', transition: 'opacity 0.3s'
-  });
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
-}
-
 // Keyboard shortcut
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runAnalysis();
@@ -1759,6 +1744,7 @@ document.addEventListener('keydown', e => {
   Output is AI-generated and for informational use only. Not financial, legal, tax, or investment advice. Consult qualified professionals before making decisions.
 </div>
 <script src="/stream.js"></script>
+<script src="/toast.js"></script>
 <script src="/jsn-nav.js"></script>
 <script>
   const TOOL_ID = "reps_objection";
