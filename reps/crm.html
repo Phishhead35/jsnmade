@@ -192,6 +192,26 @@ textarea.form-control{resize:vertical;min-height:80px;}
   margin-left:8px;opacity:0;transition:opacity .2s;
 }
 .saving-indicator.show{opacity:1;}
+
+/* ── BROKER DASHBOARD ── */
+.broker-section{margin-bottom:36px;}
+.broker-section-title{
+  font-family:var(--font-head);font-size:15px;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.stage-group{margin-bottom:20px;}
+.stage-group-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.stage-count{font-family:var(--font-mono);font-size:12px;color:var(--muted);}
+.broker-form{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:20px;margin-top:12px;display:none;
+}
+.broker-form.open{display:block;}
+.broker-form-grid{
+  display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;
+  flex-wrap:wrap;
+}
 </style>
 </head>
 <body>
@@ -199,9 +219,10 @@ textarea.form-control{resize:vertical;min-height:80px;}
 
   <!-- TABS -->
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('contacts')">Contacts</button>
-    <button class="tab-btn"        onclick="switchTab('deals')">Deals</button>
-    <button class="tab-btn"        onclick="switchTab('activity')">Activity Feed</button>
+    <button class="tab-btn active" data-tab="contacts" onclick="switchTab('contacts')">Contacts</button>
+    <button class="tab-btn"        data-tab="deals"    onclick="switchTab('deals')">Deals</button>
+    <button class="tab-btn"        data-tab="activity" onclick="switchTab('activity')">Activity Feed</button>
+    <button class="tab-btn"        data-tab="broker"   id="broker-tab-btn" style="display:none" onclick="switchTab('broker')">Broker</button>
   </div>
 
   <!-- ── CONTACTS ── -->
@@ -338,6 +359,54 @@ textarea.form-control{resize:vertical;min-height:80px;}
     </div>
   </div>
 
+
+  <!-- ── BROKER DASHBOARD ── -->
+  <div id="tab-broker" class="tab-panel">
+    <div class="toolbar">
+      <span class="toolbar-title">Broker Dashboard</span>
+    </div>
+
+    <!-- Team Members -->
+    <div class="broker-section">
+      <div class="broker-section-title">Team Members</div>
+      <div id="brokerMembersTable"><div class="loading">Loading team...</div></div>
+      <button class="btn btn-ghost" style="margin-top:14px" onclick="toggleBrokerForm('addAgentForm')">+ Add Agent</button>
+      <div class="broker-form" id="addAgentForm">
+        <div class="broker-form-grid">
+          <div class="form-group">
+            <label>Agent Email</label>
+            <input class="form-control" id="bm-email" type="email" placeholder="agent@example.com">
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select class="form-control" id="bm-role">
+              <option value="">Select role</option>
+              <option value="agent">Agent</option>
+              <option value="broker">Broker</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label style="opacity:0">Go</label>
+            <button class="btn btn-primary" onclick="addTeamMember()">Add</button>
+          </div>
+        </div>
+        <span class="form-error" id="brokerMemberFormError" style="margin-top:8px;display:block"></span>
+      </div>
+    </div>
+
+    <!-- Team Pipeline -->
+    <div class="broker-section">
+      <div class="broker-section-title">Team Pipeline</div>
+      <div id="brokerPipelineEl"><div class="loading">Loading pipeline...</div></div>
+    </div>
+
+    <!-- Team Activity Feed -->
+    <div class="broker-section">
+      <div class="broker-section-title">Team Activity</div>
+      <div id="brokerActivityFeed"><div class="loading">Loading activity...</div></div>
+    </div>
+  </div>
+
 </div><!-- /page-shell -->
 
 <!-- CONTACT DETAIL OVERLAY -->
@@ -364,11 +433,15 @@ textarea.form-control{resize:vertical;min-height:80px;}
 // ─────────────────────────────────────────────────────────
 const WORKER_URL = 'https://jsn-reps-proxy.wewearsmiles.workers.dev';
 
-let currentUserId  = null;
-let currentJWT     = null;
-let allContacts    = [];
-let allDeals       = [];
-let allActivities  = [];
+let currentUserId    = null;
+let currentJWT       = null;
+let allContacts      = [];
+let allDeals         = [];
+let allActivities    = [];
+let brokerTeamId     = null;
+let brokerMembers    = [];
+let brokerTeamDeals  = [];
+let brokerTeamActivities = [];
 
 // ─────────────────────────────────────────────────────────
 // CRM API
@@ -393,14 +466,14 @@ async function crmRequest(action, table, opts = {}) {
 // Tabs
 // ─────────────────────────────────────────────────────────
 function switchTab(name) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const tabs = ['contacts','deals','activity'];
-    b.classList.toggle('active', tabs[i] === name);
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === name);
   });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
 
   if (name === 'activity' && allActivities.length === 0) loadActivities();
+  if (name === 'broker') loadBrokerTab();
 }
 
 function toggleForm(id) {
@@ -688,6 +761,229 @@ function fmtDate(iso) {
 }
 
 // ─────────────────────────────────────────────────────────
+// BROKER DASHBOARD
+// ─────────────────────────────────────────────────────────
+
+async function checkBrokerStatus() {
+  try {
+    const { data } = await crmRequest('select', 'crm_teams');
+    if (data && data.length > 0) {
+      brokerTeamId = data[0].id;
+      document.getElementById('broker-tab-btn').style.display = '';
+    }
+  } catch(e) { /* non-brokers silently skip */ }
+}
+
+function toggleBrokerForm(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ── Team Members ──────────────────────────────────────────
+
+async function loadBrokerMembers() {
+  const el = document.getElementById('brokerMembersTable');
+  try {
+    const { data: members } = await crmRequest('select', 'crm_team_members');
+    brokerMembers = members || [];
+
+    // Enrich with profile names/emails if accessible
+    try {
+      const { data: profiles } = await crmRequest('select', 'profiles');
+      const profileMap = {};
+      (profiles || []).forEach(p => { profileMap[p.id] = p; });
+      brokerMembers = brokerMembers.map(m => ({ ...m, _profile: profileMap[m.user_id] || null }));
+    } catch(e) { /* profiles not accessible, show IDs */ }
+
+    renderBrokerMembers(brokerMembers);
+  } catch(e) {
+    el.innerHTML = `<div class="empty"><span>!</span>Could not load team: ${e.message}</div>`;
+  }
+}
+
+function renderBrokerMembers(members) {
+  const el = document.getElementById('brokerMembersTable');
+  if (!members.length) {
+    el.innerHTML = '<div class="empty"><span>&#128101;</span>No agents on the team yet.</div>';
+    return;
+  }
+  el.innerHTML = `
+    <table class="crm-table">
+      <thead><tr><th>Name / Email</th><th>Role</th><th>Joined</th><th></th></tr></thead>
+      <tbody>
+        ${members.map(m => {
+          const p = m._profile;
+          const display = p
+            ? esc((p.full_name || p.name || '') + (p.email ? (p.full_name || p.name ? ' &middot; ' + p.email : p.email) : ''))
+            : `<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">${m.user_id.slice(0,16)}...</span>`;
+          const roleColor = m.role === 'broker' ? 'badge-investor' : 'badge-buyer';
+          return `<tr>
+            <td>${display}</td>
+            <td><span class="badge ${roleColor}">${m.role}</span></td>
+            <td style="font-size:12px;color:var(--muted)">${fmtDate(m.created_at)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeTeamMember('${m.id}')">Remove</button></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function addTeamMember() {
+  const errEl = document.getElementById('brokerMemberFormError');
+  errEl.textContent = '';
+  const email = document.getElementById('bm-email').value.trim();
+  const role  = document.getElementById('bm-role').value;
+  if (!email) { errEl.textContent = 'Email is required.'; return; }
+  if (!role)  { errEl.textContent = 'Select a role.'; return; }
+
+  try {
+    // Resolve email to user_id server-side via service-key RPC (no RLS exposure)
+    const lookupRes = await fetch(`${WORKER_URL}/crm/lookup-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${currentJWT}`,
+      },
+      body: JSON.stringify({ email }),
+    });
+    const lookupData = await lookupRes.json();
+    if (!lookupRes.ok) {
+      errEl.textContent = lookupData.error || 'User not found.';
+      return;
+    }
+
+    await crmRequest('insert', 'crm_team_members', {
+      data: { team_id: brokerTeamId, user_id: lookupData.user_id, role }
+    });
+    document.getElementById('bm-email').value = '';
+    document.getElementById('bm-role').selectedIndex = 0;
+    await loadBrokerMembers();
+  } catch(e) {
+    errEl.textContent = e.message;
+  }
+}
+
+async function removeTeamMember(memberId) {
+  if (!confirm('Remove this agent from the team?')) return;
+  try {
+    await crmRequest('delete', 'crm_team_members', { id: memberId });
+    await loadBrokerMembers();
+  } catch(e) { alert('Could not remove agent: ' + e.message); }
+}
+
+// ── Team Pipeline ─────────────────────────────────────────
+
+const DEAL_STAGES = ['lead','active','under_contract','closed','dead'];
+
+async function loadBrokerPipeline() {
+  const el = document.getElementById('brokerPipelineEl');
+  try {
+    const { data } = await crmRequest('select', 'crm_deals');
+    // Show only team-scoped deals (team_id set and matching broker's team)
+    brokerTeamDeals = (data || []).filter(d => d.team_id === brokerTeamId);
+    renderBrokerPipeline(brokerTeamDeals);
+  } catch(e) {
+    el.innerHTML = `<div class="empty"><span>!</span>Could not load pipeline: ${e.message}</div>`;
+  }
+}
+
+function renderBrokerPipeline(deals) {
+  const el = document.getElementById('brokerPipelineEl');
+  if (!deals.length) {
+    el.innerHTML = '<div class="empty"><span>&#128203;</span>No team deals yet.</div>';
+    return;
+  }
+
+  const profileMap = {};
+  brokerMembers.forEach(m => {
+    const p = m._profile;
+    profileMap[m.user_id] = p
+      ? (p.full_name || p.name || p.email || 'Agent')
+      : 'Agent';
+  });
+
+  const groups = DEAL_STAGES.map(stage => {
+    const stageDealz = deals.filter(d => d.stage === stage);
+    if (!stageDealz.length) return '';
+    return `
+      <div class="stage-group">
+        <div class="stage-group-header">
+          <span class="badge badge-${stage}">${stage.replace('_',' ')}</span>
+          <span class="stage-count">${stageDealz.length} deal${stageDealz.length !== 1 ? 's' : ''}</span>
+        </div>
+        <table class="crm-table">
+          <thead><tr><th>Contact</th><th>Property</th><th>Value</th><th>Agent</th><th>Close Date</th></tr></thead>
+          <tbody>
+            ${stageDealz.map(d => `
+              <tr>
+                <td><strong>${esc(d.crm_contacts?.name || '--')}</strong></td>
+                <td style="font-size:13px;color:var(--muted)">${esc(d.crm_properties?.address || '--')}</td>
+                <td style="font-family:var(--font-mono);font-size:13px">${d.value ? '$' + Number(d.value).toLocaleString() : '--'}</td>
+                <td style="font-size:13px;color:var(--accent)">${esc(profileMap[d.user_id] || 'Agent')}</td>
+                <td style="font-family:var(--font-mono);font-size:13px">${d.close_date || '--'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = groups || '<div class="empty"><span>&#128203;</span>No team deals yet.</div>';
+}
+
+// ── Team Activity Feed ────────────────────────────────────
+
+async function loadBrokerActivityFeed() {
+  const el = document.getElementById('brokerActivityFeed');
+  try {
+    const { data } = await crmRequest('select', 'crm_activities');
+    // Team activities are those with matching team_id (RLS returns them; filter for safety)
+    brokerTeamActivities = (data || []).filter(a => a.team_id === brokerTeamId);
+    renderBrokerActivityFeed(brokerTeamActivities);
+  } catch(e) {
+    el.innerHTML = `<div class="empty"><span>!</span>Could not load activity: ${e.message}</div>`;
+  }
+}
+
+function renderBrokerActivityFeed(activities) {
+  const el = document.getElementById('brokerActivityFeed');
+  if (!activities.length) {
+    el.innerHTML = '<div class="empty"><span>&#128336;</span>No team activity yet.</div>';
+    return;
+  }
+
+  const profileMap = {};
+  brokerMembers.forEach(m => {
+    const p = m._profile;
+    profileMap[m.user_id] = p
+      ? (p.full_name || p.name || p.email || 'Agent')
+      : 'Agent';
+  });
+
+  el.innerHTML = activities.map(a => `
+    <div class="activity-item">
+      <div class="activity-dot"></div>
+      <div class="activity-body">
+        <div class="activity-app">
+          ${esc(a.created_by_app || 'system')}
+          ${a.user_id ? `<span style="color:var(--muted);margin-left:6px">&middot; ${esc(profileMap[a.user_id] || 'agent')}</span>` : ''}
+        </div>
+        <div class="activity-note">${esc(a.note || '')}</div>
+        <div class="activity-meta">
+          ${fmtDate(a.created_at)}
+          ${a.deal_id ? ' &middot; deal ref attached' : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Broker tab loader ─────────────────────────────────────
+
+async function loadBrokerTab() {
+  // Members must load first to build the profileMap used by pipeline + activity
+  await loadBrokerMembers();
+  await Promise.all([loadBrokerPipeline(), loadBrokerActivityFeed()]);
+}
+
+// ─────────────────────────────────────────────────────────
 // Boot
 // ─────────────────────────────────────────────────────────
 (async function boot() {
@@ -706,7 +1002,8 @@ function fmtDate(iso) {
   if (!status.allowed) return;
 
   // Load contacts and deals (activities load on tab switch)
-  await Promise.all([loadContacts(), loadDeals()]);
+  // Broker status check runs in parallel -- tab appears only if user owns a team
+  await Promise.all([loadContacts(), loadDeals(), checkBrokerStatus()]);
 })();
 </script>
 </body>

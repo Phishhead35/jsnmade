@@ -27,7 +27,10 @@ const APP_CONFIG = {
 };
 
 // CRM tables exposed via the /crm endpoint
-const CRM_TABLES = new Set(['crm_contacts', 'crm_properties', 'crm_deals', 'crm_activities']);
+const CRM_TABLES = new Set([
+  'crm_contacts', 'crm_properties', 'crm_deals', 'crm_activities',
+  'crm_teams', 'crm_team_members',
+]);
 
 export default {
   async fetch(request, env, ctx) {
@@ -84,9 +87,17 @@ export default {
       return corsResponse(JSON.stringify({ error: 'Unknown email type.' }), 400, origin);
     }
 
+    // ── BROKER USER LOOKUP ──
+    // Resolves an email address to a user_id using the service key + a
+    // SECURITY DEFINER RPC that queries auth.users. Never exposed to anon —
+    // requires a valid user JWT so only authenticated brokers can call it.
+    if (url.pathname === '/crm/lookup-user') {
+      return handleLookupUser(request, env, origin);
+    }
+
     // ── CRM ENDPOINT ──
-    // Handles CRUD for crm_contacts, crm_properties, crm_deals, crm_activities
-    // Requires a valid Supabase JWT in Authorization header (user's own token)
+    // Handles CRUD for crm_* tables. Requires a valid Supabase JWT.
+    // RLS on each table enforces row ownership; service key is never used here.
     if (url.pathname === '/crm') {
       return handleCRM(request, env, origin);
     }
@@ -187,6 +198,59 @@ export default {
     return corsResponse(JSON.stringify(data), 200, origin);
   }
 };
+
+// ─────────────────────────────────────────────────────────
+// Broker User Lookup
+// Calls the lookup_user_by_email RPC with the service key.
+// Requires a valid user JWT from the caller (broker auth check).
+// Returns { user_id } or 404. Never leaks auth tokens to the browser.
+// ─────────────────────────────────────────────────────────
+async function handleLookupUser(request, env, origin) {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY) {
+    return corsResponse(JSON.stringify({ error: 'Lookup not configured.' }), 500, origin);
+  }
+
+  // Require caller to have a valid session (broker must be logged in)
+  const authHeader = request.headers.get('Authorization') || '';
+  const userJWT    = authHeader.replace('Bearer ', '').trim();
+  if (!userJWT) {
+    return corsResponse(JSON.stringify({ error: 'Unauthorized.' }), 401, origin);
+  }
+
+  let body;
+  try { body = await request.json(); } catch {
+    return corsResponse(JSON.stringify({ error: 'Invalid JSON.' }), 400, origin);
+  }
+
+  const { email } = body;
+  if (!email || !email.includes('@')) {
+    return corsResponse(JSON.stringify({ error: 'Valid email required.' }), 400, origin);
+  }
+
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/lookup_user_by_email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        env.SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+      },
+      body: JSON.stringify({ p_email: email.toLowerCase().trim() }),
+    });
+
+    const rows = await res.json();
+    if (!res.ok || !Array.isArray(rows) || rows.length === 0) {
+      return corsResponse(
+        JSON.stringify({ error: 'No JSN REPS account found for that email.' }),
+        404, origin
+      );
+    }
+
+    return corsResponse(JSON.stringify({ user_id: rows[0].user_id }), 200, origin);
+  } catch (err) {
+    return corsResponse(JSON.stringify({ error: 'Lookup failed. Try again.' }), 502, origin);
+  }
+}
 
 // ─────────────────────────────────────────────────────────
 // CRM Handler
