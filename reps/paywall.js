@@ -32,6 +32,14 @@
   let _upgradeInjected = false;
 
   // ============================================================
+  // TEST ACCOUNT BYPASS — never hits the paywall worker
+  // ============================================================
+  const TEST_BYPASS_EMAILS = [
+    "jsnmade@pm.me",
+    "matt@bostonrealtynet.com",
+  ];
+
+  // ============================================================
   // check — main entry point for every tool on load
   // Returns: { allowed: bool, tier, used, limit, email }
   // If not authed, shows auth modal first then checks.
@@ -41,6 +49,14 @@
     // Ensure authenticated
     const session = await JSNAuth.requireAuth();
     const jwt = session.access_token;
+
+    // Bypass paywall entirely for test accounts
+    const userEmail = (session.user && session.user.email)
+      ? session.user.email.toLowerCase()
+      : "";
+    if (TEST_BYPASS_EMAILS.includes(userEmail)) {
+      return { allowed: true, tier: "team", used: 0, limit: 999999, email: userEmail };
+    }
 
     let status;
     try {
