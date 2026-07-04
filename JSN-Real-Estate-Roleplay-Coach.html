@@ -118,6 +118,10 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .stream-bubble:not(:empty).done::after{display:none}
 
+.toast{position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);z-index:999;animation:fadeUp .2s ease}
+.toast.ok{border-color:var(--success);color:var(--success);box-shadow:0 0 14px rgba(0,229,160,.2)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+
 /* ── MOBILE RESPONSIVE ───────────────────────────────────────────────── */
 @media(max-width:768px){
   header{padding:0 14px;height:52px}
@@ -159,6 +163,22 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
   margin-right:8px;
 }
 
+/* ── VOICE MODE ───────────────────────────────────────────────────────────── */
+.voice-toggle{display:none;align-items:center;gap:7px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:3px 10px 3px 8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);transition:all .15s;margin-left:8px}
+.voice-toggle:hover{border-color:var(--accent2);color:var(--accent2)}
+.voice-toggle.active{border-color:var(--accent2);color:var(--accent2);background:rgba(0,212,200,.08);box-shadow:0 0 10px rgba(0,212,200,.15)}
+.voice-toggle svg{width:13px;height:13px;flex-shrink:0}
+.voice-toggle.pro-only{display:flex}
+.mic-btn{width:40px;height:40px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.mic-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.mic-btn.listening{border-color:var(--accent2);color:var(--accent2);background:rgba(0,212,200,.1);animation:mic-pulse 1s ease-in-out infinite}
+.mic-btn.pro-only{display:flex}
+@keyframes mic-pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,200,.4)}50%{box-shadow:0 0 0 6px rgba(0,212,200,0)}}
+.voice-badge{display:none;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.08em;background:rgba(0,212,200,.12);border:1px solid rgba(0,212,200,.3);color:var(--accent2);padding:2px 7px;border-radius:20px;text-transform:uppercase}
+.voice-badge.visible{display:inline-block}
+.upgrade-voice-hint{display:none;font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);padding:4px 8px;background:rgba(255,107,43,.06);border:1px solid rgba(255,107,43,.15);border-radius:4px;text-align:center;margin:4px 16px 0}
+.upgrade-voice-hint a{color:var(--accent);text-decoration:none}
+.upgrade-voice-hint.visible{display:block}
 </style>
 </head>
 <body>
@@ -187,6 +207,13 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
       <button class="mode-btn active" onclick="setMode('agent')" id="ma" aria-pressed="true" aria-label="Switch to Agent Mode">Agent Mode</button>
       <button class="mode-btn" onclick="setMode('team')" id="mt" aria-pressed="false" aria-label="Switch to Team Leader Mode">Team Leader</button>
     </div>
+    <button class="voice-toggle" id="voiceToggleBtn" onclick="toggleVoiceMode()" aria-label="Toggle voice mode" title="Voice mode — speak your responses">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+      <span id="voiceToggleLabel">VOICE OFF</span>
+      <span class="voice-badge" id="voiceBadge">PRO</span>
+    </button>
   </div>
 </div>
 </header>
@@ -261,8 +288,14 @@ textarea::placeholder{color:rgba(255,255,255,0.55)}
         <textarea id="inp" aria-label="Message input" placeholder="Type a situation, paste a script, or hit a quick start..." rows="1"
           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"
           oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,115)+'px'"></textarea>
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()" aria-label="Speak your response" title="Click to speak">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
         <button class="send" id="sendbtn" onclick="send()" aria-label="Send message">SEND</button>
       </div>
+      <div class="upgrade-voice-hint" id="upgradeVoiceHint">🎙 <a href="/reps/">Upgrade to PRO</a> to unlock voice mode — speak your roleplay responses out loud.</div>
     </div>
   </div>
 </div>
@@ -4515,6 +4548,13 @@ function showTyping(){
 }
 function rmTyping(){const e=document.getElementById('typing');if(e)e.remove()}
 
+let tt;
+function toast(msg,type=''){
+  document.querySelector('.toast')?.remove();clearTimeout(tt);
+  const d=document.createElement('div');d.className=`toast ${type}`;d.textContent=msg;
+  document.body.appendChild(d);tt=setTimeout(()=>d.remove(),3000);
+}
+
 const MAX_TURNS=20; // 10 exchanges
 
 function trimHistory(){
@@ -4546,8 +4586,12 @@ async function send(){
   try{
     const r=await fetch('https://jsn-reps-proxy.wewearsmiles.workers.dev',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-tool-id':'reps_roleplay'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${JSNAuth.getJWT()}`,
+      },
       body:JSON.stringify({
+        app:'roleplay',
         model:'claude-sonnet-4-20250514',
         max_tokens:1024,
         stream:false,
@@ -4590,6 +4634,12 @@ async function send(){
     if(isRP){bubble.classList.add('rp');bubble.innerHTML=`<span class="tag rp-tag">▶ PROSPECT</span>${fmt(fullText.replace('[PROSPECT]','').trim())}`;}
     else if(isCO){bubble.innerHTML=`<span class="tag co-tag">◈ COACHING</span>${fmt(fullText.replace('[COACH]','').trim())}`;}
     await JSNPaywall.recordUse(TOOL_ID);
+
+    // Speak the response if voice mode is active
+    if(voiceMode){
+      const speakText = fullText.replace(/\[PROSPECT\]|\[COACH\]/g,'').trim();
+      speak(speakText);
+    }
 
     history.push({role:'assistant',content:fullText});
     trimHistory();
@@ -4750,6 +4800,98 @@ function exportChat(){
   await loadExtra();
   await restoreSession();
 })();
+
+// ── VOICE MODE ────────────────────────────────────────────────────────────────
+let voiceMode    = false;
+let voiceEnabled = false; // set true only for PRO/TEAM
+let synth        = window.speechSynthesis;
+let voiceObj     = null;
+let recognition  = null;
+let micActive    = false;
+
+function resolveVoice(){
+  const voices = synth.getVoices();
+  voiceObj = voices.find(v => v.name === 'Microsoft Ava Online (Natural) - English (United States)')
+          || voices.find(v => /Ava/i.test(v.name) && /en[-_]US/i.test(v.lang))
+          || voices.find(v => /en[-_]US/i.test(v.lang) && v.localService === false)
+          || voices.find(v => /en/i.test(v.lang))
+          || null;
+}
+
+function speak(text){
+  if(!synth || !text) return;
+  synth.cancel();
+  const utt   = new SpeechSynthesisUtterance(text);
+  utt.voice   = voiceObj;
+  utt.rate    = 1.0;
+  utt.pitch   = 1.0;
+  utt.volume  = 1.0;
+  utt.lang    = 'en-US';
+  synth.speak(utt);
+}
+
+function toggleVoiceMode(){
+  if(!voiceEnabled) return;
+  voiceMode = !voiceMode;
+  synth.cancel();
+  const btn   = document.getElementById('voiceToggleBtn');
+  const label = document.getElementById('voiceToggleLabel');
+  btn.classList.toggle('active', voiceMode);
+  label.textContent = voiceMode ? 'VOICE ON' : 'VOICE OFF';
+  if(!voiceMode && micActive) stopMic();
+}
+
+function initRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return;
+  recognition = new SR();
+  recognition.lang         = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    document.getElementById('inp').value = transcript;
+    stopMic();
+    send();
+  };
+  recognition.onerror = () => stopMic();
+  recognition.onend   = () => { if(micActive) stopMic(); };
+}
+
+function toggleMic(){
+  if(!voiceMode || !voiceEnabled) return;
+  micActive ? stopMic() : startMic();
+}
+
+function startMic(){
+  if(!recognition) initRecognition();
+  if(!recognition) return;
+  synth.cancel();
+  recognition.start();
+  micActive = true;
+  document.getElementById('micBtn').classList.add('listening');
+}
+
+function stopMic(){
+  if(recognition) recognition.abort();
+  micActive = false;
+  document.getElementById('micBtn').classList.remove('listening');
+}
+
+function enableVoiceUI(){
+  voiceEnabled = true;
+  document.getElementById('voiceToggleBtn').classList.add('pro-only');
+  document.getElementById('micBtn').classList.add('pro-only');
+  document.getElementById('voiceBadge').classList.add('visible');
+  document.getElementById('upgradeVoiceHint').classList.remove('visible');
+  resolveVoice();
+  synth.onvoiceschanged = resolveVoice;
+  [300, 800, 1800].forEach(ms => setTimeout(resolveVoice, ms));
+}
+
+function showVoiceUpgradeHint(){
+  document.getElementById('upgradeVoiceHint').classList.add('visible');
+}
 </script>
 <script>
   const TOOL_ID = "reps_roleplay";
@@ -4760,6 +4902,12 @@ function exportChat(){
 
     if (status.allowed) {
       enableTool();
+      // Voice mode: PRO and TEAM tiers only
+      if (status.tier === 'pro' || status.tier === 'team') {
+        enableVoiceUI();
+      } else {
+        showVoiceUpgradeHint();
+      }
     }
 
     // Load jsn-nav.js after auth is ready so session is guaranteed available
@@ -4774,7 +4922,14 @@ function exportChat(){
     JSNAuth.onAuthChange(async ({ session }) => {
       if (session) {
         const fresh = await JSNPaywall.check(TOOL_ID);
-        if (fresh.allowed) enableTool();
+        if (fresh.allowed) {
+          enableTool();
+          if (fresh.tier === 'pro' || fresh.tier === 'team') {
+            enableVoiceUI();
+          } else {
+            showVoiceUpgradeHint();
+          }
+        }
       }
     });
   }
@@ -4786,7 +4941,6 @@ function exportChat(){
 
   initTool().catch(console.error);
 </script>
-<script src="/toast.js"></script>
 
 </body>
 </html>
